@@ -17,7 +17,7 @@ interface MatchFixturesProps {
 }
 
 export default function MatchFixtures({ fixtures, teams, tempResults, updateTempResult }: MatchFixturesProps) {
-  const [activeTab, setActiveTab] = useState("20")
+  const [activeTab, setActiveTab] = useState("28")
   const [showTopTeamsOnly, setShowTopTeamsOnly] = useState(false)
   const [highlightedTeamId, setHighlightedTeamId] = useState<number | null>(null)
 
