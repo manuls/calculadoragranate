@@ -5,8 +5,7 @@ import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ThemeToggle } from "@/components/theme-toggle"
 import Script from "next/script"
-import Link from "next/link"
-import { Twitter, Instagram, Globe } from "lucide-react"
+import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -48,52 +47,13 @@ export default function RootLayout({
               <ThemeToggle />
             </div>
             <main className="flex-grow">{children}</main>
-            <footer className="mt-8 py-6 text-center text-sm text-muted-foreground border-t">
-              <div className="flex flex-col items-center gap-4">
-                <div>
-                  Desarrollado por{" "}
-                  <Link
-                    href="http://twitter.com/manuls"
-                    target="_blank"
-                    className="font-bold hover:text-primary transition-colors"
-                  >
-                    Manu Quiroga
-                  </Link>{" "}
-                  de{" "}
-                  <Link href="http://pontevedracf.net" target="_blank" className="hover:text-primary transition-colors">
-                    PontevedraCF.Net
-                  </Link>
-                </div>
-                <div className="flex justify-center gap-4">
-                  <Link
-                    href="http://twitter.com/pontevedracf"
-                    target="_blank"
-                    className="w-8 h-8 flex items-center justify-center rounded-full bg-muted hover:bg-primary/10 transition-colors"
-                    aria-label="Twitter/X"
-                  >
-                    <Twitter size={18} className="text-muted-foreground hover:text-primary transition-colors" />
-                  </Link>
-                  <Link
-                    href="http://instagram.com/pontevedracfnet"
-                    target="_blank"
-                    className="w-8 h-8 flex items-center justify-center rounded-full bg-muted hover:bg-primary/10 transition-colors"
-                    aria-label="Instagram"
-                  >
-                    <Instagram size={18} className="text-muted-foreground hover:text-primary transition-colors" />
-                  </Link>
-                  <Link
-                    href="http://www.pontevedracf.net"
-                    target="_blank"
-                    className="w-8 h-8 flex items-center justify-center rounded-full bg-muted hover:bg-primary/10 transition-colors"
-                    aria-label="Sitio web"
-                  >
-                    <Globe size={18} className="text-muted-foreground hover:text-primary transition-colors" />
-                  </Link>
-                </div>
-              </div>
+            <footer className="mt-8 py-4 text-center text-sm text-muted-foreground border-t">
+              Desarrollado por Manu Quiroga de PontevedraCF.Net
             </footer>
           </div>
         </ThemeProvider>
+        {/* Vercel Analytics */}
+        <Analytics />
       </body>
     </html>
   )

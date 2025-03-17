@@ -219,6 +219,16 @@ export default function StandingsCalculator() {
     loadOfficialResults()
   }, [])
 
+  // Añadir una función para cargar el estado desde la URL al iniciar
+  // Añadir este useEffect después del useEffect que carga los resultados oficiales
+
+  // Cargar el estado desde la URL al iniciar
+  useEffect(() => {
+    if (!isLoading) {
+      loadStateFromUrl()
+    }
+  }, [isLoading])
+
   // Funcion para actualizar el resultado temporal de un partido
   const updateTempResult = (matchId: number, team: "home" | "away", value: string) => {
     // No permitir actualizar partidos bloqueados
@@ -241,6 +251,57 @@ export default function StandingsCalculator() {
         event_category: eventCategory,
         event_label: eventLabel,
       })
+    }
+  }
+
+  // Añadir una función para generar una URL compartible con el estado actual
+  // Añadir esta función después de la función sendGAEvent
+
+  // Función para generar una URL compartible con el estado actual
+  const generateShareableUrl = () => {
+    // Crear un objeto con el estado actual que queremos compartir
+    const shareState = {
+      results: tempResults,
+      timestamp: new Date().toISOString(),
+    }
+
+    // Convertir a JSON y codificar para URL
+    const stateParam = encodeURIComponent(JSON.stringify(shareState))
+
+    // Crear la URL con el parámetro de estado
+    const baseUrl = typeof window !== "undefined" ? window.location.origin + window.location.pathname : ""
+    return `${baseUrl}?state=${stateParam}`
+  }
+
+  // Añadir una función para cargar el estado desde la URL
+  // Añadir esta función después de la función generateShareableUrl
+
+  // Función para cargar el estado desde la URL
+  const loadStateFromUrl = () => {
+    if (typeof window === "undefined") return
+
+    const urlParams = new URLSearchParams(window.location.search)
+    const stateParam = urlParams.get("state")
+
+    if (stateParam) {
+      try {
+        const shareState = JSON.parse(decodeURIComponent(stateParam))
+
+        // Validar que el estado tiene el formato esperado
+        if (shareState && shareState.results) {
+          setTempResults(shareState.results)
+
+          // Calcular la clasificación con los resultados cargados
+          setTimeout(() => calculateNewStandings(), 500)
+
+          toast({
+            title: "Predicción cargada",
+            description: "Se ha cargado una predicción compartida",
+          })
+        }
+      } catch (error) {
+        console.error("Error al cargar el estado desde la URL:", error)
+      }
     }
   }
 
