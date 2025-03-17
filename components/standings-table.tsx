@@ -7,6 +7,7 @@ import Image from "next/image"
 import { ArrowUp, ArrowDown, Minus, LayoutList, LayoutGrid } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useWindowSize } from "@/hooks/use-window-size"
+import ShareButtons from "./share-buttons"
 
 interface StandingsTableProps {
   teams: Team[]
@@ -54,6 +55,7 @@ export default function StandingsTable({ teams, resetSimulation, lastCalculated 
             {compactView ? <LayoutList className="h-3.5 w-3.5 mr-1" /> : <LayoutGrid className="h-3.5 w-3.5 mr-1" />}
             {compactView ? "Detallada" : "Compacta"}
           </Button>
+          <ShareButtons teams={teams} currentUrl={typeof window !== "undefined" ? window.location.href : ""} />
           {lastCalculated && (
             <div className="text-xs text-muted-foreground hidden sm:block">
               Última actualización: {lastCalculated.toLocaleString()}
