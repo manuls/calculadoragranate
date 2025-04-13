@@ -25,7 +25,7 @@ export default function MatchFixtures({
   updateTempResult,
   className,
 }: MatchFixturesProps) {
-  // Cambiar el valor predeterminado de "20" a "28"
+  // Cambiar el valor predeterminado de "20" a "31" en lugar de "28"
   const [activeTab, setActiveTab] = useState("31")
   const [showTopTeamsOnly, setShowTopTeamsOnly] = useState(false)
   const [highlightedTeamId, setHighlightedTeamId] = useState<number | null>(null)

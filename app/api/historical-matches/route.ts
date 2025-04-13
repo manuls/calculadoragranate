@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server"
-import type { HistoricalMatch } from "@/lib/types"
 import { promises as fs } from "fs"
 import path from "path"
 
@@ -49,7 +48,7 @@ export async function GET() {
 // POST: Guardar datos históricos
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as HistoricalMatch[]
+    const body = await request.json()
 
     // Validar los datos recibidos
     if (!Array.isArray(body)) {
