@@ -306,4 +306,3 @@ export const initialFixtures: Match[] = [
   { id: 71, matchday: 34, homeTeamId: 1, awayTeamId: 3, result: null },
   { id: 72, matchday: 34, homeTeamId: 11, awayTeamId: 9, result: null },
 ]
-

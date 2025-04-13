@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Twitter, Facebook, Share2, Copy, Check } from "lucide-react"
+import { Facebook, Share2, Copy, Check } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { toast } from "@/hooks/use-toast"
 import type { Team } from "@/lib/types"
@@ -82,14 +82,28 @@ export default function ShareButtons({
             <Button
               variant="outline"
               size="sm"
-              className="flex items-center gap-2 bg-[#1DA1F2] text-white hover:bg-[#1DA1F2]/90"
+              className="flex items-center gap-2 bg-black text-white hover:bg-gray-800 hover:text-white"
               onClick={() => {
                 window.open(twitterUrl, "_blank")
                 trackShare("twitter")
               }}
             >
-              <Twitter className="h-4 w-4" />
-              <span>Twitter</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-4 w-4"
+              >
+                <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
+                <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
+              </svg>
+              <span>X</span>
             </Button>
 
             <Button
@@ -184,4 +198,3 @@ export default function ShareButtons({
     </Popover>
   )
 }
-

@@ -8,16 +8,25 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { motion } from "framer-motion"
 import type { Match, Team } from "@/lib/types"
+import { cn } from "@/lib/utils"
 
 interface MatchFixturesProps {
   fixtures: Match[]
   teams: Team[]
   tempResults: Record<number, { home: string; away: string }>
   updateTempResult: (matchId: number, team: "home" | "away", value: string) => void
+  className?: string
 }
 
-export default function MatchFixtures({ fixtures, teams, tempResults, updateTempResult }: MatchFixturesProps) {
-  const [activeTab, setActiveTab] = useState("20")
+export default function MatchFixtures({
+  fixtures,
+  teams,
+  tempResults,
+  updateTempResult,
+  className,
+}: MatchFixturesProps) {
+  // Cambiar el valor predeterminado de "20" a "28"
+  const [activeTab, setActiveTab] = useState("31")
   const [showTopTeamsOnly, setShowTopTeamsOnly] = useState(false)
   const [highlightedTeamId, setHighlightedTeamId] = useState<number | null>(null)
 
@@ -100,7 +109,7 @@ export default function MatchFixtures({ fixtures, teams, tempResults, updateTemp
   const sortedMatchdays = Object.keys(matchdayGroups).sort((a, b) => Number(a) - Number(b))
 
   return (
-    <div className="space-y-4">
+    <div className={cn("space-y-4", className)}>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
         <h2 className="text-xl font-semibold text-primary">Partidos Pendientes</h2>
         <div className="flex items-center space-x-2">
@@ -122,6 +131,19 @@ export default function MatchFixtures({ fixtures, teams, tempResults, updateTemp
         <AlertDescription className="text-sm">
           Bienvenido/a a la Calculadora Granate. Aquí puedes predecir todos los partidos hasta final de liga y ver la
           clasificación final. No es necesario que rellenes todos los resultados.
+          <p className="mt-2 text-xs italic">
+            * La Calculadora Granate nació a partir de la jornada 27 de Segunda RFEF, por eso no se indican más
+            jornadas. Para ver todos los resultados, puedes consultar{" "}
+            <a
+              href="https://www.flashscore.es/futbol/espana/segunda-rfef-grupo-1/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              Flashscore
+            </a>{" "}
+            o páginas similares.
+          </p>
         </AlertDescription>
       </Alert>
 
@@ -250,4 +272,3 @@ export default function MatchFixtures({ fixtures, teams, tempResults, updateTemp
     </div>
   )
 }
-

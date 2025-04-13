@@ -217,4 +217,3 @@ export default function MatchCalendar({ fixtures, teams, tempResults }: MatchCal
     </Card>
   )
 }
-

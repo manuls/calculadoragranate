@@ -13,6 +13,7 @@ import { LockIcon, Save, RefreshCw, AlertTriangle, Download, Upload } from "luci
 import type { Match, Team, MatchdayUpdate } from "@/lib/types"
 import { fetchOfficialResults, submitOfficialResults } from "@/lib/api"
 import { initialTeams, initialFixtures } from "@/lib/data"
+import HistoricalDataImport from "@/components/historical-data-import"
 
 // Clave para localStorage
 const STORAGE_KEY = "official_results_data"
@@ -24,6 +25,7 @@ export default function AdminPage() {
   const [isSaving, setIsSaving] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState("results")
   const { toast } = useToast()
 
   // Cargar datos oficiales al iniciar
@@ -413,10 +415,10 @@ export default function AdminPage() {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <Card className="w-full">
+      <Card className="w-full mb-8">
         <CardHeader className="bg-primary text-primary-foreground">
           <CardTitle className="flex items-center justify-between">
-            <span>Panel de Administración - Resultados Oficiales</span>
+            <span>Panel de Administración</span>
             <div className="flex space-x-2">
               <Button
                 variant="outline"
@@ -440,103 +442,118 @@ export default function AdminPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
-          {error && (
-            <div className="mb-6 p-4 border border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-800 rounded-md flex items-center text-red-800 dark:text-red-300">
-              <AlertTriangle className="h-5 w-5 mr-2 flex-shrink-0" />
-              <p>{error}</p>
-            </div>
-          )}
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="w-full grid grid-cols-2 mb-6">
+              <TabsTrigger value="results">Resultados Oficiales</TabsTrigger>
+              <TabsTrigger value="historical">Datos Históricos</TabsTrigger>
+            </TabsList>
 
-          <Tabs value={activeMatchday} onValueChange={setActiveMatchday} className="w-full">
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold mb-2">Seleccionar Jornada</h2>
-              <div className="overflow-x-auto pb-2">
-                <TabsList className="inline-flex flex-wrap whitespace-nowrap">
-                  {sortedMatchdays.map((matchday) => {
-                    const lockedCount = matchdayGroups[matchday].filter((m) => m.locked).length
+            <TabsContent value="results">
+              {error && (
+                <div className="mb-6 p-4 border border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-800 rounded-md flex items-center text-red-800 dark:text-red-300">
+                  <AlertTriangle className="h-5 w-5 mr-2 flex-shrink-0" />
+                  <p>{error}</p>
+                </div>
+              )}
 
-                    // Determinar la clase de estilo basada en si hay partidos bloqueados
-                    let tabClass = "tab-inactive data-[state=active]:tab-active"
+              <Tabs value={activeMatchday} onValueChange={setActiveMatchday} className="w-full">
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold mb-2">Seleccionar Jornada</h2>
+                  <div className="overflow-x-auto pb-2">
+                    <TabsList className="inline-flex flex-wrap whitespace-nowrap">
+                      {sortedMatchdays.map((matchday) => {
+                        const lockedCount = matchdayGroups[matchday].filter((m) => m.locked).length
 
-                    if (lockedCount > 0) {
-                      // Si hay partidos bloqueados, usar un fondo azul
-                      tabClass += " bg-blue-100 dark:bg-blue-900/40 hover:bg-blue-200 dark:hover:bg-blue-800/60"
-                    }
+                        // Determinar la clase de estilo basada en si hay partidos bloqueados
+                        let tabClass = "tab-inactive data-[state=active]:tab-active"
 
-                    return (
-                      <TabsTrigger key={matchday} value={matchday} className={tabClass}>
-                        Jornada {matchday}
-                      </TabsTrigger>
-                    )
-                  })}
-                </TabsList>
-              </div>
-            </div>
+                        if (lockedCount > 0) {
+                          // Si hay partidos bloqueados, usar un fondo azul
+                          tabClass += " bg-blue-100 dark:bg-blue-900/40 hover:bg-blue-200 dark:hover:bg-blue-800/60"
+                        }
 
-            {sortedMatchdays.map((matchday) => (
-              <TabsContent key={matchday} value={matchday} className="space-y-4">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xl font-bold">Jornada {matchday}</h3>
-                  <Button onClick={saveOfficialResults} disabled={isSaving} className="bg-primary">
-                    {isSaving ? (
-                      <>
-                        <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                        Guardando...
-                      </>
-                    ) : (
-                      <>
-                        <Save className="mr-2 h-4 w-4" />
-                        Guardar Resultados Oficiales
-                      </>
-                    )}
-                  </Button>
+                        return (
+                          <TabsTrigger key={matchday} value={matchday} className={tabClass}>
+                            Jornada {matchday}
+                          </TabsTrigger>
+                        )
+                      })}
+                    </TabsList>
+                  </div>
                 </div>
 
-                <div className="space-y-4">
-                  {matchdayGroups[matchday].map((match) => (
-                    <Card key={match.id} className={match.locked ? "border-blue-500" : ""}>
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="w-1/3 text-right font-medium">{getTeamName(match.homeTeamId)}</div>
+                {sortedMatchdays.map((matchday) => (
+                  <TabsContent key={matchday} value={matchday} className="space-y-4">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-xl font-bold">Jornada {matchday}</h3>
+                      <Button onClick={saveOfficialResults} disabled={isSaving} className="bg-primary">
+                        {isSaving ? (
+                          <>
+                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                            Guardando...
+                          </>
+                        ) : (
+                          <>
+                            <Save className="mr-2 h-4 w-4" />
+                            Guardar Resultados Oficiales
+                          </>
+                        )}
+                      </Button>
+                    </div>
 
-                          <div className="flex items-center space-x-4 w-1/3 justify-center">
-                            <Input
-                              type="number"
-                              min="0"
-                              className="w-16 text-center"
-                              value={match.result?.homeGoals ?? ""}
-                              onChange={(e) => updateMatchResult(match.id, "homeGoals", e.target.value)}
-                            />
-                            <span>-</span>
-                            <Input
-                              type="number"
-                              min="0"
-                              className="w-16 text-center"
-                              value={match.result?.awayGoals ?? ""}
-                              onChange={(e) => updateMatchResult(match.id, "awayGoals", e.target.value)}
-                            />
+                    <div className="space-y-4">
+                      {matchdayGroups[matchday].map((match) => (
+                        <Card key={match.id} className={match.locked ? "border-blue-500" : ""}>
+                          <CardContent className="p-4">
+                            <div className="flex items-center justify-between">
+                              <div className="w-1/3 text-right font-medium">{getTeamName(match.homeTeamId)}</div>
 
-                            <div className="flex items-center space-x-2">
-                              <Checkbox
-                                id={`lock-${match.id}`}
-                                checked={match.locked || false}
-                                onCheckedChange={() => toggleMatchLock(match.id)}
-                                className={match.locked ? "bg-blue-500 text-white" : ""}
-                              />
-                              <Label htmlFor={`lock-${match.id}`} className="cursor-pointer">
-                                <LockIcon className={`h-4 w-4 ${match.locked ? "text-blue-500" : "text-gray-400"}`} />
-                              </Label>
+                              <div className="flex items-center space-x-4 w-1/3 justify-center">
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  className="w-16 text-center"
+                                  value={match.result?.homeGoals ?? ""}
+                                  onChange={(e) => updateMatchResult(match.id, "homeGoals", e.target.value)}
+                                />
+                                <span>-</span>
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  className="w-16 text-center"
+                                  value={match.result?.awayGoals ?? ""}
+                                  onChange={(e) => updateMatchResult(match.id, "awayGoals", e.target.value)}
+                                />
+
+                                <div className="flex items-center space-x-2">
+                                  <Checkbox
+                                    id={`lock-${match.id}`}
+                                    checked={match.locked || false}
+                                    onCheckedChange={() => toggleMatchLock(match.id)}
+                                    className={match.locked ? "bg-blue-500 text-white" : ""}
+                                  />
+                                  <Label htmlFor={`lock-${match.id}`} className="cursor-pointer">
+                                    <LockIcon
+                                      className={`h-4 w-4 ${match.locked ? "text-blue-500" : "text-gray-400"}`}
+                                    />
+                                  </Label>
+                                </div>
+                              </div>
+
+                              <div className="w-1/3 text-left font-medium">{getTeamName(match.awayTeamId)}</div>
                             </div>
-                          </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </TabsContent>
+                ))}
+              </Tabs>
+            </TabsContent>
 
-                          <div className="w-1/3 text-left font-medium">{getTeamName(match.awayTeamId)}</div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </TabsContent>
-            ))}
+            <TabsContent value="historical">
+              <HistoricalDataImport fixtures={fixtures} />
+            </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
@@ -544,4 +561,3 @@ export default function AdminPage() {
     </div>
   )
 }
-

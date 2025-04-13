@@ -1,23 +1,59 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import type { Team } from "@/lib/types"
 import { motion } from "framer-motion"
 import Image from "next/image"
 import { ArrowUp, ArrowDown, Minus, LayoutList, LayoutGrid } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useWindowSize } from "@/hooks/use-window-size"
-import ShareButtons from "./share-buttons"
+import EnhancedShareButtons from "./enhanced-share-buttons"
+import { cn } from "@/lib/utils"
 
 interface StandingsTableProps {
   teams: Team[]
+  initialStandings: Team[] // Clasificación inicial basada en resultados oficiales
   resetSimulation: () => void
   lastCalculated: Date | null
+  className?: string
 }
 
-export default function StandingsTable({ teams, resetSimulation, lastCalculated }: StandingsTableProps) {
+export default function StandingsTable({
+  teams,
+  initialStandings,
+  resetSimulation,
+  lastCalculated,
+  className,
+}: StandingsTableProps) {
   const [compactView, setCompactView] = useState(true) // Por defecto vista compacta
   const { isMobile } = useWindowSize()
+
+  // Estado para almacenar los cambios de posición calculados
+  const [positionChanges, setPositionChanges] = useState<Record<number, number>>({})
+
+  // Calcular los cambios de posición cuando cambian los equipos o la clasificación inicial
+  useEffect(() => {
+    if (teams.length > 0 && initialStandings.length > 0) {
+      const changes: Record<number, number> = {}
+
+      teams.forEach((team, currentIndex) => {
+        // Encontrar la posición del equipo en la clasificación inicial
+        const initialIndex = initialStandings.findIndex((t) => t.id === team.id)
+
+        // Si se encuentra el equipo, calcular el cambio
+        if (initialIndex !== -1) {
+          // Si initialIndex > currentIndex, el equipo ha subido
+          // Si initialIndex < currentIndex, el equipo ha bajado
+          changes[team.id] = initialIndex - currentIndex
+        } else {
+          changes[team.id] = 0
+        }
+      })
+
+      console.log("Cambios de posición calculados:", changes)
+      setPositionChanges(changes)
+    }
+  }, [teams, initialStandings])
 
   const getPositionColor = (position: number, index: number) => {
     if (position === 1) return "bg-green-100 dark:bg-green-900 dark:bg-opacity-50"
@@ -25,13 +61,6 @@ export default function StandingsTable({ teams, resetSimulation, lastCalculated 
     if (position === 13) return "bg-yellow-100 dark:bg-yellow-900 dark:bg-opacity-50"
     if (position >= 14 && position <= 18) return "bg-red-100 dark:bg-red-900 dark:bg-opacity-50"
     return index % 2 === 0 ? "bg-primary/5" : ""
-  }
-
-  // Funcion para determinar si un equipo ha cambiado de posicion
-  const getPositionChange = (teamId: number) => {
-    // Esta funcion se usara para mostrar indicadores de cambio de posicion
-    // en futuras actualizaciones de la clasificacion
-    return null // Por ahora retornamos null
   }
 
   // Función para mostrar el nombre del equipo según el tamaño de pantalla
@@ -46,21 +75,32 @@ export default function StandingsTable({ teams, resetSimulation, lastCalculated 
     )
   }
 
+  const getPositionChangeAnimation = (teamId: number) => {
+    const change = positionChanges[teamId] || 0
+
+    if (change > 3) {
+      return "animate-bounce-up-big"
+    } else if (change > 0) {
+      return "animate-bounce-up"
+    } else if (change < -3) {
+      return "animate-bounce-down-big"
+    } else if (change < 0) {
+      return "animate-bounce-down"
+    }
+
+    return ""
+  }
+
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
+    <div className={cn("space-y-4", className)}>
+      <div className="flex flex-wrap justify-between items-center gap-2">
         <h2 className="text-xl font-semibold text-primary">Tabla de Clasificación</h2>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 mobile-action-buttons">
           <Button variant="outline" size="sm" onClick={() => setCompactView(!compactView)} className="h-8 px-2 text-xs">
             {compactView ? <LayoutList className="h-3.5 w-3.5 mr-1" /> : <LayoutGrid className="h-3.5 w-3.5 mr-1" />}
             {compactView ? "Detallada" : "Compacta"}
           </Button>
-          <ShareButtons teams={teams} currentUrl={typeof window !== "undefined" ? window.location.href : ""} />
-          {lastCalculated && (
-            <div className="text-xs text-muted-foreground hidden sm:block">
-              Última actualización: {lastCalculated.toLocaleString()}
-            </div>
-          )}
+          <EnhancedShareButtons teams={teams} currentUrl={typeof window !== "undefined" ? window.location.href : ""} />
         </div>
       </div>
 
@@ -68,10 +108,11 @@ export default function StandingsTable({ teams, resetSimulation, lastCalculated 
         <div className="overflow-x-auto">
           {compactView ? (
             // Vista compacta
-            <table className="w-full border-collapse">
+            <table className="w-full border-collapse mobile-compact-table">
               <thead>
                 <tr className="bg-primary">
                   <th className="w-12 text-primary-foreground p-1 sm:p-2 text-center">Pos</th>
+                  <th className="w-8 text-primary-foreground p-1 sm:p-2 text-center"></th>
                   <th className="text-primary-foreground p-1 sm:p-2 text-left">Equipo</th>
                   <th className="text-primary-foreground p-1 sm:p-2 text-center">PJ</th>
                   <th className="text-primary-foreground p-1 sm:p-2 text-center">GF</th>
@@ -83,6 +124,7 @@ export default function StandingsTable({ teams, resetSimulation, lastCalculated 
               <tbody>
                 {teams.map((team, index) => {
                   const rowColorClass = getPositionColor(index + 1, index)
+                  const positionChange = positionChanges[team.id] || 0
 
                   return (
                     <motion.tr
@@ -100,6 +142,19 @@ export default function StandingsTable({ teams, resetSimulation, lastCalculated 
                       className={`border-b border-primary/20 ${rowColorClass}`}
                     >
                       <td className="font-medium text-center p-1 sm:p-2">{index + 1}</td>
+                      <td className="text-center p-1 sm:p-2">
+                        {positionChange > 0 ? (
+                          <ArrowUp
+                            className={`h-4 w-4 text-green-600 mx-auto ${getPositionChangeAnimation(team.id)}`}
+                          />
+                        ) : positionChange < 0 ? (
+                          <ArrowDown
+                            className={`h-4 w-4 text-red-600 mx-auto ${getPositionChangeAnimation(team.id)}`}
+                          />
+                        ) : (
+                          <Minus className="h-4 w-4 text-gray-400 mx-auto" />
+                        )}
+                      </td>
                       <td className="font-medium p-1 sm:p-2">
                         <div className="flex items-center space-x-2">
                           {team.logoUrl && (
@@ -146,7 +201,7 @@ export default function StandingsTable({ teams, resetSimulation, lastCalculated 
               </thead>
               <tbody>
                 {teams.map((team, index) => {
-                  const positionChange = getPositionChange(team.id)
+                  const positionChange = positionChanges[team.id] || 0
                   const rowColorClass = getPositionColor(index + 1, index)
 
                   return (
@@ -165,13 +220,17 @@ export default function StandingsTable({ teams, resetSimulation, lastCalculated 
                       className={`${rowColorClass} hover:bg-primary/10`}
                     >
                       <td className="font-medium text-center p-2 border-b">{index + 1}</td>
-                      <td className="p-2 border-b">
+                      <td className="p-2 border-b text-center">
                         {positionChange > 0 ? (
-                          <ArrowUp className="h-4 w-4 text-green-600" />
+                          <ArrowUp
+                            className={`h-4 w-4 text-green-600 mx-auto ${getPositionChangeAnimation(team.id)}`}
+                          />
                         ) : positionChange < 0 ? (
-                          <ArrowDown className="h-4 w-4 text-red-600" />
+                          <ArrowDown
+                            className={`h-4 w-4 text-red-600 mx-auto ${getPositionChangeAnimation(team.id)}`}
+                          />
                         ) : (
-                          <Minus className="h-4 w-4 text-gray-400" />
+                          <Minus className="h-4 w-4 text-gray-400 mx-auto" />
                         )}
                       </td>
                       <td className="font-medium p-2 border-b">
@@ -230,4 +289,3 @@ export default function StandingsTable({ teams, resetSimulation, lastCalculated 
     </div>
   )
 }
-
