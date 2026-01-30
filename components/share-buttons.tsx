@@ -18,7 +18,7 @@ export default function ShareButtons({
   teams,
   currentUrl,
   title = "Calculadora Granate - Predicción de clasificación",
-  description = "Mira mi predicción para la clasificación final de la Segunda RFEF Grupo 1",
+  description = "Mira mi predicción para la clasificación final de la Primera RFEF Grupo 1",
 }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false)
 

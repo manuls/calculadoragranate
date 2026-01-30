@@ -18,7 +18,7 @@ export default function SocialShare({ teams, generateImage }: SocialShareProps) 
   const [copied, setCopied] = useState(false)
 
   const generateShareText = () => {
-    let text = `Mi predicción para la clasificación final de Segunda RFEF Grupo 1:\n\n`
+    let text = `Mi predicción para la clasificación final de Primera RFEF Grupo 1:\n\n`
 
     // Añadir los primeros 5 equipos
     teams.slice(0, 5).forEach((team, index) => {

@@ -37,7 +37,7 @@ export default function LiveScores() {
           awayScore: 1,
           minute: 75,
           status: "in_progress",
-          competition: "Segunda RFEF",
+          competition: "Primera RFEF",
         },
         {
           id: "2",
@@ -47,7 +47,7 @@ export default function LiveScores() {
           awayScore: 0,
           minute: 32,
           status: "in_progress",
-          competition: "Segunda RFEF",
+          competition: "Primera RFEF",
         },
         {
           id: "3",
@@ -117,7 +117,7 @@ export default function LiveScores() {
         <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mb-4">
             <TabsTrigger value="all">Todos</TabsTrigger>
-            <TabsTrigger value="Segunda RFEF">Segunda RFEF</TabsTrigger>
+            <TabsTrigger value="Primera RFEF">Primera RFEF</TabsTrigger>
             <TabsTrigger value="La Liga">La Liga</TabsTrigger>
           </TabsList>
 

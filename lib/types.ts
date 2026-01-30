@@ -99,4 +99,15 @@ export interface MatchPrediction {
   predictedHomeGoals: number
   predictedAwayGoals: number
   confidence: number
+  factors: {
+    homeAdvantage: number
+    homeFormFactor: number
+    awayFormFactor: number
+    homeAttackStrength: number
+    homeDefenseStrength: number
+    awayAttackStrength: number
+    awayDefenseStrength: number
+    standingsFactor: number
+    headToHead?: string
+  }
 }

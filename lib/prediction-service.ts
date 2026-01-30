@@ -23,7 +23,7 @@ export interface MatchPrediction {
     awayAttackStrength: number
     awayDefenseStrength: number
     headToHead?: string
-    standingsFactor?: number
+    standingsFactor: number
   }
 }
 

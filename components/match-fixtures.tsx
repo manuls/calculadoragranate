@@ -132,10 +132,10 @@ export default function MatchFixtures({
           Bienvenido/a a la Calculadora Granate. Aquí puedes predecir todos los partidos hasta final de liga y ver la
           clasificación final. No es necesario que rellenes todos los resultados.
           <p className="mt-2 text-xs italic">
-            * La Calculadora Granate nació a partir de la jornada 27 de Segunda RFEF, por eso no se indican más
-            jornadas. Para ver todos los resultados, puedes consultar{" "}
+            * La Calculadora Granate para Primera RFEF Grupo 1 comienza desde la jornada 22. Para ver todos los
+            resultados, puedes consultar{" "}
             <a
-              href="https://www.flashscore.es/futbol/espana/segunda-rfef-grupo-1/"
+              href="https://www.flashscore.es/futbol/espana/primera-rfef-grupo-1/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:underline"

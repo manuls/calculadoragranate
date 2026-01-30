@@ -58,8 +58,7 @@ export default function StandingsTable({
   const getPositionColor = (position: number, index: number) => {
     if (position === 1) return "bg-green-100 dark:bg-green-900 dark:bg-opacity-50"
     if (position >= 2 && position <= 5) return "bg-blue-100 dark:bg-blue-900 dark:bg-opacity-50"
-    if (position === 13) return "bg-yellow-100 dark:bg-yellow-900 dark:bg-opacity-50"
-    if (position >= 14 && position <= 18) return "bg-red-100 dark:bg-red-900 dark:bg-opacity-50"
+    if (position >= 16 && position <= 20) return "bg-red-100 dark:bg-red-900 dark:bg-opacity-50"
     return index % 2 === 0 ? "bg-primary/5" : ""
   }
 
@@ -278,9 +277,6 @@ export default function StandingsTable({
         </p>
         <p className="inline-block px-2 py-1 bg-blue-100 dark:bg-blue-900 dark:bg-opacity-50 rounded text-xs sm:text-sm">
           Playoff de ascenso
-        </p>
-        <p className="inline-block px-2 py-1 bg-yellow-100 dark:bg-yellow-900 dark:bg-opacity-50 rounded text-xs sm:text-sm">
-          Play Out de descenso
         </p>
         <p className="inline-block px-2 py-1 bg-red-100 dark:bg-red-900 dark:bg-opacity-50 rounded text-xs sm:text-sm">
           Descenso

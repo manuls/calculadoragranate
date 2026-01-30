@@ -43,7 +43,7 @@ export interface MatchPredictionType {
     homeDefenseStrength: number
     awayAttackStrength: number
     awayDefenseStrength: number
-    standingsFactor: number // Añadir el nuevo factor
+    standingsFactor: number
     headToHead?: string
   }
 }

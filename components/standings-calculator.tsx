@@ -34,7 +34,7 @@ import { initialTeams, initialFixtures } from "@/lib/data"
 const STORAGE_KEY = "official_results_data"
 
 export default function StandingsCalculator() {
-  // Estado inicial con los equipos de la Segunda RFEF Grupo 1
+  // Estado inicial con los equipos de la Primera RFEF Grupo 1
   const [teams, setTeams] = useState<Team[]>(initialTeams)
 
   // Nuevo estado para mantener la clasificación inicial basada solo en resultados oficiales
@@ -133,7 +133,7 @@ export default function StandingsCalculator() {
     (data: any) => {
       if (!data || !data.matchdays || data.matchdays.length === 0) {
         console.log("No hay datos de resultados oficiales para aplicar")
-        return { updatedFixtures: [...initialFixtures], hasLockedMatches: false }
+        return { updatedFixtures: [...initialFixtures], updatedTempResults: {}, hasLockedMatches: false }
       }
 
       console.log("Aplicando resultados oficiales:", data)

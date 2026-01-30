@@ -228,7 +228,7 @@ export default function AdminPage() {
       try {
         // Obtener datos actuales de localStorage
         const localDataStr = localStorage.getItem(STORAGE_KEY)
-        let localData = { matchdays: [] }
+        let localData: { matchdays: MatchdayUpdate[] } = { matchdays: [] }
 
         if (localDataStr) {
           localData = JSON.parse(localDataStr)
@@ -284,10 +284,10 @@ export default function AdminPage() {
   }
 
   // Exportar datos a JSON
-  const exportData = () => {
+  const exportDataFn = () => {
     try {
       // Crear objeto con todos los resultados oficiales
-      const exportData = { matchdays: [] }
+      const exportData: { matchdays: MatchdayUpdate[] } = { matchdays: [] }
 
       // Agrupar por jornada
       const matchdayMap = new Map<number, any[]>()
@@ -424,7 +424,7 @@ export default function AdminPage() {
                 variant="outline"
                 size="sm"
                 className="bg-primary/20 hover:bg-primary/30 text-primary-foreground"
-                onClick={exportData}
+                onClick={exportDataFn}
               >
                 <Download className="h-4 w-4 mr-1" />
                 Exportar

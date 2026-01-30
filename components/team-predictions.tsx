@@ -21,7 +21,6 @@ export default function TeamPredictions({ teams, fixtures }: TeamPredictionsProp
     directPromotion: number
     playoffPromotion: number
     zonaTranquila: number
-    playoutRelegation: number
     relegation: number
     averagePosition: number
     maxPoints: number
@@ -81,28 +80,25 @@ export default function TeamPredictions({ teams, fixtures }: TeamPredictionsProp
     let directPromotionCount = 0
     let playoffPromotionCount = 0
     let zonaTranquilaCount = 0
-    let playoutRelegationCount = 0
     let relegationCount = 0
     let positionSum = 0
 
     for (let i = 0; i < simulations; i++) {
       const simulatedTable = simulateRemainingMatches()
-      const position = simulatedTable.findIndex((t) => t.id === teamId) + 1
+      const position = simulatedTable.findIndex((t: Team) => t.id === teamId) + 1
 
       positionSum += position
 
       if (position === 1) directPromotionCount++
       if (position >= 2 && position <= 5) playoffPromotionCount++
-      if (position >= 6 && position <= 12) zonaTranquilaCount++
-      if (position === 13) playoutRelegationCount++
-      if (position >= 14) relegationCount++
+      if (position >= 6 && position <= 15) zonaTranquilaCount++
+      if (position >= 16) relegationCount++
     }
 
     setPredictions({
       directPromotion: (directPromotionCount / simulations) * 100,
       playoffPromotion: ((directPromotionCount + playoffPromotionCount) / simulations) * 100,
       zonaTranquila: (zonaTranquilaCount / simulations) * 100,
-      playoutRelegation: (playoutRelegationCount / simulations) * 100,
       relegation: (relegationCount / simulations) * 100,
       averagePosition: positionSum / simulations,
       maxPoints: maxPossiblePoints,
@@ -269,21 +265,6 @@ export default function TeamPredictions({ teams, fixtures }: TeamPredictionsProp
                   value={predictions.zonaTranquila}
                   className="h-2 bg-gray-200"
                   indicatorClassName="bg-purple-500"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center">
-                    <AlertTriangle className="h-5 w-5 mr-2 text-yellow-500" />
-                    <span className="font-medium">Play out de descenso</span>
-                  </div>
-                  <span className="font-bold">{predictions.playoutRelegation.toFixed(1)}%</span>
-                </div>
-                <Progress
-                  value={predictions.playoutRelegation}
-                  className="h-2 bg-gray-200"
-                  indicatorClassName="bg-yellow-500"
                 />
               </div>
 
