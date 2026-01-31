@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import type { Team } from "@/lib/types"
 import { motion } from "framer-motion"
 import Image from "next/image"
-import { ArrowUp, ArrowDown, Minus, LayoutList, LayoutGrid } from "lucide-react"
+import { ArrowUp, ArrowDown, LayoutList, LayoutGrid } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useWindowSize } from "@/hooks/use-window-size"
 import EnhancedShareButtons from "./enhanced-share-buttons"
@@ -151,7 +151,7 @@ export default function StandingsTable({
                             className={`h-4 w-4 text-red-600 mx-auto ${getPositionChangeAnimation(team.id)}`}
                           />
                         ) : (
-                          <Minus className="h-4 w-4 text-gray-400 mx-auto" />
+                          <span className="text-yellow-500 font-bold text-sm">=</span>
                         )}
                       </td>
                       <td className="font-medium p-1 sm:p-2">
@@ -229,7 +229,7 @@ export default function StandingsTable({
                             className={`h-4 w-4 text-red-600 mx-auto ${getPositionChangeAnimation(team.id)}`}
                           />
                         ) : (
-                          <Minus className="h-4 w-4 text-gray-400 mx-auto" />
+                          <span className="text-yellow-500 font-bold text-sm">=</span>
                         )}
                       </td>
                       <td className="font-medium p-2 border-b">
