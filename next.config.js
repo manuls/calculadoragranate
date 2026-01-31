@@ -4,7 +4,16 @@ const withNextIntl = require("next-intl/plugin")("./i18n.js")
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['cdn.resfu.com', 'tmssl.akamaized.net', 'example.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.resfu.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'tmssl.akamaized.net',
+      },
+    ],
   },
   eslint: {
     ignoreDuringBuilds: true,

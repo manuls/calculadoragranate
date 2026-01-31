@@ -13,7 +13,7 @@ export const initialTeams: Team[] = [
     goalsFor: 40,
     goalsAgainst: 12,
     points: 50,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/648.png?lm=1578091884",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/648.png?lm=1578091884",
   },
   {
     id: 2,
@@ -25,7 +25,7 @@ export const initialTeams: Team[] = [
     goalsFor: 33,
     goalsAgainst: 27,
     points: 38,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/8733.png?lm=1406966406",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/8733.png?lm=1406966406",
   },
   {
     id: 3,
@@ -37,7 +37,7 @@ export const initialTeams: Team[] = [
     goalsFor: 27,
     goalsAgainst: 18,
     points: 35,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/5650.png?lm=1732278110",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/5650.png?lm=1732278110",
   },
   {
     id: 4,
@@ -49,7 +49,7 @@ export const initialTeams: Team[] = [
     goalsFor: 26,
     goalsAgainst: 26,
     points: 35,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/6688.png?lm=1695069038",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/6688.png?lm=1695069038",
   },
   {
     id: 5,
@@ -61,7 +61,7 @@ export const initialTeams: Team[] = [
     goalsFor: 26,
     goalsAgainst: 24,
     points: 33,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/1176.png?lm=1702049971",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/1176.png?lm=1702049971",
   },
   {
     id: 6,
@@ -73,7 +73,7 @@ export const initialTeams: Team[] = [
     goalsFor: 29,
     goalsAgainst: 31,
     points: 33,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/6767.png?lm=1729684474",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/6767.png?lm=1729684474",
   },
   {
     id: 7,
@@ -85,7 +85,7 @@ export const initialTeams: Team[] = [
     goalsFor: 21,
     goalsAgainst: 18,
     points: 32,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/11000.png?lm=1405933427",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/11000.png?lm=1405933427",
   },
   {
     id: 8,
@@ -97,7 +97,7 @@ export const initialTeams: Team[] = [
     goalsFor: 29,
     goalsAgainst: 25,
     points: 31,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/10907.png?lm=1422972812",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/10907.png?lm=1422972812",
   },
   {
     id: 9,
@@ -109,7 +109,7 @@ export const initialTeams: Team[] = [
     goalsFor: 30,
     goalsAgainst: 30,
     points: 30,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/20844.png?lm=1705039777",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/20844.png?lm=1705039777",
   },
   {
     id: 10,
@@ -121,7 +121,7 @@ export const initialTeams: Team[] = [
     goalsFor: 28,
     goalsAgainst: 24,
     points: 29,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/3708.png?lm=1422971751",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/3708.png?lm=1422971751",
   },
   {
     id: 11,
@@ -133,7 +133,7 @@ export const initialTeams: Team[] = [
     goalsFor: 29,
     goalsAgainst: 29,
     points: 29,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/46854.png?lm=1718102950",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/46854.png?lm=1718102950",
   },
   {
     id: 12,
@@ -145,7 +145,7 @@ export const initialTeams: Team[] = [
     goalsFor: 29,
     goalsAgainst: 28,
     points: 27,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/52397.png?lm=1468618498",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/52397.png?lm=1468618498",
   },
   {
     id: 13,
@@ -157,7 +157,7 @@ export const initialTeams: Team[] = [
     goalsFor: 26,
     goalsAgainst: 31,
     points: 27,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/16122.png?lm=1706197149",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/16122.png?lm=1706197149",
   },
   {
     id: 14,
@@ -169,7 +169,7 @@ export const initialTeams: Team[] = [
     goalsFor: 23,
     goalsAgainst: 22,
     points: 26,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/4032.png?lm=1625561266",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/4032.png?lm=1625561266",
   },
   {
     id: 15,
@@ -181,7 +181,7 @@ export const initialTeams: Team[] = [
     goalsFor: 24,
     goalsAgainst: 26,
     points: 25,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/55398.png?lm=1472936726",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/55398.png?lm=1472936726",
   },
   {
     id: 16,
@@ -193,7 +193,7 @@ export const initialTeams: Team[] = [
     goalsFor: 22,
     goalsAgainst: 28,
     points: 22,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/47421.png?lm=1468166961",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/47421.png?lm=1468166961",
   },
   {
     id: 17,
@@ -205,7 +205,7 @@ export const initialTeams: Team[] = [
     goalsFor: 19,
     goalsAgainst: 28,
     points: 22,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/11602.png?lm=1637151598",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/11602.png?lm=1637151598",
   },
   {
     id: 18,
@@ -217,7 +217,7 @@ export const initialTeams: Team[] = [
     goalsFor: 16,
     goalsAgainst: 25,
     points: 21,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/58946.png?lm=1688843561",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/58946.png?lm=1688843561",
   },
   {
     id: 19,
@@ -229,7 +229,7 @@ export const initialTeams: Team[] = [
     goalsFor: 15,
     goalsAgainst: 27,
     points: 19,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/8516.png?lm=1686070938",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/8516.png?lm=1686070938",
   },
   {
     id: 20,
@@ -241,7 +241,7 @@ export const initialTeams: Team[] = [
     goalsFor: 20,
     goalsAgainst: 33,
     points: 18,
-    logoUrl: "https://tmssl.akamaized.net//images/wappen/medium/16576.png?lm=1754924420",
+    logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/16576.png?lm=1754924420",
   },
 ]
 
