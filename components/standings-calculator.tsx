@@ -199,40 +199,37 @@ export default function StandingsCalculator() {
     [initialFixtures],
   )
 
-  // Función para calcular la clasificación inicial
+  // Función para calcular la clasificación con resultados oficiales
+  // NOTA: initialStandings NO se actualiza aquí - siempre mantiene la clasificación
+  // de la jornada anterior (initialTeams) para poder mostrar los cambios de posición
   const calculateInitialStandings = useCallback(() => {
-    console.log("Calculando clasificación inicial con fixtures actualizados")
+    console.log("Calculando clasificación con resultados oficiales")
 
     // Verificar cuántos partidos tienen resultados
     const matchesWithResults = fixtures.filter((m) => m.result && m.locked).length
-    console.log(`Hay ${matchesWithResults} partidos con resultados oficiales para calcular la clasificación inicial`)
+    console.log(`Hay ${matchesWithResults} partidos con resultados oficiales`)
 
     if (matchesWithResults === 0) {
-      console.log("No hay partidos con resultados oficiales, no se calcula la clasificación inicial")
+      console.log("No hay partidos con resultados oficiales")
       return
     }
 
     // Filtrar solo los partidos con resultados oficiales (bloqueados)
     const officialFixtures = fixtures.filter((m) => m.result && m.locked)
 
-    // Calcular la clasificación con solo los partidos oficiales
-    const calculatedInitialTeams = calculateStandings(officialFixtures)
+    // Calcular la clasificación con los partidos oficiales
+    const calculatedTeams = calculateStandings(officialFixtures)
 
     console.log(
-      "Clasificación inicial calculada:",
-      calculatedInitialTeams.map((t) => `${t.name}: ${t.points} pts`).join(", "),
+      "Clasificación con resultados oficiales:",
+      calculatedTeams.map((t) => `${t.name}: ${t.points} pts`).join(", "),
     )
 
-    // Guardar la clasificación inicial
-    setInitialStandings(calculatedInitialTeams)
-
-    // Si no hay clasificación actual, también establecerla
-    if (teams.every((t) => t.played === initialTeams.find((it) => it.id === t.id)?.played)) {
-      console.log("Estableciendo clasificación actual igual a la inicial")
-      setTeams(calculatedInitialTeams)
-      setLastCalculated(new Date())
-    }
-  }, [fixtures, calculateStandings, teams, initialTeams])
+    // Actualizar la clasificación actual (teams) con los resultados oficiales
+    // pero NO actualizar initialStandings - esa se mantiene como referencia
+    setTeams(calculatedTeams)
+    setLastCalculated(new Date())
+  }, [fixtures, calculateStandings])
 
   // Cargar resultados oficiales al iniciar
   useEffect(() => {
