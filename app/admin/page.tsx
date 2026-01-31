@@ -21,7 +21,7 @@ const STORAGE_KEY = "official_results_data"
 export default function AdminPage() {
   const [teams, setTeams] = useState<Team[]>(initialTeams)
   const [fixtures, setFixtures] = useState<Match[]>(initialFixtures)
-  const [activeMatchday, setActiveMatchday] = useState("27")
+  const [activeMatchday, setActiveMatchday] = useState("22")
   const [isSaving, setIsSaving] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
