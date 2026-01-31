@@ -37,8 +37,17 @@ export default function StandingsCalculator() {
   // Estado inicial con los equipos de la Primera RFEF Grupo 1
   const [teams, setTeams] = useState<Team[]>(initialTeams)
 
-  // Nuevo estado para mantener la clasificación inicial basada solo en resultados oficiales
-  const [initialStandings, setInitialStandings] = useState<Team[]>([])
+  // Clasificación base (ordenada por puntos) para comparar cambios de posición
+  const [initialStandings, setInitialStandings] = useState<Team[]>(() => {
+    // Ordenar initialTeams por puntos, diferencia de goles, y goles a favor
+    return [...initialTeams].sort((a, b) => {
+      if (b.points !== a.points) return b.points - a.points
+      const diffA = a.goalsFor - a.goalsAgainst
+      const diffB = b.goalsFor - b.goalsAgainst
+      if (diffB !== diffA) return diffB - diffA
+      return b.goalsFor - a.goalsFor
+    })
+  })
 
   // Actualizar la definición de fixtures para usar initialFixtures
   const [fixtures, setFixtures] = useState<Match[]>(initialFixtures)
