@@ -1,38 +1,46 @@
 import { NextResponse } from "next/server"
 import type { MatchdayUpdate } from "@/lib/types"
-import { Redis } from "@upstash/redis"
+import { createClient } from "redis"
 
 // Clave para almacenar los datos en Redis
 const REDIS_KEY = "official_results_data"
 
-// Crear cliente de Redis (usa las variables de entorno de Vercel automáticamente)
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || "",
-  token: process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || "",
-})
+// Crear y conectar cliente de Redis
+async function getRedisClient() {
+  const client = createClient({ url: process.env.REDIS_URL })
+  client.on("error", (err) => console.error("Redis Client Error", err))
+  await client.connect()
+  return client
+}
 
 // Función para leer los datos de Redis
 async function readData() {
+  const client = await getRedisClient()
   try {
-    const data = await redis.get(REDIS_KEY)
+    const data = await client.get(REDIS_KEY)
     if (data) {
-      return data as { matchdays: MatchdayUpdate[] }
+      return JSON.parse(data) as { matchdays: MatchdayUpdate[] }
     }
     return { matchdays: [] }
   } catch (error) {
     console.error("Error al leer de Redis:", error)
     return { matchdays: [] }
+  } finally {
+    await client.disconnect()
   }
 }
 
 // Función para escribir los datos en Redis
 async function writeData(data: { matchdays: MatchdayUpdate[] }) {
+  const client = await getRedisClient()
   try {
-    await redis.set(REDIS_KEY, data)
+    await client.set(REDIS_KEY, JSON.stringify(data))
     return true
   } catch (error) {
     console.error("Error al escribir en Redis:", error)
     return false
+  } finally {
+    await client.disconnect()
   }
 }
 
