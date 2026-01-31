@@ -1,38 +1,37 @@
 import { NextResponse } from "next/server"
 import type { MatchdayUpdate } from "@/lib/types"
-import { promises as fs } from "fs"
-import path from "path"
+import { Redis } from "@upstash/redis"
 
-// Ruta al archivo JSON donde almacenaremos los datos
-const dataFilePath = path.join(process.cwd(), "data", "official-results-data.json")
+// Clave para almacenar los datos en Redis
+const REDIS_KEY = "official_results_data"
 
-// Función para leer los datos del archivo
-async function readDataFile() {
+// Crear cliente de Redis (usa las variables de entorno de Vercel automáticamente)
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || "",
+  token: process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || "",
+})
+
+// Función para leer los datos de Redis
+async function readData() {
   try {
-    const data = await fs.readFile(dataFilePath, "utf8")
-    return JSON.parse(data)
-  } catch (error) {
-    // Si el archivo no existe o hay un error al leerlo, intentar leer el archivo de respaldo
-    try {
-      const backupPath = path.join(process.cwd(), "data", "official-results.json")
-      const backupData = await fs.readFile(backupPath, "utf8")
-      return JSON.parse(backupData)
-    } catch (backupError) {
-      console.error("Error al leer el archivo de datos y el respaldo:", backupError)
-      return { matchdays: [] }
+    const data = await redis.get(REDIS_KEY)
+    if (data) {
+      return data as { matchdays: MatchdayUpdate[] }
     }
+    return { matchdays: [] }
+  } catch (error) {
+    console.error("Error al leer de Redis:", error)
+    return { matchdays: [] }
   }
 }
 
-// Función para escribir los datos en el archivo
-async function writeDataFile(data: any) {
+// Función para escribir los datos en Redis
+async function writeData(data: { matchdays: MatchdayUpdate[] }) {
   try {
-    // Asegurarse de que el directorio existe
-    await fs.mkdir(path.dirname(dataFilePath), { recursive: true })
-    await fs.writeFile(dataFilePath, JSON.stringify(data, null, 2), "utf8")
+    await redis.set(REDIS_KEY, data)
     return true
   } catch (error) {
-    console.error("Error al escribir en el archivo de datos:", error)
+    console.error("Error al escribir en Redis:", error)
     return false
   }
 }
@@ -40,10 +39,8 @@ async function writeDataFile(data: any) {
 // GET: Obtener resultados oficiales
 export async function GET() {
   try {
-    // Leer los datos del archivo
-    const data = await readDataFile()
-
-    console.log("API GET: Datos leídos del archivo:", data)
+    const data = await readData()
+    console.log("API GET: Datos leídos de Redis:", data)
 
     return NextResponse.json({
       success: true,
@@ -66,10 +63,10 @@ export async function POST(request: Request) {
     }
 
     // Leer los datos actuales
-    const data = await readDataFile()
+    const data = await readData()
 
     // Buscar si ya existe esta jornada
-    const matchdayIndex = data.matchdays.findIndex((m: any) => m.matchday === body.matchday)
+    const matchdayIndex = data.matchdays.findIndex((m: MatchdayUpdate) => m.matchday === body.matchday)
 
     if (matchdayIndex >= 0) {
       // Actualizar la jornada existente
@@ -79,17 +76,18 @@ export async function POST(request: Request) {
       data.matchdays.push(body)
     }
 
-    // Guardar los datos actualizados en el archivo
-    const writeSuccess = await writeDataFile(data)
+    // Guardar los datos actualizados en Redis
+    const writeSuccess = await writeData(data)
 
     if (!writeSuccess) {
-      throw new Error("No se pudo escribir en el archivo de datos")
+      throw new Error("No se pudo escribir en Redis")
     }
 
-    // Devolver los datos actualizados junto con la confirmación de éxito
+    console.log("API POST: Datos guardados en Redis:", data)
+
     return NextResponse.json({
       success: true,
-      data: data, // Devolver los datos actualizados
+      data: data,
     })
   } catch (error) {
     console.error("Error al procesar la solicitud:", error)
