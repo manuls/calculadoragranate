@@ -1,7 +1,7 @@
 import type { Team, Match } from "./types"
 
 // Datos iniciales de equipos - Primera RFEF Grupo 1 (Temporada 2025-26)
-// Clasificación actualizada a Jornada 21
+// Clasificación actualizada a Jornada 21 (datos de BDFutbol)
 export const initialTeams: Team[] = [
   {
     id: 1,
@@ -42,13 +42,13 @@ export const initialTeams: Team[] = [
   {
     id: 4,
     name: "Bilbao Athletic",
-    played: 22,
+    played: 21,
     won: 10,
-    drawn: 5,
+    drawn: 4,
     lost: 7,
-    goalsFor: 26,
-    goalsAgainst: 26,
-    points: 35,
+    goalsFor: 25,
+    goalsAgainst: 25,
+    points: 34,
     logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/6688.png?lm=1695069038",
   },
   {
@@ -66,13 +66,13 @@ export const initialTeams: Team[] = [
   {
     id: 6,
     name: "Real Madrid Castilla",
-    played: 22,
+    played: 21,
     won: 10,
-    drawn: 3,
+    drawn: 2,
     lost: 9,
-    goalsFor: 29,
-    goalsAgainst: 31,
-    points: 33,
+    goalsFor: 28,
+    goalsAgainst: 30,
+    points: 32,
     logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/6767.png?lm=1729684474",
   },
   {
@@ -210,25 +210,25 @@ export const initialTeams: Team[] = [
   {
     id: 18,
     name: "CD Arenteiro",
-    played: 22,
+    played: 21,
     won: 5,
-    drawn: 6,
+    drawn: 5,
     lost: 11,
-    goalsFor: 16,
-    goalsAgainst: 25,
-    points: 21,
+    goalsFor: 15,
+    goalsAgainst: 24,
+    points: 20,
     logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/58946.png?lm=1688843561",
   },
   {
     id: 19,
     name: "CA Osasuna Promesas",
-    played: 22,
+    played: 21,
     won: 4,
-    drawn: 7,
+    drawn: 6,
     lost: 11,
-    goalsFor: 15,
-    goalsAgainst: 27,
-    points: 19,
+    goalsFor: 14,
+    goalsAgainst: 26,
+    points: 18,
     logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/8516.png?lm=1686070938",
   },
   {
