@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -25,8 +25,8 @@ export default function MatchFixtures({
   updateTempResult,
   className,
 }: MatchFixturesProps) {
-  // Jornada actual por defecto
-  const [activeTab, setActiveTab] = useState("23")
+  const [activeTab, setActiveTab] = useState("")
+  const lockedDataProcessed = useRef(false)
   const [showTopTeamsOnly, setShowTopTeamsOnly] = useState(false)
   const [highlightedTeamId, setHighlightedTeamId] = useState<number | null>(null)
 
@@ -74,10 +74,32 @@ export default function MatchFixtures({
     {} as Record<string, Match[]>,
   )
 
-  // Detectar automáticamente la primera jornada disponible
+  // Detectar automáticamente la primera jornada no bloqueada
   useEffect(() => {
-    if (Object.keys(matchdayGroups).length > 0 && !matchdayGroups[activeTab]) {
-      setActiveTab(Object.keys(matchdayGroups)[0])
+    const keys = Object.keys(matchdayGroups)
+    if (keys.length === 0) return
+
+    const sorted = keys.sort((a, b) => Number(a) - Number(b))
+    const hasLocked = sorted.some(md => matchdayGroups[md].some(m => m.locked))
+
+    // Primera carga: tab vacío, poner la primera jornada disponible
+    if (!activeTab) {
+      const firstPlayable = sorted.find(md => matchdayGroups[md].some(m => !m.locked))
+      setActiveTab(firstPlayable || sorted[0])
+      return
+    }
+
+    // Cuando llegan los datos oficiales (locked), re-evaluar una vez
+    if (hasLocked && !lockedDataProcessed.current) {
+      lockedDataProcessed.current = true
+      const firstPlayable = sorted.find(md => matchdayGroups[md].some(m => !m.locked))
+      if (firstPlayable) setActiveTab(firstPlayable)
+      return
+    }
+
+    // Si el tab actual ya no existe (ej. filtro activado)
+    if (!matchdayGroups[activeTab]) {
+      setActiveTab(sorted[0])
     }
   }, [matchdayGroups, activeTab])
 
