@@ -26,7 +26,7 @@ export default function MatchFixtures({
   className,
 }: MatchFixturesProps) {
   // Jornada actual por defecto
-  const [activeTab, setActiveTab] = useState("22")
+  const [activeTab, setActiveTab] = useState("23")
   const [showTopTeamsOnly, setShowTopTeamsOnly] = useState(false)
   const [highlightedTeamId, setHighlightedTeamId] = useState<number | null>(null)
 
