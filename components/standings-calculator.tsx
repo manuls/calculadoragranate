@@ -297,13 +297,32 @@ export default function StandingsCalculator() {
     const match = fixtures.find((m) => m.id === matchId)
     if (match && match.locked) return
 
-    setTempResults((prev) => ({
-      ...prev,
+    const newTempResults = {
+      ...tempResults,
       [matchId]: {
-        ...prev[matchId],
+        ...tempResults[matchId],
         [team]: value,
       },
-    }))
+    }
+
+    setTempResults(newTempResults)
+
+    // Recalcular clasificación automáticamente
+    const updatedFixtures = fixtures.map((m) => {
+      if (m.locked) return m
+      const r = newTempResults[m.id]
+      if (r && r.home !== '' && r.away !== '') {
+        const homeGoals = Number.parseInt(r.home)
+        const awayGoals = Number.parseInt(r.away)
+        if (!isNaN(homeGoals) && !isNaN(awayGoals) && homeGoals >= 0 && awayGoals >= 0) {
+          return { ...m, result: { homeGoals, awayGoals } }
+        }
+      }
+      return { ...m, result: null }
+    })
+
+    const calculatedTeams = calculateStandings(updatedFixtures)
+    setTeams(calculatedTeams)
   }
 
   // Función para actualizar los resultados temporales desde las predicciones
