@@ -57,6 +57,7 @@ export default function StandingsCalculator() {
   const [lastCalculated, setLastCalculated] = useState<Date | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const hasInitializedRef = useRef(false)
 
   // Estado para los resultados temporales
   const [tempResults, setTempResults] = useState<Record<number, { home: string; away: string }>>({})
@@ -225,8 +226,9 @@ export default function StandingsCalculator() {
       calculatedTeams.map((t) => `${t.name}: ${t.points} pts`).join(", "),
     )
 
-    // Actualizar la clasificación actual (teams) con los resultados oficiales
-    // pero NO actualizar initialStandings - esa se mantiene como referencia
+    // Actualizar initialStandings con la clasificación oficial (tras resultados oficiales)
+    // para que las flechas comparen contra la jornada oficial, no la base
+    setInitialStandings(calculatedTeams)
     setTeams(calculatedTeams)
     setLastCalculated(new Date())
   }, [fixtures, calculateStandings])
@@ -275,14 +277,16 @@ export default function StandingsCalculator() {
     loadOfficialResults()
   }, [applyOfficialResults])
 
-  // Efecto para calcular la clasificación inicial cuando los fixtures se han actualizado
+  // Efecto para calcular la clasificación inicial solo una vez tras la carga
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && !hasInitializedRef.current) {
+      hasInitializedRef.current = true
+
       // Verificar si hay partidos bloqueados
       const hasLockedMatches = fixtures.some((match) => match.locked && match.result)
 
       if (hasLockedMatches) {
-        console.log("Fixtures actualizados y hay partidos bloqueados, calculando clasificación inicial...")
+        console.log("Carga inicial completada, calculando clasificación con resultados oficiales...")
         calculateInitialStandings()
       }
 
