@@ -3,7 +3,6 @@ import type { Match, Team } from "./types"
 type MiniTableStats = {
   points: number
   goalDifference: number
-  goalsFor: number
 }
 
 function getGoalDifference(team: Team) {
@@ -33,7 +32,6 @@ function getMiniTableStats(teams: Team[], seasonMatches: Match[]) {
       {
         points: 0,
         goalDifference: 0,
-        goalsFor: 0,
       },
     ]),
   )
@@ -45,8 +43,6 @@ function getMiniTableStats(teams: Team[], seasonMatches: Match[]) {
     const awayStats = stats.get(match.awayTeamId)
     if (!homeStats || !awayStats) return
 
-    homeStats.goalsFor += match.result.homeGoals
-    awayStats.goalsFor += match.result.awayGoals
     homeStats.goalDifference += match.result.homeGoals - match.result.awayGoals
     awayStats.goalDifference += match.result.awayGoals - match.result.homeGoals
 
@@ -66,10 +62,9 @@ function getMiniTableStats(teams: Team[], seasonMatches: Match[]) {
   }
 }
 
-function sortTieGroup(teams: Team[], seasonMatches: Match[]) {
-  if (teams.length <= 1) return teams
-
+function sortTwoTeamTie(teams: Team[], seasonMatches: Match[]) {
   const { allMutualMatchesCompleted, stats } = getMiniTableStats(teams, seasonMatches)
+
   if (!allMutualMatchesCompleted) {
     return [...teams].sort(compareOverall)
   }
@@ -79,12 +74,55 @@ function sortTieGroup(teams: Team[], seasonMatches: Match[]) {
     const bStats = stats.get(b.id)
 
     return (
-      (bStats?.points ?? 0) - (aStats?.points ?? 0) ||
       (bStats?.goalDifference ?? 0) - (aStats?.goalDifference ?? 0) ||
-      (bStats?.goalsFor ?? 0) - (aStats?.goalsFor ?? 0) ||
       compareOverall(a, b)
     )
   })
+}
+
+function sortMultiTeamTie(teams: Team[], seasonMatches: Match[]) {
+  const { allMutualMatchesCompleted, stats } = getMiniTableStats(teams, seasonMatches)
+
+  if (!allMutualMatchesCompleted) {
+    return [...teams].sort(compareOverall)
+  }
+
+  const byMiniPoints = new Map<number, Team[]>()
+
+  teams.forEach((team) => {
+    const miniPoints = stats.get(team.id)?.points ?? 0
+    const tiedTeams = byMiniPoints.get(miniPoints) ?? []
+    tiedTeams.push(team)
+    byMiniPoints.set(miniPoints, tiedTeams)
+  })
+
+  return [...byMiniPoints.entries()]
+    .sort((a, b) => b[0] - a[0])
+    .flatMap(([, tiedTeams]) => {
+      if (tiedTeams.length === 1) {
+        return tiedTeams
+      }
+
+      return [...tiedTeams].sort((a, b) => {
+        const aStats = stats.get(a.id)
+        const bStats = stats.get(b.id)
+
+        return (
+          (bStats?.goalDifference ?? 0) - (aStats?.goalDifference ?? 0) ||
+          compareOverall(a, b)
+        )
+      })
+    })
+}
+
+function sortTieGroup(teams: Team[], seasonMatches: Match[]) {
+  if (teams.length <= 1) return teams
+
+  if (teams.length === 2) {
+    return sortTwoTeamTie(teams, seasonMatches)
+  }
+
+  return sortMultiTeamTie(teams, seasonMatches)
 }
 
 export function sortTeamsByRules(teams: Team[], seasonMatches: Match[]) {

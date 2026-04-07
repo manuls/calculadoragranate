@@ -29,7 +29,7 @@ const TeamPredictions = dynamic(() => import("./team-predictions"), {
 
 // Asegurarnos de que el componente principal use los mismos datos
 import { initialTeams, initialFixtures, playedMatches } from "@/lib/data"
-import { calculateStandings } from "@/lib/standings"
+import { calculateStandings, sortTeamsByRules } from "@/lib/standings"
 
 export default function StandingsCalculator() {
   // Estado inicial con los equipos de la Primera RFEF Grupo 1
@@ -37,14 +37,7 @@ export default function StandingsCalculator() {
 
   // Clasificación base (ordenada por puntos) para comparar cambios de posición
   const [initialStandings, setInitialStandings] = useState<Team[]>(() => {
-    // Ordenar initialTeams por puntos, diferencia de goles, y goles a favor
-    return [...initialTeams].sort((a, b) => {
-      if (b.points !== a.points) return b.points - a.points
-      const diffA = a.goalsFor - a.goalsAgainst
-      const diffB = b.goalsFor - b.goalsAgainst
-      if (diffB !== diffA) return diffB - diffA
-      return b.goalsFor - a.goalsFor
-    })
+    return sortTeamsByRules(initialTeams, playedMatches)
   })
 
   // Actualizar la definición de fixtures para usar initialFixtures

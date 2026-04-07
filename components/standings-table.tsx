@@ -267,6 +267,10 @@ export default function StandingsTable({
       <div className="text-sm text-muted-foreground">
         <p>PJ: Partidos jugados, G: Ganados, E: Empatados, P: Perdidos</p>
         <p>GF: Goles a favor, GC: Goles en contra, DG: Diferencia de goles, Pts: Puntos</p>
+        <p className="mt-2">
+          Los desempates siguen el criterio de la RFEF para Primera Federación, incluyendo mini-clasificación entre
+          equipos empatados. No se aplica el criterio de juego limpio por no disponer de esos datos en la app.
+        </p>
       </div>
       <div className="text-sm mt-4 flex flex-wrap gap-2">
         <p className="inline-block px-2 py-1 bg-green-100 dark:bg-green-900 dark:bg-opacity-50 rounded text-xs sm:text-sm">
