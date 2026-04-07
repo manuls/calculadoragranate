@@ -32,7 +32,7 @@ import { initialTeams, initialFixtures, playedMatches } from "@/lib/data"
 import { calculateStandings, sortTeamsByRules } from "@/lib/standings"
 
 export default function StandingsCalculator() {
-  const baseStandings = sortTeamsByRules(initialTeams, playedMatches)
+  const baseStandings = sortTeamsByRules(initialTeams, [...playedMatches, ...initialFixtures])
 
   // Estado inicial con los equipos de la Primera RFEF Grupo 1
   const [teams, setTeams] = useState<Team[]>(baseStandings)

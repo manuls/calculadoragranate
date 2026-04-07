@@ -248,7 +248,7 @@ export const initialTeams: Team[] = [
     "goalsFor": 23,
     "goalsAgainst": 37,
     "points": 30,
-    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/58946.png?lm=1688843561",
+    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/8516.png?lm=1686070938",
     "initialPosition": 19
   },
   {
@@ -261,7 +261,7 @@ export const initialTeams: Team[] = [
     "goalsFor": 28,
     "goalsAgainst": 42,
     "points": 26,
-    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/8516.png?lm=1686070938",
+    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/58946.png?lm=1688843561",
     "initialPosition": 20
   }
 ]
