@@ -189,18 +189,18 @@ export default function TeamPredictions({ teams, fixtures }: TeamPredictionsProp
 
   return (
     <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="flex items-center">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center text-lg sm:text-xl">
           <BarChart2 className="mr-2 h-5 w-5" />
           <span className="sm:inline">Objetivos del Equipo</span>
           <span className="inline sm:hidden">Objetivos</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-5 sm:space-y-6">
         <div className="space-y-2">
           <label className="text-sm font-medium">Selecciona un equipo</label>
           <Select value={selectedTeamId} onValueChange={handleTeamChange}>
-            <SelectTrigger>
+            <SelectTrigger className="h-11">
               <SelectValue placeholder="Selecciona un equipo" />
             </SelectTrigger>
             <SelectContent>
@@ -220,14 +220,14 @@ export default function TeamPredictions({ teams, fixtures }: TeamPredictionsProp
             transition={{ duration: 0.5 }}
             className="space-y-6"
           >
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center">
+                <div className="flex justify-between items-center gap-3">
+                  <div className="flex items-center min-w-0">
                     <Trophy className="h-5 w-5 mr-2 text-green-500" />
-                    <span className="font-medium">Ascenso directo</span>
+                    <span className="font-medium text-sm sm:text-base">Ascenso directo</span>
                   </div>
-                  <span className="font-bold">{predictions.directPromotion.toFixed(1)}%</span>
+                  <span className="font-bold text-sm sm:text-base">{predictions.directPromotion.toFixed(1)}%</span>
                 </div>
                 <Progress
                   value={predictions.directPromotion}
@@ -237,12 +237,12 @@ export default function TeamPredictions({ teams, fixtures }: TeamPredictionsProp
               </div>
 
               <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center">
+                <div className="flex justify-between items-center gap-3">
+                  <div className="flex items-center min-w-0">
                     <TrendingUp className="h-5 w-5 mr-2 text-blue-500" />
-                    <span className="font-medium">Playoff de ascenso</span>
+                    <span className="font-medium text-sm sm:text-base">Playoff de ascenso</span>
                   </div>
-                  <span className="font-bold">{predictions.playoffPromotion.toFixed(1)}%</span>
+                  <span className="font-bold text-sm sm:text-base">{predictions.playoffPromotion.toFixed(1)}%</span>
                 </div>
                 <Progress
                   value={predictions.playoffPromotion}
@@ -252,12 +252,12 @@ export default function TeamPredictions({ teams, fixtures }: TeamPredictionsProp
               </div>
 
               <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center">
+                <div className="flex justify-between items-center gap-3">
+                  <div className="flex items-center min-w-0">
                     <Shield className="h-5 w-5 mr-2 text-purple-500" />
-                    <span className="font-medium">Zona tranquila</span>
+                    <span className="font-medium text-sm sm:text-base">Zona tranquila</span>
                   </div>
-                  <span className="font-bold">{predictions.zonaTranquila.toFixed(1)}%</span>
+                  <span className="font-bold text-sm sm:text-base">{predictions.zonaTranquila.toFixed(1)}%</span>
                 </div>
                 <Progress
                   value={predictions.zonaTranquila}
@@ -267,29 +267,29 @@ export default function TeamPredictions({ teams, fixtures }: TeamPredictionsProp
               </div>
 
               <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center">
+                <div className="flex justify-between items-center gap-3">
+                  <div className="flex items-center min-w-0">
                     <TrendingDown className="h-5 w-5 mr-2 text-red-500" />
-                    <span className="font-medium">Descenso</span>
+                    <span className="font-medium text-sm sm:text-base">Descenso</span>
                   </div>
-                  <span className="font-bold">{predictions.relegation.toFixed(1)}%</span>
+                  <span className="font-bold text-sm sm:text-base">{predictions.relegation.toFixed(1)}%</span>
                 </div>
                 <Progress value={predictions.relegation} className="h-2 bg-gray-200" indicatorClassName="bg-red-500" />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
-              <div className="bg-muted/30 p-4 rounded-md">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-4 border-t">
+              <div className="bg-muted/30 p-3 sm:p-4 rounded-md">
                 <div className="text-sm text-muted-foreground">Posición media</div>
-                <div className="text-2xl font-bold">{predictions.averagePosition.toFixed(1)}</div>
+                <div className="text-xl sm:text-2xl font-bold">{predictions.averagePosition.toFixed(1)}</div>
               </div>
-              <div className="bg-muted/30 p-4 rounded-md">
+              <div className="bg-muted/30 p-3 sm:p-4 rounded-md">
                 <div className="text-sm text-muted-foreground">Puntos mínimos</div>
-                <div className="text-2xl font-bold">{predictions.minPoints}</div>
+                <div className="text-xl sm:text-2xl font-bold">{predictions.minPoints}</div>
               </div>
-              <div className="bg-muted/30 p-4 rounded-md">
+              <div className="bg-muted/30 p-3 sm:p-4 rounded-md">
                 <div className="text-sm text-muted-foreground">Puntos máximos</div>
-                <div className="text-2xl font-bold">{predictions.maxPoints}</div>
+                <div className="text-xl sm:text-2xl font-bold">{predictions.maxPoints}</div>
               </div>
             </div>
 

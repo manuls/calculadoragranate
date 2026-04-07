@@ -134,9 +134,9 @@ export default function MatchFixtures({
 
   return (
     <div className={cn("space-y-4", className)}>
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-        <h2 className="text-xl font-semibold text-primary">Partidos Pendientes y Aplazados</h2>
-        <div className="flex items-center space-x-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
+        <h2 className="text-lg sm:text-xl font-semibold text-primary">Partidos Pendientes y Aplazados</h2>
+        <div className="flex items-start space-x-2 rounded-lg border p-3 sm:border-0 sm:p-0">
           <Checkbox
             id="show-top-teams"
             checked={showTopTeamsOnly}
@@ -151,7 +151,7 @@ export default function MatchFixtures({
         </div>
       </div>
 
-      <Alert className="py-2">
+      <Alert className="py-2 sm:py-3">
         <AlertDescription className="text-sm">
           La calculadora parte de la clasificación oficial tras la jornada 31. Puedes simular el aplazado
           Arenas Club - Pontevedra CF y todo el calendario desde la jornada 32 hasta el final.
@@ -172,7 +172,7 @@ export default function MatchFixtures({
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="overflow-x-auto pb-2 -mx-2 px-2">
-          <TabsList className="inline-flex whitespace-nowrap">
+          <TabsList className="inline-flex whitespace-nowrap mobile-nav-tabs">
             {sortedMatchdays.map((matchday) => {
               const hasResults = hasMatchdayResults(matchday)
               const hasLocked = hasLockedMatches(matchday)
@@ -220,10 +220,10 @@ export default function MatchFixtures({
                       transition-all duration-200
                     `}
                   >
-                    <CardContent className="p-2 sm:p-4">
-                      <div className="flex flex-col sm:flex-row items-center justify-between">
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="mobile-fixture-card flex flex-col items-stretch justify-between gap-2 sm:flex-row sm:items-center">
                         <div
-                          className="text-center sm:text-right sm:pr-2 truncate mb-1 sm:mb-0 sm:flex-1 cursor-pointer w-full sm:w-auto"
+                          className="text-left sm:text-right sm:pr-2 truncate sm:flex-1 cursor-pointer w-full sm:w-auto"
                           onMouseEnter={() => handleTeamHover(match.homeTeamId)}
                           onMouseLeave={handleTeamLeave}
                         >
@@ -237,11 +237,11 @@ export default function MatchFixtures({
                             <span className="sm:hidden">{getTeamName(match.homeTeamId, true)}</span>
                           </span>
                         </div>
-                        <div className="flex items-center space-x-2 mx-2 relative">
+                        <div className="flex items-center justify-center space-x-2 sm:mx-2 relative">
                           <Input
                             type="number"
                             min="0"
-                            className={`w-10 sm:w-12 text-center no-spinner h-8 sm:h-10 px-1 sm:px-2 ${
+                            className={`w-12 sm:w-12 text-center no-spinner h-10 sm:h-10 px-1 sm:px-2 text-base ${
                               match.locked
                                 ? "bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700"
                                 : "bg-background dark:bg-secondary"
@@ -256,7 +256,7 @@ export default function MatchFixtures({
                           <Input
                             type="number"
                             min="0"
-                            className={`w-10 sm:w-12 text-center no-spinner h-8 sm:h-10 px-1 sm:px-2 ${
+                            className={`w-12 sm:w-12 text-center no-spinner h-10 sm:h-10 px-1 sm:px-2 text-base ${
                               match.locked
                                 ? "bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700"
                                 : "bg-background dark:bg-secondary"
@@ -269,7 +269,7 @@ export default function MatchFixtures({
                           />
                         </div>
                         <div
-                          className="text-center sm:text-left sm:pl-2 truncate mt-1 sm:mt-0 sm:flex-1 cursor-pointer w-full sm:w-auto"
+                          className="text-left sm:text-left sm:pl-2 truncate sm:flex-1 cursor-pointer w-full sm:w-auto"
                           onMouseEnter={() => handleTeamHover(match.awayTeamId)}
                           onMouseLeave={handleTeamLeave}
                         >

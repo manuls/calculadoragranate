@@ -90,7 +90,7 @@ export default function StandingsTable({
   return (
     <div className={cn("space-y-4", className)}>
       <div className="flex flex-wrap justify-between items-center gap-2">
-        <h2 className="text-xl font-semibold text-primary">Tabla de Clasificación</h2>
+        <h2 className="text-lg sm:text-xl font-semibold text-primary">Tabla de Clasificación</h2>
         <div className="flex flex-wrap items-center gap-2 mobile-action-buttons">
           <Button variant="outline" size="sm" onClick={() => setCompactView(!compactView)} className="h-8 px-2 text-xs">
             {compactView ? <LayoutList className="h-3.5 w-3.5 mr-1" /> : <LayoutGrid className="h-3.5 w-3.5 mr-1" />}
@@ -107,7 +107,7 @@ export default function StandingsTable({
             <table className="w-full border-collapse mobile-compact-table">
               <thead>
                 <tr className="bg-primary">
-                  <th className="w-12 text-primary-foreground p-1 sm:p-2 text-center">Pos</th>
+                  <th className="w-10 sm:w-12 text-primary-foreground p-1 sm:p-2 text-center">Pos</th>
                   <th className="w-8 text-primary-foreground p-1 sm:p-2 text-center"></th>
                   <th className="text-primary-foreground p-1 sm:p-2 text-left">Equipo</th>
                   <th className="text-primary-foreground p-1 sm:p-2 text-center">PJ</th>
@@ -137,7 +137,7 @@ export default function StandingsTable({
                       layout
                       className={`border-b border-primary/20 ${rowColorClass}`}
                     >
-                      <td className="font-medium text-center p-1 sm:p-2">{index + 1}</td>
+                      <td className="font-medium text-center p-1 sm:p-2 tabular-nums">{index + 1}</td>
                       <td className="text-center p-1 sm:p-2">
                         {positionChange > 0 ? (
                           <ArrowUp
@@ -167,11 +167,11 @@ export default function StandingsTable({
                           </span>
                         </div>
                       </td>
-                      <td className="text-center p-1 sm:p-2">{team.played}</td>
-                      <td className="text-center p-1 sm:p-2">{team.goalsFor}</td>
-                      <td className="text-center p-1 sm:p-2">{team.goalsAgainst}</td>
-                      <td className="text-center p-1 sm:p-2">{team.goalsFor - team.goalsAgainst}</td>
-                      <td className="text-center font-bold p-1 sm:p-2">{team.points}</td>
+                      <td className="text-center p-1 sm:p-2 tabular-nums">{team.played}</td>
+                      <td className="text-center p-1 sm:p-2 tabular-nums">{team.goalsFor}</td>
+                      <td className="text-center p-1 sm:p-2 tabular-nums">{team.goalsAgainst}</td>
+                      <td className="text-center p-1 sm:p-2 tabular-nums">{team.goalsFor - team.goalsAgainst}</td>
+                      <td className="text-center font-bold p-1 sm:p-2 tabular-nums">{team.points}</td>
                     </motion.tr>
                   )
                 })}

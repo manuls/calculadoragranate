@@ -186,7 +186,7 @@
 @media (max-width: 640px) {
   .mobile-compact-table th,
   .mobile-compact-table td {
-    padding: 0.5rem 0.25rem;
+    padding: 0.625rem 0.25rem;
     font-size: 0.75rem;
   }
 
@@ -272,6 +272,10 @@
     padding: 0.25rem;
   }
 
+  .mobile-tabs-grid {
+    border-radius: 0.875rem;
+  }
+
   .tabs-list [data-state="active"] {
     font-weight: bold;
   }
@@ -280,6 +284,21 @@
   .tabs-list > * {
     flex: 1;
     min-width: 0;
+  }
+
+  .mobile-fixture-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-compact-table th,
+  .mobile-compact-table td {
+    font-size: 0.7rem;
+  }
+
+  .mobile-compact-table td:nth-child(3) span {
+    letter-spacing: -0.01em;
   }
 }
 

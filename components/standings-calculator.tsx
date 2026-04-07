@@ -508,40 +508,42 @@ export default function StandingsCalculator() {
   // Return con las pestanas
   return (
     <>
-      <div className="space-y-6 max-w-7xl mx-auto">
+      <div className="space-y-4 sm:space-y-6 max-w-7xl mx-auto">
         {isLoading ? (
           <div className="flex justify-center items-center py-12">
             <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
             <span className="ml-3">Cargando resultados oficiales...</span>
           </div>
         ) : (
-          <Card className="w-full">
+          <Card className="w-full overflow-hidden">
             <CardContent className="p-3 sm:p-6">
-              <div className="mb-6">
+              <div className="mb-4 sm:mb-6">
                 <Tabs defaultValue="standings" value={activeTab} onValueChange={handleTabChange}>
-                  <TabsList className="mb-4 tabs-list w-full grid grid-cols-3 gap-1">
-                    <TabsTrigger
-                      value="standings"
-                      className="px-1 sm:px-3 py-2 text-xs sm:text-sm whitespace-normal h-auto"
-                    >
-                      Clasificación
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="predictions_ai"
-                      className="px-1 sm:px-3 py-2 text-xs sm:text-sm whitespace-normal h-auto"
-                    >
-                      Predicciones IA
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="team_objectives"
-                      className="px-1 sm:px-3 py-2 text-xs sm:text-sm whitespace-normal h-auto"
-                    >
-                      Objetivos
-                    </TabsTrigger>
-                  </TabsList>
+                  <div className="sticky top-0 z-10 -mx-3 mb-4 border-b bg-background/95 px-3 py-2 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:p-0">
+                    <TabsList className="tabs-list mobile-tabs-grid w-full grid grid-cols-3 gap-1 rounded-xl">
+                      <TabsTrigger
+                        value="standings"
+                        className="px-2 sm:px-3 py-2.5 text-[11px] leading-tight sm:text-sm whitespace-normal h-auto"
+                      >
+                        Clasificación
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="predictions_ai"
+                        className="px-2 sm:px-3 py-2.5 text-[11px] leading-tight sm:text-sm whitespace-normal h-auto"
+                      >
+                        Predicciones IA
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="team_objectives"
+                        className="px-2 sm:px-3 py-2.5 text-[11px] leading-tight sm:text-sm whitespace-normal h-auto"
+                      >
+                        Objetivos
+                      </TabsTrigger>
+                    </TabsList>
+                  </div>
 
                   <TabsContent value="standings">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
                       <div className="order-2 lg:order-1">
                         <StandingsTable
                           teams={teams}
@@ -562,7 +564,7 @@ export default function StandingsCalculator() {
                         <div className="mt-4 sm:mt-6 flex flex-wrap justify-center gap-3 sm:gap-4 mobile-action-buttons">
                           <Button
                             onClick={calculateNewStandings}
-                            className="btn-primary w-full sm:w-auto h-9 sm:h-10"
+                            className="btn-primary w-full sm:w-auto h-10 sm:h-10"
                             disabled={isCalculating}
                             size="sm"
                           >
@@ -581,7 +583,7 @@ export default function StandingsCalculator() {
                           <Button
                             onClick={resetSimulation}
                             variant="outline"
-                            className="hover:bg-primary/10 w-full sm:w-auto h-9 sm:h-10"
+                            className="hover:bg-primary/10 w-full sm:w-auto h-10 sm:h-10"
                             size="sm"
                           >
                             <RotateCcw className="h-4 w-4 mr-2" />
