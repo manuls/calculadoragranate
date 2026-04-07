@@ -1,10 +1,11 @@
 import type { ApiResponse, MatchdayUpdate } from "./types"
+import { OFFICIAL_RESULTS_STORAGE_KEY } from "./constants"
 
 // Función para obtener resultados oficiales del backend
 export async function fetchOfficialResults(): Promise<ApiResponse<any>> {
   try {
     // Primero intentamos cargar desde localStorage para tener una respuesta rápida
-    const localData = localStorage.getItem("official_results_data")
+    const localData = localStorage.getItem(OFFICIAL_RESULTS_STORAGE_KEY)
     let localParsedData = null
 
     if (localData) {
@@ -40,7 +41,7 @@ export async function fetchOfficialResults(): Promise<ApiResponse<any>> {
 
     // Si la API devuelve datos válidos, actualizamos localStorage
     if (data.success && data.data && data.data.matchdays) {
-      localStorage.setItem("official_results_data", JSON.stringify(data.data))
+      localStorage.setItem(OFFICIAL_RESULTS_STORAGE_KEY, JSON.stringify(data.data))
       console.log("Datos de la API guardados en localStorage")
     }
 
@@ -50,7 +51,7 @@ export async function fetchOfficialResults(): Promise<ApiResponse<any>> {
 
     // Intentar cargar desde localStorage como último recurso
     try {
-      const localData = localStorage.getItem("official_results_data")
+      const localData = localStorage.getItem(OFFICIAL_RESULTS_STORAGE_KEY)
       if (localData) {
         const parsedData = JSON.parse(localData)
         console.log("Datos cargados desde localStorage como último recurso:", parsedData)
@@ -72,7 +73,6 @@ export async function fetchOfficialResults(): Promise<ApiResponse<any>> {
 
 // Modificar la función submitOfficialResults para que actualice la clasificación
 export async function submitOfficialResults(matchdayData: MatchdayUpdate): Promise<ApiResponse<any>> {
-  const STORAGE_KEY = "official_results_data"
   try {
     // Validar que hay partidos para guardar
     if (!matchdayData.matches || matchdayData.matches.length === 0) {
@@ -101,15 +101,15 @@ export async function submitOfficialResults(matchdayData: MatchdayUpdate): Promi
     if (data.success && data.data) {
       try {
         // Obtener datos actuales de localStorage
-        const localDataStr = localStorage.getItem(STORAGE_KEY)
-        let localData = { matchdays: [] }
+        const localDataStr = localStorage.getItem(OFFICIAL_RESULTS_STORAGE_KEY)
+        let localData: { matchdays: MatchdayUpdate[] } = { matchdays: [] }
 
         if (localDataStr) {
           localData = JSON.parse(localDataStr)
         }
 
         // Actualizar o añadir la jornada
-        const matchdayIndex = localData.matchdays.findIndex((m: any) => m.matchday === matchdayData.matchday)
+        const matchdayIndex = localData.matchdays.findIndex((m) => m.matchday === matchdayData.matchday)
 
         if (matchdayIndex >= 0) {
           localData.matchdays[matchdayIndex] = matchdayData
@@ -118,7 +118,7 @@ export async function submitOfficialResults(matchdayData: MatchdayUpdate): Promi
         }
 
         // Guardar en localStorage
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(localData))
+        localStorage.setItem(OFFICIAL_RESULTS_STORAGE_KEY, JSON.stringify(localData))
       } catch (e) {
         console.error("Error al guardar en localStorage:", e)
       }

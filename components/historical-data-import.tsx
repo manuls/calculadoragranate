@@ -133,22 +133,22 @@ export default function HistoricalDataImport({ fixtures }: HistoricalDataImportP
       {
         id: 1,
         date: yesterday.toISOString().split("T")[0],
-        homeTeamId: 1, // Pontevedra CF
-        awayTeamId: 2, // CD Numancia
+        homeTeamId: 3, // Pontevedra CF
+        awayTeamId: 14, // SD Ponferradina
         homeGoals: 2,
         awayGoals: 1,
-        season: "2023-2024",
-        matchday: 5,
+        season: "2025-2026",
+        matchday: 32,
       },
       {
         id: 2,
-        date: "2023-10-15",
-        homeTeamId: 3, // Real Avila
-        awayTeamId: 1, // Pontevedra CF
+        date: "2026-04-19",
+        homeTeamId: 8, // Zamora CF
+        awayTeamId: 3, // Pontevedra CF
         homeGoals: 0,
-        awayGoals: 3,
-        season: "2023-2024",
-        matchday: 4,
+        awayGoals: 1,
+        season: "2025-2026",
+        matchday: 33,
       },
     ]
 

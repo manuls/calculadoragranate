@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { motion } from "framer-motion"
 import type { Match, Team } from "@/lib/types"
 import { cn } from "@/lib/utils"
+import { PONTEVEDRA_TEAM_ID } from "@/lib/constants"
 
 interface MatchFixturesProps {
   fixtures: Match[]
@@ -52,11 +53,12 @@ export default function MatchFixtures({
     return team.name
   }
 
-  // Filtrar partidos para mostrar solo los de Pontevedra CF y CD Numancia
+  const featuredTeamIds = new Set([PONTEVEDRA_TEAM_ID, ...teams.slice(0, 5).map((team) => team.id)])
+
+  // Filtrar partidos para mostrar solo los del Pontevedra y sus rivales directos
   const filterTopTeams = (match: Match) => {
     if (!showTopTeamsOnly) return true
-    const topTeamIds = [1, 2] // IDs de Pontevedra CF y CD Numancia
-    return topTeamIds.includes(match.homeTeamId) || topTeamIds.includes(match.awayTeamId)
+    return featuredTeamIds.has(match.homeTeamId) || featuredTeamIds.has(match.awayTeamId)
   }
 
   // Agrupar partidos por jornada
@@ -133,7 +135,7 @@ export default function MatchFixtures({
   return (
     <div className={cn("space-y-4", className)}>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-        <h2 className="text-xl font-semibold text-primary">Partidos Pendientes</h2>
+        <h2 className="text-xl font-semibold text-primary">Partidos Pendientes y Aplazados</h2>
         <div className="flex items-center space-x-2">
           <Checkbox
             id="show-top-teams"
@@ -144,27 +146,26 @@ export default function MatchFixtures({
             htmlFor="show-top-teams"
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
-            Mostrar solo partidos de las primeras posiciones
+            Mostrar solo Pontevedra y rivales directos
           </label>
         </div>
       </div>
 
       <Alert className="py-2">
         <AlertDescription className="text-sm">
-          Bienvenido/a a la Calculadora Granate. Aquí puedes predecir todos los partidos hasta final de liga y ver la
-          clasificación final. No es necesario que rellenes todos los resultados.
+          La calculadora parte de la clasificación oficial tras la jornada 31. Puedes simular el aplazado
+          Arenas Club - Pontevedra CF y todo el calendario desde la jornada 32 hasta el final.
           <p className="mt-2 text-xs italic">
-            * La Calculadora Granate para Primera RFEF Grupo 1 comienza desde la jornada 22. Para ver todos los
-            resultados, puedes consultar{" "}
+            * Para contrastar calendario y resultados publicados, puedes consultar{" "}
             <a
-              href="https://www.flashscore.es/futbol/espana/primera-rfef-grupo-1/"
+              href="https://www.bdfutbol.com/es/t/t2025-261rf1.html"
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:underline"
             >
-              Flashscore
+              BDFutbol
             </a>{" "}
-            o páginas similares.
+            y la web oficial de la RFEF cuando esté accesible.
           </p>
         </AlertDescription>
       </Alert>

@@ -32,42 +32,42 @@ export default function LiveScores() {
         {
           id: "1",
           homeTeam: "Pontevedra CF",
-          awayTeam: "CD Numancia",
-          homeScore: 2,
+          awayTeam: "SD Ponferradina",
+          homeScore: 1,
           awayScore: 1,
-          minute: 75,
+          minute: 68,
           status: "in_progress",
           competition: "Primera RFEF",
         },
         {
           id: "2",
-          homeTeam: "Real Avila",
-          awayTeam: "Real Aviles",
-          homeScore: 0,
-          awayScore: 0,
-          minute: 32,
+          homeTeam: "RC Celta Fortuna",
+          awayTeam: "Barakaldo CF",
+          homeScore: 2,
+          awayScore: 1,
+          minute: 54,
           status: "in_progress",
           competition: "Primera RFEF",
         },
         {
           id: "3",
-          homeTeam: "Barcelona",
-          awayTeam: "Real Madrid",
-          homeScore: 1,
-          awayScore: 2,
-          minute: 65,
-          status: "in_progress",
-          competition: "La Liga",
-        },
-        {
-          id: "4",
-          homeTeam: "Atlético Madrid",
-          awayTeam: "Sevilla",
+          homeTeam: "CD Tenerife",
+          awayTeam: "Mérida AD",
           homeScore: 0,
           awayScore: 0,
           minute: 0,
           status: "not_started",
-          competition: "La Liga",
+          competition: "Primera RFEF",
+        },
+        {
+          id: "4",
+          homeTeam: "Unionistas CF",
+          awayTeam: "CD Guadalajara",
+          homeScore: 1,
+          awayScore: 0,
+          minute: 82,
+          status: "in_progress",
+          competition: "Primera RFEF",
         },
       ]
 
@@ -118,7 +118,6 @@ export default function LiveScores() {
           <TabsList className="mb-4">
             <TabsTrigger value="all">Todos</TabsTrigger>
             <TabsTrigger value="Primera RFEF">Primera RFEF</TabsTrigger>
-            <TabsTrigger value="La Liga">La Liga</TabsTrigger>
           </TabsList>
 
           <TabsContent value={activeTab}>

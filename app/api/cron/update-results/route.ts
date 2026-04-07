@@ -3,8 +3,9 @@ import { createClient } from "redis"
 import { scrapeMatchday } from "@/lib/bdfutbol-scraper"
 import { initialFixtures } from "@/lib/data"
 import type { MatchdayUpdate } from "@/lib/types"
+import { OFFICIAL_RESULTS_REDIS_KEY } from "@/lib/constants"
 
-const REDIS_KEY = "official_results_data"
+const REDIS_KEY = OFFICIAL_RESULTS_REDIS_KEY
 
 // Verificar autorización del cron job
 function isAuthorized(request: Request): boolean {

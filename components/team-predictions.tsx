@@ -8,6 +8,8 @@ import { Progress } from "@/components/ui/progress"
 import { Trophy, TrendingUp, TrendingDown, AlertTriangle, BarChart2, Shield } from "lucide-react"
 import { motion } from "framer-motion"
 import type { Team, Match } from "@/lib/types"
+import { sortTeamsByRules } from "@/lib/standings"
+import { playedMatches } from "@/lib/data"
 
 interface TeamPredictionsProps {
   teams: Team[]
@@ -97,7 +99,7 @@ export default function TeamPredictions({ teams, fixtures }: TeamPredictionsProp
 
     setPredictions({
       directPromotion: (directPromotionCount / simulations) * 100,
-      playoffPromotion: ((directPromotionCount + playoffPromotionCount) / simulations) * 100,
+      playoffPromotion: (playoffPromotionCount / simulations) * 100,
       zonaTranquila: (zonaTranquilaCount / simulations) * 100,
       relegation: (relegationCount / simulations) * 100,
       averagePosition: positionSum / simulations,
@@ -110,9 +112,12 @@ export default function TeamPredictions({ teams, fixtures }: TeamPredictionsProp
   const simulateRemainingMatches = () => {
     // Crear una copia profunda de los equipos
     const simulatedTeams = JSON.parse(JSON.stringify(teams))
+    const simulatedMatches = fixtures.map((match) => ({
+      ...match,
+      result: match.result ? { ...match.result } : null,
+    }))
 
-    // Obtener partidos sin resultados
-    const remainingMatches = fixtures.filter((match) => !match.result && !match.locked)
+    const remainingMatches = simulatedMatches.filter((match) => !match.result && !match.locked)
 
     // Simular resultados para cada partido
     remainingMatches.forEach((match) => {
@@ -141,7 +146,7 @@ export default function TeamPredictions({ teams, fixtures }: TeamPredictionsProp
         awayTeam.played++
         homeTeam.won++
         awayTeam.lost++
-        homeTeam.points += 3
+        awayTeam.points += 3
 
         // Goles (simplificado)
         homeTeam.goalsFor += 2
@@ -179,14 +184,7 @@ export default function TeamPredictions({ teams, fixtures }: TeamPredictionsProp
     })
 
     // Ordenar equipos por puntos y diferencia de goles
-    return simulatedTeams.sort((a: Team, b: Team) => {
-      if (a.points !== b.points) {
-        return b.points - a.points
-      }
-      const aDiff = a.goalsFor - a.goalsAgainst
-      const bDiff = b.goalsFor - b.goalsAgainst
-      return bDiff - aDiff
-    })
+    return sortTeamsByRules(simulatedTeams, [...playedMatches, ...simulatedMatches])
   }
 
   return (

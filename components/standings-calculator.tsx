@@ -28,10 +28,8 @@ const TeamPredictions = dynamic(() => import("./team-predictions"), {
 })
 
 // Asegurarnos de que el componente principal use los mismos datos
-import { initialTeams, initialFixtures } from "@/lib/data"
-
-// Clave para localStorage
-const STORAGE_KEY = "official_results_data"
+import { initialTeams, initialFixtures, playedMatches } from "@/lib/data"
+import { calculateStandings } from "@/lib/standings"
 
 export default function StandingsCalculator() {
   // Estado inicial con los equipos de la Primera RFEF Grupo 1
@@ -56,87 +54,12 @@ export default function StandingsCalculator() {
   const [isCalculating, setIsCalculating] = useState(false)
   const [lastCalculated, setLastCalculated] = useState<Date | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const fileInputRef = useRef<HTMLInputElement>(null)
   const hasInitializedRef = useRef(false)
 
   // Estado para los resultados temporales
   const [tempResults, setTempResults] = useState<Record<number, { home: string; away: string }>>({})
 
-  // Estado para mensajes de error o exito
-  const [message, setMessage] = useState<{ type: "error" | "success"; text: string } | null>(null)
-
   const { toast } = useToast()
-
-  // Definir calculateStandings como useCallback para evitar recreaciones innecesarias
-  const calculateStandings = useCallback(
-    (fixturesList: Match[]) => {
-      console.log("Calculando clasificación con", fixturesList.length, "partidos")
-
-      // Mostrar los partidos con resultados para depuración
-      const matchesWithResults = fixturesList.filter((m) => m.result)
-      console.log("Partidos con resultados:", matchesWithResults.length)
-      matchesWithResults.forEach((m) => {
-        console.log(
-          `Partido ${m.id}: ${m.homeTeamId} vs ${m.awayTeamId} = ${m.result?.homeGoals}-${m.result?.awayGoals} (locked: ${m.locked})`,
-        )
-      })
-
-      // Crear una copia profunda de los equipos iniciales
-      const calculatedTeams = JSON.parse(JSON.stringify(initialTeams)) as Team[]
-
-      // Procesar todos los partidos con resultados
-      fixturesList.forEach((match) => {
-        if (match.result) {
-          const homeTeam = calculatedTeams.find((team) => team.id === match.homeTeamId)
-          const awayTeam = calculatedTeams.find((team) => team.id === match.awayTeamId)
-
-          if (homeTeam && awayTeam) {
-            // Actualizar partidos jugados
-            homeTeam.played += 1
-            awayTeam.played += 1
-
-            // Actualizar goles
-            homeTeam.goalsFor += match.result.homeGoals
-            homeTeam.goalsAgainst += match.result.awayGoals
-            awayTeam.goalsFor += match.result.awayGoals
-            awayTeam.goalsAgainst += match.result.homeGoals
-
-            // Actualizar resultados y puntos
-            if (match.result.homeGoals > match.result.awayGoals) {
-              // Victoria local
-              homeTeam.won += 1
-              homeTeam.points += 3
-              awayTeam.lost += 1
-            } else if (match.result.homeGoals < match.result.awayGoals) {
-              // Victoria visitante
-              awayTeam.won += 1
-              awayTeam.points += 3
-              homeTeam.lost += 1
-            } else {
-              // Empate
-              homeTeam.drawn += 1
-              homeTeam.points += 1
-              awayTeam.drawn += 1
-              awayTeam.points += 1
-            }
-          }
-        }
-      })
-
-      // Ordenar equipos por puntos (y diferencia de goles en caso de empate)
-      calculatedTeams.sort((a, b) => {
-        if (a.points !== b.points) {
-          return b.points - a.points
-        }
-        const aDiff = a.goalsFor - a.goalsAgainst
-        const bDiff = b.goalsFor - b.goalsAgainst
-        return bDiff - aDiff
-      })
-
-      return calculatedTeams
-    },
-    [initialTeams],
-  )
 
   // Función para aplicar resultados oficiales a los fixtures
   const applyOfficialResults = useCallback(
@@ -219,7 +142,7 @@ export default function StandingsCalculator() {
     const officialFixtures = fixtures.filter((m) => m.result && m.locked)
 
     // Calcular la clasificación con los partidos oficiales
-    const calculatedTeams = calculateStandings(officialFixtures)
+          const calculatedTeams = calculateStandings(initialTeams, officialFixtures, playedMatches)
 
     console.log(
       "Clasificación con resultados oficiales:",
@@ -231,7 +154,7 @@ export default function StandingsCalculator() {
     setInitialStandings(calculatedTeams)
     setTeams(calculatedTeams)
     setLastCalculated(new Date())
-  }, [fixtures, calculateStandings])
+  }, [fixtures])
 
   // Cargar resultados oficiales al iniciar
   useEffect(() => {
@@ -325,7 +248,7 @@ export default function StandingsCalculator() {
       return { ...m, result: null }
     })
 
-    const calculatedTeams = calculateStandings(updatedFixtures)
+    const calculatedTeams = calculateStandings(initialTeams, updatedFixtures, playedMatches)
     setTeams(calculatedTeams)
   }
 
@@ -398,7 +321,7 @@ export default function StandingsCalculator() {
       )
 
       // Calcular la clasificación con los fixtures actualizados
-      const calculatedTeams = calculateStandings(updatedFixtures)
+      const calculatedTeams = calculateStandings(initialTeams, updatedFixtures, playedMatches)
       console.log("Clasificación calculada:", calculatedTeams.map((t) => `${t.name}: ${t.points}pts`).join(", "))
 
       // Actualizar el estado
@@ -527,7 +450,7 @@ export default function StandingsCalculator() {
       )
 
       // Calcular la clasificación con los fixtures actualizados
-      const calculatedTeams = calculateStandings(updatedFixtures)
+      const calculatedTeams = calculateStandings(initialTeams, updatedFixtures, playedMatches)
       console.log("Clasificación calculada:", calculatedTeams.map((t) => `${t.name}: ${t.points}pts`).join(", "))
 
       // Actualizar el estado
@@ -578,10 +501,8 @@ export default function StandingsCalculator() {
 
     setFixtures(resetFixtures)
     setTempResults(resetTempResults)
-    setMessage(null)
-
     // Calcular la clasificación con los fixtures reseteados
-    const calculatedTeams = calculateStandings(resetFixtures)
+    const calculatedTeams = calculateStandings(initialTeams, resetFixtures, playedMatches)
     setTeams(calculatedTeams)
     setLastCalculated(new Date())
 

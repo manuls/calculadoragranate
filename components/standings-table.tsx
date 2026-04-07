@@ -6,7 +6,6 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 import { ArrowUp, ArrowDown, LayoutList, LayoutGrid } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useWindowSize } from "@/hooks/use-window-size"
 import EnhancedShareButtons from "./enhanced-share-buttons"
 import { cn } from "@/lib/utils"
 
@@ -26,8 +25,6 @@ export default function StandingsTable({
   className,
 }: StandingsTableProps) {
   const [compactView, setCompactView] = useState(true) // Por defecto vista compacta
-  const { isMobile } = useWindowSize()
-
   // Estado para almacenar los cambios de posición calculados
   const [positionChanges, setPositionChanges] = useState<Record<number, number>>({})
 

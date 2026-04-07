@@ -25,7 +25,7 @@ const tutorialSteps = [
   {
     title: "Tabla de Clasificación",
     description:
-      "Aquí puedes ver la clasificación actual de los equipos. Los colores indican las zonas de ascenso, playoff, play out y descenso.",
+      "Aquí puedes ver la clasificación actual de los equipos. Los colores indican ascenso directo, playoff y descenso.",
     target: ".standings-table",
     position: "left",
   },

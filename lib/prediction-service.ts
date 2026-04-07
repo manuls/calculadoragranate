@@ -40,30 +40,13 @@ export interface HistoricalMatch {
 }
 
 // Modificar la variable historicalData para que sea mutable
-let historicalData: HistoricalMatch[] = [
-  // Datos de ejemplo (ahora podrán actualizarse dinámicamente)
-  {
-    id: 1,
-    date: "2023-08-20",
-    homeTeamId: 1,
-    awayTeamId: 2,
-    homeGoals: 2,
-    awayGoals: 1,
-    season: "2023-2024",
-    matchday: 1,
-  },
-  {
-    id: 2,
-    date: "2023-08-27",
-    homeTeamId: 3,
-    awayTeamId: 1,
-    homeGoals: 0,
-    awayGoals: 2,
-    season: "2023-2024",
-    matchday: 2,
-  },
-  // ... Otros datos históricos
-]
+let historicalData: HistoricalMatch[] = []
+
+function getCurrentSeasonLabel() {
+  const today = new Date()
+  const year = today.getMonth() >= 6 ? today.getFullYear() : today.getFullYear() - 1
+  return `${year}-${year + 1}`
+}
 
 // Añadir función para actualizar los datos históricos
 export function updateHistoricalData(newData: HistoricalMatch[]) {
@@ -121,7 +104,7 @@ export function loadHistoricalData() {
 // Añadir función para convertir resultados oficiales en datos históricos
 export function convertOfficialToHistorical(fixtures: Match[], includeAll = false): HistoricalMatch[] {
   const today = new Date()
-  const currentSeason = `${today.getFullYear()}-${today.getFullYear() + 1}`
+  const currentSeason = getCurrentSeasonLabel()
 
   return fixtures
     .filter((match) => match.result && (includeAll || match.locked || match.result.isOfficial))
@@ -170,7 +153,7 @@ function calculateTeamStats(teams: Team[], fixtures: Match[]): Map<number, TeamS
       awayTeamId: match.awayTeamId,
       homeGoals: match.result!.homeGoals,
       awayGoals: match.result!.awayGoals,
-      season: "2023-2024", // Temporada actual
+      season: getCurrentSeasonLabel(),
       matchday: match.matchday,
     }))
 

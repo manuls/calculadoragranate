@@ -14,14 +14,12 @@ import type { Match, Team, MatchdayUpdate } from "@/lib/types"
 import { fetchOfficialResults, submitOfficialResults } from "@/lib/api"
 import { initialTeams, initialFixtures } from "@/lib/data"
 import HistoricalDataImport from "@/components/historical-data-import"
-
-// Clave para localStorage
-const STORAGE_KEY = "official_results_data"
+import { OFFICIAL_RESULTS_STORAGE_KEY } from "@/lib/constants"
 
 export default function AdminPage() {
   const [teams, setTeams] = useState<Team[]>(initialTeams)
   const [fixtures, setFixtures] = useState<Match[]>(initialFixtures)
-  const [activeMatchday, setActiveMatchday] = useState("22")
+  const [activeMatchday, setActiveMatchday] = useState(initialFixtures[0]?.matchday.toString() ?? "28")
   const [isSaving, setIsSaving] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -41,7 +39,7 @@ export default function AdminPage() {
 
         // Si la API falla, intentar cargar desde localStorage
         if (!response.success || !response.data) {
-          const localData = localStorage.getItem(STORAGE_KEY)
+          const localData = localStorage.getItem(OFFICIAL_RESULTS_STORAGE_KEY)
           if (localData) {
             try {
               const parsedData = JSON.parse(localData)
@@ -227,7 +225,7 @@ export default function AdminPage() {
       // Guardar también en localStorage como respaldo
       try {
         // Obtener datos actuales de localStorage
-        const localDataStr = localStorage.getItem(STORAGE_KEY)
+        const localDataStr = localStorage.getItem(OFFICIAL_RESULTS_STORAGE_KEY)
         let localData: { matchdays: MatchdayUpdate[] } = { matchdays: [] }
 
         if (localDataStr) {
@@ -244,7 +242,7 @@ export default function AdminPage() {
         }
 
         // Guardar en localStorage
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(localData))
+        localStorage.setItem(OFFICIAL_RESULTS_STORAGE_KEY, JSON.stringify(localData))
         console.log("Admin: Datos guardados en localStorage")
       } catch (localError) {
         console.error("Error al guardar en localStorage:", localError)
@@ -369,7 +367,7 @@ export default function AdminPage() {
             applyOfficialResults(data)
 
             // Guardar en localStorage
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+            localStorage.setItem(OFFICIAL_RESULTS_STORAGE_KEY, JSON.stringify(data))
 
             toast({
               title: "Importación exitosa",

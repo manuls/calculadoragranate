@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server"
 import type { MatchdayUpdate } from "@/lib/types"
 import { createClient } from "redis"
+import { OFFICIAL_RESULTS_REDIS_KEY } from "@/lib/constants"
 
-// Clave para almacenar los datos en Redis
-const REDIS_KEY = "official_results_data"
+const REDIS_KEY = OFFICIAL_RESULTS_REDIS_KEY
 
 // Crear y conectar cliente de Redis
 async function getRedisClient() {
