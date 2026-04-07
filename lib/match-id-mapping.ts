@@ -1,6 +1,6 @@
 /**
- * Mapeo entre el ID interno de cada partido pendiente y sus equipos.
- * Fuente: BDFutbol, temporada 2025-26, Grupo 1 de Primera RFEF.
+ * Mapeo entre el ID de cada partido pendiente y sus equipos.
+ * Generado automáticamente por scripts/update-season-data.mjs.
  */
 
 export interface MatchInfo {
@@ -12,427 +12,427 @@ export interface MatchInfo {
 
 export const matchIdMapping: MatchInfo[] = [
   {
-    "id": 2801,
+    "id": 267389,
     "matchday": 28,
     "homeTeam": "Arenas Club",
     "awayTeam": "Pontevedra CF"
   },
   {
-    "id": 3201,
+    "id": 267428,
     "matchday": 32,
     "homeTeam": "Arenas Club",
     "awayTeam": "RC Celta Fortuna"
   },
   {
-    "id": 3202,
+    "id": 267429,
     "matchday": 32,
     "homeTeam": "Mérida AD",
     "awayTeam": "CD Tenerife"
   },
   {
-    "id": 3203,
+    "id": 267430,
     "matchday": 32,
     "homeTeam": "CF Talavera de la Reina",
     "awayTeam": "Zamora CF"
   },
   {
-    "id": 3204,
+    "id": 267431,
     "matchday": 32,
     "homeTeam": "Barakaldo CF",
     "awayTeam": "CD Arenteiro"
   },
   {
-    "id": 3205,
+    "id": 267432,
     "matchday": 32,
     "homeTeam": "Ourense CF",
     "awayTeam": "CD Lugo"
   },
   {
-    "id": 3206,
+    "id": 267433,
     "matchday": 32,
     "homeTeam": "Pontevedra CF",
     "awayTeam": "SD Ponferradina"
   },
   {
-    "id": 3207,
+    "id": 267434,
     "matchday": 32,
     "homeTeam": "CP Cacereño",
     "awayTeam": "Bilbao Athletic"
   },
   {
-    "id": 3208,
+    "id": 267435,
     "matchday": 32,
     "homeTeam": "CA Osasuna Promesas",
     "awayTeam": "Real Avilés Industrial"
   },
   {
-    "id": 3209,
+    "id": 267436,
     "matchday": 32,
     "homeTeam": "Unionistas CF",
     "awayTeam": "CD Guadalajara"
   },
   {
-    "id": 3210,
+    "id": 267437,
     "matchday": 32,
     "homeTeam": "Racing Ferrol",
     "awayTeam": "Real Madrid Castilla"
   },
   {
-    "id": 3301,
+    "id": 267438,
     "matchday": 33,
     "homeTeam": "CD Arenteiro",
     "awayTeam": "Mérida AD"
   },
   {
-    "id": 3302,
+    "id": 267439,
     "matchday": 33,
     "homeTeam": "CD Lugo",
     "awayTeam": "CF Talavera de la Reina"
   },
   {
-    "id": 3303,
+    "id": 267440,
     "matchday": 33,
     "homeTeam": "Bilbao Athletic",
     "awayTeam": "Racing Ferrol"
   },
   {
-    "id": 3304,
+    "id": 267441,
     "matchday": 33,
     "homeTeam": "Real Avilés Industrial",
     "awayTeam": "Unionistas CF"
   },
   {
-    "id": 3305,
+    "id": 267442,
     "matchday": 33,
     "homeTeam": "CD Guadalajara",
     "awayTeam": "Pontevedra CF"
   },
   {
-    "id": 3306,
+    "id": 267443,
     "matchday": 33,
     "homeTeam": "Real Madrid Castilla",
     "awayTeam": "Ourense CF"
   },
   {
-    "id": 3307,
+    "id": 267444,
     "matchday": 33,
     "homeTeam": "SD Ponferradina",
     "awayTeam": "Barakaldo CF"
   },
   {
-    "id": 3308,
+    "id": 267445,
     "matchday": 33,
     "homeTeam": "CD Tenerife",
     "awayTeam": "Arenas Club"
   },
   {
-    "id": 3309,
+    "id": 267446,
     "matchday": 33,
     "homeTeam": "Zamora CF",
     "awayTeam": "CA Osasuna Promesas"
   },
   {
-    "id": 3310,
+    "id": 267447,
     "matchday": 33,
     "homeTeam": "RC Celta Fortuna",
     "awayTeam": "CP Cacereño"
   },
   {
-    "id": 3401,
+    "id": 267448,
     "matchday": 34,
     "homeTeam": "Ourense CF",
     "awayTeam": "Zamora CF"
   },
   {
-    "id": 3402,
+    "id": 267449,
     "matchday": 34,
     "homeTeam": "SD Ponferradina",
     "awayTeam": "CD Tenerife"
   },
   {
-    "id": 3403,
+    "id": 267450,
     "matchday": 34,
     "homeTeam": "Barakaldo CF",
     "awayTeam": "CD Lugo"
   },
   {
-    "id": 3404,
+    "id": 267451,
     "matchday": 34,
     "homeTeam": "Arenas Club",
     "awayTeam": "Mérida AD"
   },
   {
-    "id": 3405,
+    "id": 267452,
     "matchday": 34,
     "homeTeam": "CP Cacereño",
     "awayTeam": "CD Guadalajara"
   },
   {
-    "id": 3406,
+    "id": 267453,
     "matchday": 34,
     "homeTeam": "CA Osasuna Promesas",
     "awayTeam": "CD Arenteiro"
   },
   {
-    "id": 3407,
+    "id": 267454,
     "matchday": 34,
     "homeTeam": "Pontevedra CF",
     "awayTeam": "RC Celta Fortuna"
   },
   {
-    "id": 3408,
+    "id": 267455,
     "matchday": 34,
     "homeTeam": "Unionistas CF",
     "awayTeam": "Bilbao Athletic"
   },
   {
-    "id": 3409,
+    "id": 267456,
     "matchday": 34,
     "homeTeam": "Racing Ferrol",
     "awayTeam": "Real Avilés Industrial"
   },
   {
-    "id": 3410,
+    "id": 267457,
     "matchday": 34,
     "homeTeam": "CF Talavera de la Reina",
     "awayTeam": "Real Madrid Castilla"
   },
   {
-    "id": 3501,
+    "id": 267458,
     "matchday": 35,
     "homeTeam": "CD Arenteiro",
     "awayTeam": "CP Cacereño"
   },
   {
-    "id": 3502,
+    "id": 267459,
     "matchday": 35,
     "homeTeam": "RC Celta Fortuna",
     "awayTeam": "CA Osasuna Promesas"
   },
   {
-    "id": 3503,
+    "id": 267460,
     "matchday": 35,
     "homeTeam": "Racing Ferrol",
     "awayTeam": "Pontevedra CF"
   },
   {
-    "id": 3504,
+    "id": 267461,
     "matchday": 35,
     "homeTeam": "Bilbao Athletic",
     "awayTeam": "Ourense CF"
   },
   {
-    "id": 3505,
+    "id": 267462,
     "matchday": 35,
     "homeTeam": "Real Avilés Industrial",
     "awayTeam": "CD Guadalajara"
   },
   {
-    "id": 3506,
+    "id": 267463,
     "matchday": 35,
     "homeTeam": "Real Madrid Castilla",
     "awayTeam": "Unionistas CF"
   },
   {
-    "id": 3507,
+    "id": 267464,
     "matchday": 35,
     "homeTeam": "Mérida AD",
     "awayTeam": "CD Lugo"
   },
   {
-    "id": 3508,
+    "id": 267465,
     "matchday": 35,
     "homeTeam": "Zamora CF",
     "awayTeam": "SD Ponferradina"
   },
   {
-    "id": 3509,
+    "id": 267466,
     "matchday": 35,
     "homeTeam": "CD Tenerife",
     "awayTeam": "Barakaldo CF"
   },
   {
-    "id": 3510,
+    "id": 267467,
     "matchday": 35,
     "homeTeam": "CF Talavera de la Reina",
     "awayTeam": "Arenas Club"
   },
   {
-    "id": 3601,
+    "id": 267468,
     "matchday": 36,
     "homeTeam": "CD Lugo",
     "awayTeam": "Zamora CF"
   },
   {
-    "id": 3602,
+    "id": 267469,
     "matchday": 36,
     "homeTeam": "Barakaldo CF",
     "awayTeam": "Mérida AD"
   },
   {
-    "id": 3603,
+    "id": 267470,
     "matchday": 36,
     "homeTeam": "Arenas Club",
     "awayTeam": "Racing Ferrol"
   },
   {
-    "id": 3604,
+    "id": 267471,
     "matchday": 36,
     "homeTeam": "CA Osasuna Promesas",
     "awayTeam": "CF Talavera de la Reina"
   },
   {
-    "id": 3605,
+    "id": 267472,
     "matchday": 36,
     "homeTeam": "Unionistas CF",
     "awayTeam": "CD Tenerife"
   },
   {
-    "id": 3606,
+    "id": 267473,
     "matchday": 36,
     "homeTeam": "CP Cacereño",
     "awayTeam": "Real Madrid Castilla"
   },
   {
-    "id": 3607,
+    "id": 267474,
     "matchday": 36,
     "homeTeam": "CD Guadalajara",
     "awayTeam": "CD Arenteiro"
   },
   {
-    "id": 3608,
+    "id": 267475,
     "matchday": 36,
     "homeTeam": "Ourense CF",
     "awayTeam": "RC Celta Fortuna"
   },
   {
-    "id": 3609,
+    "id": 267476,
     "matchday": 36,
     "homeTeam": "Pontevedra CF",
     "awayTeam": "Bilbao Athletic"
   },
   {
-    "id": 3610,
+    "id": 267477,
     "matchday": 36,
     "homeTeam": "SD Ponferradina",
     "awayTeam": "Real Avilés Industrial"
   },
   {
-    "id": 3701,
+    "id": 267478,
     "matchday": 37,
     "homeTeam": "CD Arenteiro",
     "awayTeam": "SD Ponferradina"
   },
   {
-    "id": 3702,
+    "id": 267479,
     "matchday": 37,
     "homeTeam": "RC Celta Fortuna",
     "awayTeam": "CD Lugo"
   },
   {
-    "id": 3703,
+    "id": 267480,
     "matchday": 37,
     "homeTeam": "Racing Ferrol",
     "awayTeam": "CA Osasuna Promesas"
   },
   {
-    "id": 3704,
+    "id": 267481,
     "matchday": 37,
     "homeTeam": "Bilbao Athletic",
     "awayTeam": "CD Guadalajara"
   },
   {
-    "id": 3705,
+    "id": 267482,
     "matchday": 37,
     "homeTeam": "Real Avilés Industrial",
     "awayTeam": "Barakaldo CF"
   },
   {
-    "id": 3706,
+    "id": 267483,
     "matchday": 37,
     "homeTeam": "Mérida AD",
     "awayTeam": "Unionistas CF"
   },
   {
-    "id": 3707,
+    "id": 267484,
     "matchday": 37,
     "homeTeam": "CF Talavera de la Reina",
     "awayTeam": "Ourense CF"
   },
   {
-    "id": 3708,
+    "id": 267485,
     "matchday": 37,
     "homeTeam": "CD Tenerife",
     "awayTeam": "Pontevedra CF"
   },
   {
-    "id": 3709,
+    "id": 267486,
     "matchday": 37,
     "homeTeam": "Real Madrid Castilla",
     "awayTeam": "Arenas Club"
   },
   {
-    "id": 3710,
+    "id": 267487,
     "matchday": 37,
     "homeTeam": "Zamora CF",
     "awayTeam": "CP Cacereño"
   },
   {
-    "id": 3801,
+    "id": 267488,
     "matchday": 38,
     "homeTeam": "Ourense CF",
     "awayTeam": "CD Tenerife"
   },
   {
-    "id": 3802,
+    "id": 267489,
     "matchday": 38,
     "homeTeam": "Barakaldo CF",
     "awayTeam": "RC Celta Fortuna"
   },
   {
-    "id": 3803,
+    "id": 267490,
     "matchday": 38,
     "homeTeam": "Arenas Club",
     "awayTeam": "Zamora CF"
   },
   {
-    "id": 3804,
+    "id": 267491,
     "matchday": 38,
     "homeTeam": "CP Cacereño",
     "awayTeam": "CF Talavera de la Reina"
   },
   {
-    "id": 3805,
+    "id": 267492,
     "matchday": 38,
     "homeTeam": "CD Lugo",
     "awayTeam": "CD Arenteiro"
   },
   {
-    "id": 3806,
+    "id": 267493,
     "matchday": 38,
     "homeTeam": "Unionistas CF",
     "awayTeam": "Racing Ferrol"
   },
   {
-    "id": 3807,
+    "id": 267494,
     "matchday": 38,
     "homeTeam": "SD Ponferradina",
     "awayTeam": "Bilbao Athletic"
   },
   {
-    "id": 3808,
+    "id": 267495,
     "matchday": 38,
     "homeTeam": "Pontevedra CF",
     "awayTeam": "Real Avilés Industrial"
   },
   {
-    "id": 3809,
+    "id": 267496,
     "matchday": 38,
     "homeTeam": "CA Osasuna Promesas",
     "awayTeam": "Mérida AD"
   },
   {
-    "id": 3810,
+    "id": 267497,
     "matchday": 38,
     "homeTeam": "CD Guadalajara",
     "awayTeam": "Real Madrid Castilla"

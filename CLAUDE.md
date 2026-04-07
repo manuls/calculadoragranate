@@ -105,6 +105,12 @@ npm run dev
 # Build
 npm run build
 
+# Regenerar calendario, resultados y clasificación base
+npm run update:data
+
+# Regenerar desde HTML descargado previamente
+node scripts/update-season-data.mjs --main-file /tmp/bdfutbol-main.html --results-file /tmp/bdfutbol-rfef1.html
+
 # Probar cron manualmente
 curl "https://calculadoragranate.vercel.app/api/cron/update-results?matchday=22" \
   -H "Authorization: Bearer $CRON_SECRET"

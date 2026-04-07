@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "tsc --noEmit -p tsconfig.typecheck.json"
+    "lint": "tsc --noEmit -p tsconfig.typecheck.json",
+    "update:data": "node scripts/update-season-data.mjs"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
