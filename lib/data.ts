@@ -1,7 +1,7 @@
 import type { Team, Match } from "./types"
 
 // Datos oficiales de BDFutbol / Primera RFEF Grupo 1.
-// Generado automáticamente por scripts/update-season-data.mjs el 2026-04-21T15:05:22.476Z.
+// Generado automáticamente por scripts/update-season-data.mjs el 2026-04-21T15:09:40.213Z.
 // Clasificación general tras la jornada 33.
 export const initialTeams: Team[] = [
   {
@@ -248,7 +248,7 @@ export const initialTeams: Team[] = [
     "goalsFor": 23,
     "goalsAgainst": 39,
     "points": 30,
-    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/58946.png?lm=1688843561",
+    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/8516.png?lm=1686070938",
     "initialPosition": 19
   },
   {
@@ -261,7 +261,7 @@ export const initialTeams: Team[] = [
     "goalsFor": 29,
     "goalsAgainst": 45,
     "points": 27,
-    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/8516.png?lm=1686070938",
+    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/58946.png?lm=1688843561",
     "initialPosition": 20
   }
 ]

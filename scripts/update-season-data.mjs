@@ -34,10 +34,33 @@ const TEAMS = [
   { id: 15, canonicalName: "Ourense CF", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/55398.png?lm=1472936726", aliases: ["ourense", "ourense cf"] },
   { id: 16, canonicalName: "CF Talavera de la Reina", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/47421.png?lm=1468166961", aliases: ["talavera", "talavera de la reina", "cf talavera de la reina"] },
   { id: 17, canonicalName: "CP Cacereño", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/11602.png?lm=1637151598", aliases: ["cacereno", "cp cacereno", "cacereño", "cp cacereño"] },
-  { id: 18, canonicalName: "CD Arenteiro", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/8516.png?lm=1686070938", aliases: ["arenteiro", "cd arenteiro"] },
-  { id: 19, canonicalName: "CA Osasuna Promesas", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/58946.png?lm=1688843561", aliases: ["osasuna b", "osasuna promesas", "ca osasuna promesas"] },
+  { id: 18, canonicalName: "CD Arenteiro", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/58946.png?lm=1688843561", aliases: ["arenteiro", "cd arenteiro"] },
+  { id: 19, canonicalName: "CA Osasuna Promesas", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/8516.png?lm=1686070938", aliases: ["osasuna b", "osasuna promesas", "ca osasuna promesas"] },
   { id: 20, canonicalName: "CD Guadalajara", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/16576.png?lm=1754924420", aliases: ["guadalajara", "cd guadalajara"] },
 ]
+
+const EXPECTED_TRANSFERMARKT_LOGO_IDS = {
+  1: "648",
+  2: "8733",
+  3: "5650",
+  4: "6688",
+  5: "1176",
+  6: "6767",
+  7: "11000",
+  8: "10907",
+  9: "20844",
+  10: "3708",
+  11: "46854",
+  12: "52397",
+  13: "16122",
+  14: "4032",
+  15: "55398",
+  16: "47421",
+  17: "11602",
+  18: "58946",
+  19: "8516",
+  20: "16576",
+}
 
 const teamById = new Map(TEAMS.map((team) => [team.id, team]))
 const teamByAlias = new Map()
@@ -47,6 +70,8 @@ for (const team of TEAMS) {
     teamByAlias.set(normalizeName(alias), team)
   }
 }
+
+validateTeamLogos(TEAMS)
 
 async function main() {
   const options = parseArgs(process.argv.slice(2))
@@ -103,6 +128,28 @@ function parseArgs(args) {
 
 function printHelp() {
   console.log(`\nUso:\n  node scripts/update-season-data.mjs\n  node scripts/update-season-data.mjs --main-file /ruta/main.html --results-file /ruta/results.html\n`)
+}
+
+function validateTeamLogos(teams) {
+  for (const team of teams) {
+    const expectedLogoId = EXPECTED_TRANSFERMARKT_LOGO_IDS[team.id]
+    const actualLogoId = extractTransfermarktLogoId(team.logoUrl)
+
+    if (!expectedLogoId) {
+      throw new Error(`Falta el ID esperado de Transfermarkt para ${team.canonicalName} (${team.id})`)
+    }
+
+    if (actualLogoId !== expectedLogoId) {
+      throw new Error(
+        `Logo incorrecto para ${team.canonicalName} (${team.id}). Esperado ${expectedLogoId} y encontrado ${actualLogoId ?? "ninguno"}`,
+      )
+    }
+  }
+}
+
+function extractTransfermarktLogoId(url) {
+  const match = url.match(/\/medium\/(\d+)\.png/)
+  return match ? match[1] : null
 }
 
 async function loadHtmlSources(options) {
