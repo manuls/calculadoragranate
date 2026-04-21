@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -27,7 +27,6 @@ export default function MatchFixtures({
   className,
 }: MatchFixturesProps) {
   const [activeTab, setActiveTab] = useState("")
-  const lockedDataProcessed = useRef(false)
   const [showTopTeamsOnly, setShowTopTeamsOnly] = useState(false)
   const [highlightedTeamId, setHighlightedTeamId] = useState<number | null>(null)
 
@@ -76,32 +75,42 @@ export default function MatchFixtures({
     {} as Record<string, Match[]>,
   )
 
-  // Detectar automáticamente la primera jornada no bloqueada
+  const getLatestStoredMatchday = (matchdays: string[]) => {
+    const matchdaysWithStoredResults = matchdays.filter((matchday) =>
+      matchdayGroups[matchday].some((match) => match.locked && match.result),
+    )
+
+    return matchdaysWithStoredResults.at(-1) ?? null
+  }
+
+  const getFirstPlayableMatchday = (matchdays: string[]) => {
+    return matchdays.find((matchday) => matchdayGroups[matchday].some((match) => !match.locked)) ?? null
+  }
+
+  // Priorizar la ultima jornada con resultados almacenados; si no existe, usar la primera simutable.
   useEffect(() => {
     const keys = Object.keys(matchdayGroups)
     if (keys.length === 0) return
 
     const sorted = keys.sort((a, b) => Number(a) - Number(b))
-    const hasLocked = sorted.some(md => matchdayGroups[md].some(m => m.locked))
+    const latestStoredMatchday = getLatestStoredMatchday(sorted)
+    const firstPlayableMatchday = getFirstPlayableMatchday(sorted)
+    const preferredMatchday = latestStoredMatchday || firstPlayableMatchday || sorted[0]
 
-    // Primera carga: tab vacío, poner la primera jornada disponible
     if (!activeTab) {
-      const firstPlayable = sorted.find(md => matchdayGroups[md].some(m => !m.locked))
-      setActiveTab(firstPlayable || sorted[0])
+      setActiveTab(preferredMatchday)
       return
     }
 
-    // Cuando llegan los datos oficiales (locked), re-evaluar una vez
-    if (hasLocked && !lockedDataProcessed.current) {
-      lockedDataProcessed.current = true
-      const firstPlayable = sorted.find(md => matchdayGroups[md].some(m => !m.locked))
-      if (firstPlayable) setActiveTab(firstPlayable)
+    const activeMatchdayHasStoredResults = matchdayGroups[activeTab]?.some((match) => match.locked && match.result) ?? false
+
+    if (latestStoredMatchday && !activeMatchdayHasStoredResults && activeTab !== latestStoredMatchday) {
+      setActiveTab(latestStoredMatchday)
       return
     }
 
-    // Si el tab actual ya no existe (ej. filtro activado)
     if (!matchdayGroups[activeTab]) {
-      setActiveTab(sorted[0])
+      setActiveTab(preferredMatchday)
     }
   }, [matchdayGroups, activeTab])
 
