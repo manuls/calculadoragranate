@@ -1,267 +1,267 @@
 import type { Team, Match } from "./types"
 
 // Datos oficiales de BDFutbol / Primera RFEF Grupo 1.
-// Generado automáticamente por scripts/update-season-data.mjs el 2026-04-07T15:28:50.244Z.
-// Clasificación general tras la jornada 31.
+// Generado automáticamente por scripts/update-season-data.mjs el 2026-04-21T15:05:22.476Z.
+// Clasificación general tras la jornada 33.
 export const initialTeams: Team[] = [
   {
     "id": 1,
     "name": "CD Tenerife",
-    "played": 31,
-    "won": 19,
-    "drawn": 8,
+    "played": 33,
+    "won": 20,
+    "drawn": 9,
     "lost": 4,
-    "goalsFor": 51,
-    "goalsAgainst": 18,
-    "points": 65,
+    "goalsFor": 54,
+    "goalsAgainst": 19,
+    "points": 69,
     "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/648.png?lm=1578091884",
     "initialPosition": 1
   },
   {
     "id": 2,
     "name": "RC Celta Fortuna",
-    "played": 31,
-    "won": 15,
+    "played": 33,
+    "won": 17,
     "drawn": 9,
     "lost": 7,
-    "goalsFor": 47,
+    "goalsFor": 55,
     "goalsAgainst": 42,
-    "points": 54,
+    "points": 60,
     "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/8733.png?lm=1406966406",
     "initialPosition": 2
   },
   {
-    "id": 14,
-    "name": "SD Ponferradina",
-    "played": 31,
-    "won": 13,
-    "drawn": 8,
-    "lost": 10,
-    "goalsFor": 35,
-    "goalsAgainst": 25,
-    "points": 47,
-    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/4032.png?lm=1625561266",
-    "initialPosition": 3
-  },
-  {
-    "id": 10,
-    "name": "Barakaldo CF",
-    "played": 31,
-    "won": 12,
-    "drawn": 11,
-    "lost": 8,
-    "goalsFor": 40,
-    "goalsAgainst": 32,
-    "points": 47,
-    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/3708.png?lm=1422971751",
-    "initialPosition": 4
-  },
-  {
     "id": 3,
     "name": "Pontevedra CF",
-    "played": 30,
-    "won": 11,
-    "drawn": 13,
-    "lost": 6,
-    "goalsFor": 35,
-    "goalsAgainst": 22,
-    "points": 46,
-    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/5650.png?lm=1732278110",
-    "initialPosition": 5
-  },
-  {
-    "id": 6,
-    "name": "Real Madrid Castilla",
-    "played": 31,
+    "played": 33,
     "won": 13,
-    "drawn": 7,
-    "lost": 11,
-    "goalsFor": 46,
-    "goalsAgainst": 41,
-    "points": 46,
-    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/6767.png?lm=1729684474",
-    "initialPosition": 6
+    "drawn": 13,
+    "lost": 7,
+    "goalsFor": 42,
+    "goalsAgainst": 25,
+    "points": 52,
+    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/5650.png?lm=1732278110",
+    "initialPosition": 3
   },
   {
     "id": 8,
     "name": "Zamora CF",
-    "played": 31,
-    "won": 12,
+    "played": 33,
+    "won": 14,
     "drawn": 10,
     "lost": 9,
-    "goalsFor": 42,
+    "goalsFor": 44,
     "goalsAgainst": 37,
-    "points": 46,
+    "points": 52,
     "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/10907.png?lm=1422972812",
-    "initialPosition": 7
+    "initialPosition": 4
   },
   {
-    "id": 7,
-    "name": "CD Lugo",
-    "played": 31,
-    "won": 11,
+    "id": 6,
+    "name": "Real Madrid Castilla",
+    "played": 33,
+    "won": 14,
+    "drawn": 8,
+    "lost": 11,
+    "goalsFor": 52,
+    "goalsAgainst": 42,
+    "points": 50,
+    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/6767.png?lm=1729684474",
+    "initialPosition": 5
+  },
+  {
+    "id": 14,
+    "name": "SD Ponferradina",
+    "played": 33,
+    "won": 14,
+    "drawn": 8,
+    "lost": 11,
+    "goalsFor": 37,
+    "goalsAgainst": 28,
+    "points": 50,
+    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/4032.png?lm=1625561266",
+    "initialPosition": 6
+  },
+  {
+    "id": 10,
+    "name": "Barakaldo CF",
+    "played": 33,
+    "won": 12,
     "drawn": 12,
-    "lost": 8,
-    "goalsFor": 30,
-    "goalsAgainst": 30,
-    "points": 45,
-    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/11000.png?lm=1405933427",
-    "initialPosition": 8
+    "lost": 9,
+    "goalsFor": 41,
+    "goalsAgainst": 34,
+    "points": 48,
+    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/3708.png?lm=1422971751",
+    "initialPosition": 7
   },
   {
     "id": 12,
     "name": "Unionistas CF",
-    "played": 31,
-    "won": 12,
-    "drawn": 8,
+    "played": 33,
+    "won": 13,
+    "drawn": 9,
     "lost": 11,
-    "goalsFor": 44,
-    "goalsAgainst": 42,
-    "points": 44,
+    "goalsFor": 46,
+    "goalsAgainst": 43,
+    "points": 48,
     "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/52397.png?lm=1468618498",
-    "initialPosition": 9
-  },
-  {
-    "id": 4,
-    "name": "Bilbao Athletic",
-    "played": 31,
-    "won": 12,
-    "drawn": 8,
-    "lost": 11,
-    "goalsFor": 33,
-    "goalsAgainst": 35,
-    "points": 44,
-    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/6688.png?lm=1695069038",
-    "initialPosition": 10
+    "initialPosition": 8
   },
   {
     "id": 11,
     "name": "Mérida AD",
-    "played": 31,
-    "won": 12,
-    "drawn": 8,
+    "played": 33,
+    "won": 13,
+    "drawn": 9,
     "lost": 11,
-    "goalsFor": 41,
-    "goalsAgainst": 44,
-    "points": 44,
+    "goalsFor": 44,
+    "goalsAgainst": 45,
+    "points": 48,
     "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/46854.png?lm=1718102950",
-    "initialPosition": 11
+    "initialPosition": 9
+  },
+  {
+    "id": 7,
+    "name": "CD Lugo",
+    "played": 33,
+    "won": 11,
+    "drawn": 13,
+    "lost": 9,
+    "goalsFor": 32,
+    "goalsAgainst": 34,
+    "points": 46,
+    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/11000.png?lm=1405933427",
+    "initialPosition": 10
   },
   {
     "id": 5,
     "name": "Racing Ferrol",
-    "played": 31,
-    "won": 12,
+    "played": 33,
+    "won": 13,
     "drawn": 6,
-    "lost": 13,
-    "goalsFor": 35,
-    "goalsAgainst": 36,
-    "points": 42,
+    "lost": 14,
+    "goalsFor": 36,
+    "goalsAgainst": 41,
+    "points": 45,
     "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/1176.png?lm=1702049971",
-    "initialPosition": 12
+    "initialPosition": 11
   },
   {
     "id": 13,
     "name": "Arenas Club",
-    "played": 30,
-    "won": 12,
+    "played": 33,
+    "won": 13,
     "drawn": 5,
-    "lost": 13,
-    "goalsFor": 37,
-    "goalsAgainst": 42,
-    "points": 41,
+    "lost": 15,
+    "goalsFor": 38,
+    "goalsAgainst": 49,
+    "points": 44,
     "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/16122.png?lm=1706197149",
+    "initialPosition": 12
+  },
+  {
+    "id": 4,
+    "name": "Bilbao Athletic",
+    "played": 33,
+    "won": 12,
+    "drawn": 8,
+    "lost": 13,
+    "goalsFor": 33,
+    "goalsAgainst": 37,
+    "points": 44,
+    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/6688.png?lm=1695069038",
     "initialPosition": 13
   },
   {
     "id": 9,
     "name": "Real Avilés Industrial",
-    "played": 31,
-    "won": 10,
-    "drawn": 7,
+    "played": 33,
+    "won": 11,
+    "drawn": 8,
     "lost": 14,
-    "goalsFor": 45,
-    "goalsAgainst": 53,
-    "points": 37,
+    "goalsFor": 47,
+    "goalsAgainst": 54,
+    "points": 41,
     "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/20844.png?lm=1705039777",
     "initialPosition": 14
   },
   {
+    "id": 15,
+    "name": "Ourense CF",
+    "played": 33,
+    "won": 9,
+    "drawn": 11,
+    "lost": 13,
+    "goalsFor": 37,
+    "goalsAgainst": 38,
+    "points": 38,
+    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/55398.png?lm=1472936726",
+    "initialPosition": 15
+  },
+  {
     "id": 16,
     "name": "CF Talavera de la Reina",
-    "played": 31,
+    "played": 33,
     "won": 9,
-    "drawn": 8,
-    "lost": 14,
+    "drawn": 9,
+    "lost": 15,
     "goalsFor": 32,
-    "goalsAgainst": 40,
-    "points": 35,
+    "goalsAgainst": 41,
+    "points": 36,
     "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/47421.png?lm=1468166961",
-    "initialPosition": 15
+    "initialPosition": 16
   },
   {
     "id": 20,
     "name": "CD Guadalajara",
-    "played": 31,
+    "played": 33,
     "won": 9,
     "drawn": 8,
-    "lost": 14,
-    "goalsFor": 35,
-    "goalsAgainst": 46,
+    "lost": 16,
+    "goalsFor": 36,
+    "goalsAgainst": 51,
     "points": 35,
     "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/16576.png?lm=1754924420",
-    "initialPosition": 16
-  },
-  {
-    "id": 15,
-    "name": "Ourense CF",
-    "played": 31,
-    "won": 8,
-    "drawn": 10,
-    "lost": 13,
-    "goalsFor": 32,
-    "goalsAgainst": 35,
-    "points": 34,
-    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/55398.png?lm=1472936726",
     "initialPosition": 17
   },
   {
     "id": 17,
     "name": "CP Cacereño",
-    "played": 31,
-    "won": 6,
+    "played": 33,
+    "won": 7,
     "drawn": 13,
-    "lost": 12,
-    "goalsFor": 29,
-    "goalsAgainst": 41,
-    "points": 31,
+    "lost": 13,
+    "goalsFor": 30,
+    "goalsAgainst": 44,
+    "points": 34,
     "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/11602.png?lm=1637151598",
     "initialPosition": 18
   },
   {
     "id": 19,
     "name": "CA Osasuna Promesas",
-    "played": 31,
+    "played": 33,
     "won": 7,
     "drawn": 9,
-    "lost": 15,
+    "lost": 17,
     "goalsFor": 23,
-    "goalsAgainst": 37,
+    "goalsAgainst": 39,
     "points": 30,
-    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/8516.png?lm=1686070938",
+    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/58946.png?lm=1688843561",
     "initialPosition": 19
   },
   {
     "id": 18,
     "name": "CD Arenteiro",
-    "played": 31,
+    "played": 33,
     "won": 6,
-    "drawn": 8,
-    "lost": 17,
-    "goalsFor": 28,
-    "goalsAgainst": 42,
-    "points": 26,
-    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/58946.png?lm=1688843561",
+    "drawn": 9,
+    "lost": 18,
+    "goalsFor": 29,
+    "goalsAgainst": 45,
+    "points": 27,
+    "logoUrl": "https://tmssl.akamaized.net/images/wappen/medium/8516.png?lm=1686070938",
     "initialPosition": 20
   }
 ]
@@ -3520,6 +3520,18 @@ export const playedMatches: Match[] = [
     "locked": true
   },
   {
+    "id": 267389,
+    "matchday": 28,
+    "homeTeamId": 13,
+    "awayTeamId": 3,
+    "result": {
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "isOfficial": true
+    },
+    "locked": true
+  },
+  {
     "id": 267390,
     "matchday": 28,
     "homeTeamId": 17,
@@ -3974,157 +3986,250 @@ export const playedMatches: Match[] = [
       "isOfficial": true
     },
     "locked": true
-  }
-]
-
-export const initialFixtures: Match[] = [
-  {
-    "id": 267389,
-    "matchday": 28,
-    "homeTeamId": 13,
-    "awayTeamId": 3,
-    "result": null
   },
   {
     "id": 267428,
     "matchday": 32,
     "homeTeamId": 13,
     "awayTeamId": 2,
-    "result": null
+    "result": {
+      "homeGoals": 0,
+      "awayGoals": 5,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267429,
     "matchday": 32,
     "homeTeamId": 11,
     "awayTeamId": 1,
-    "result": null
+    "result": {
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267430,
     "matchday": 32,
     "homeTeamId": 16,
     "awayTeamId": 8,
-    "result": null
+    "result": {
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267431,
     "matchday": 32,
     "homeTeamId": 10,
     "awayTeamId": 18,
-    "result": null
+    "result": {
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267432,
     "matchday": 32,
     "homeTeamId": 15,
     "awayTeamId": 7,
-    "result": null
+    "result": {
+      "homeGoals": 4,
+      "awayGoals": 2,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267433,
     "matchday": 32,
     "homeTeamId": 3,
     "awayTeamId": 14,
-    "result": null
+    "result": {
+      "homeGoals": 3,
+      "awayGoals": 1,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267434,
     "matchday": 32,
     "homeTeamId": 17,
     "awayTeamId": 4,
-    "result": null
+    "result": {
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267435,
     "matchday": 32,
     "homeTeamId": 19,
     "awayTeamId": 9,
-    "result": null
+    "result": {
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267436,
     "matchday": 32,
     "homeTeamId": 12,
     "awayTeamId": 20,
-    "result": null
+    "result": {
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267437,
     "matchday": 32,
     "homeTeamId": 5,
     "awayTeamId": 6,
-    "result": null
+    "result": {
+      "homeGoals": 0,
+      "awayGoals": 5,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267438,
     "matchday": 33,
     "homeTeamId": 18,
     "awayTeamId": 11,
-    "result": null
+    "result": {
+      "homeGoals": 0,
+      "awayGoals": 2,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267439,
     "matchday": 33,
     "homeTeamId": 7,
     "awayTeamId": 16,
-    "result": null
+    "result": {
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267440,
     "matchday": 33,
     "homeTeamId": 4,
     "awayTeamId": 5,
-    "result": null
+    "result": {
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267441,
     "matchday": 33,
     "homeTeamId": 9,
     "awayTeamId": 12,
-    "result": null
+    "result": {
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267442,
     "matchday": 33,
     "homeTeamId": 20,
     "awayTeamId": 3,
-    "result": null
+    "result": {
+      "homeGoals": 1,
+      "awayGoals": 4,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267443,
     "matchday": 33,
     "homeTeamId": 6,
     "awayTeamId": 15,
-    "result": null
+    "result": {
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267444,
     "matchday": 33,
     "homeTeamId": 14,
     "awayTeamId": 10,
-    "result": null
+    "result": {
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267445,
     "matchday": 33,
     "homeTeamId": 1,
     "awayTeamId": 13,
-    "result": null
+    "result": {
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267446,
     "matchday": 33,
     "homeTeamId": 8,
     "awayTeamId": 19,
-    "result": null
+    "result": {
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "isOfficial": true
+    },
+    "locked": true
   },
   {
     "id": 267447,
     "matchday": 33,
     "homeTeamId": 2,
     "awayTeamId": 17,
-    "result": null
-  },
+    "result": {
+      "homeGoals": 3,
+      "awayGoals": 0,
+      "isOfficial": true
+    },
+    "locked": true
+  }
+]
+
+export const initialFixtures: Match[] = [
   {
     "id": 267448,
     "matchday": 34,

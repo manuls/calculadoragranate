@@ -153,8 +153,8 @@ export default function MatchFixtures({
 
       <Alert className="py-2 sm:py-3">
         <AlertDescription className="text-sm">
-          La calculadora parte de la clasificación oficial tras la jornada 31. Puedes simular el aplazado
-          Arenas Club - Pontevedra CF y todo el calendario desde la jornada 32 hasta el final.
+          La calculadora parte de la clasificación oficial tras la jornada 33. Puedes simular todo el
+          calendario desde la jornada 34 hasta el final.
           <p className="mt-2 text-xs italic">
             * Para contrastar calendario y resultados publicados, puedes consultar{" "}
             <a
