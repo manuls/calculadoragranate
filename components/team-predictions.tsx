@@ -10,6 +10,7 @@ import { motion } from "framer-motion"
 import type { Team, Match } from "@/lib/types"
 import { sortTeamsByRules } from "@/lib/standings"
 import { playedMatches } from "@/lib/data"
+import { predictMatches, sampleScoreFromPrediction } from "@/lib/prediction-service"
 
 interface TeamPredictionsProps {
   teams: Team[]
@@ -58,13 +59,31 @@ export default function TeamPredictions({ teams, fixtures }: TeamPredictionsProp
     }
 
     const teamId = Number.parseInt(selectedTeamId)
-    calculatePredictions(teamId)
+    let cancelled = false
+
+    const runPredictions = async () => {
+      const nextPredictions = await calculatePredictions(teamId)
+      if (!cancelled) {
+        setPredictions(nextPredictions)
+      }
+    }
+
+    runPredictions().catch((error) => {
+      console.error("Error al calcular predicciones de equipo:", error)
+      if (!cancelled) {
+        setPredictions(null)
+      }
+    })
+
+    return () => {
+      cancelled = true
+    }
   }, [selectedTeamId, teams, fixtures])
 
   // Actualizar la función calculatePredictions para incluir la zona tranquila
-  const calculatePredictions = (teamId: number) => {
+  const calculatePredictions = async (teamId: number) => {
     const team = teams.find((t) => t.id === teamId)
-    if (!team) return
+    if (!team) return null
 
     // Obtener partidos restantes del equipo
     const remainingMatches = fixtures.filter(
@@ -84,9 +103,10 @@ export default function TeamPredictions({ teams, fixtures }: TeamPredictionsProp
     let zonaTranquilaCount = 0
     let relegationCount = 0
     let positionSum = 0
+    const matchPredictions = await predictMatches(fixtures, teams)
 
     for (let i = 0; i < simulations; i++) {
-      const simulatedTable = simulateRemainingMatches()
+      const simulatedTable = simulateRemainingMatches(matchPredictions)
       const position = simulatedTable.findIndex((t: Team) => t.id === teamId) + 1
 
       positionSum += position
@@ -97,7 +117,7 @@ export default function TeamPredictions({ teams, fixtures }: TeamPredictionsProp
       if (position >= 16) relegationCount++
     }
 
-    setPredictions({
+    return {
       directPromotion: (directPromotionCount / simulations) * 100,
       playoffPromotion: (playoffPromotionCount / simulations) * 100,
       zonaTranquila: (zonaTranquilaCount / simulations) * 100,
@@ -105,17 +125,18 @@ export default function TeamPredictions({ teams, fixtures }: TeamPredictionsProp
       averagePosition: positionSum / simulations,
       maxPoints: maxPossiblePoints,
       minPoints: minPossiblePoints,
-    })
+    }
   }
 
   // Función para simular los resultados de los partidos restantes
-  const simulateRemainingMatches = () => {
+  const simulateRemainingMatches = (matchPredictions: Awaited<ReturnType<typeof predictMatches>>) => {
     // Crear una copia profunda de los equipos
     const simulatedTeams = JSON.parse(JSON.stringify(teams))
     const simulatedMatches = fixtures.map((match) => ({
       ...match,
       result: match.result ? { ...match.result } : null,
     }))
+    const predictionMap = new Map(matchPredictions.map((prediction) => [prediction.matchId, prediction]))
 
     const remainingMatches = simulatedMatches.filter((match) => !match.result && !match.locked)
 
@@ -126,60 +147,40 @@ export default function TeamPredictions({ teams, fixtures }: TeamPredictionsProp
 
       if (!homeTeam || !awayTeam) return
 
-      // Calcular probabilidades basadas en la fuerza relativa de los equipos
-      const homeStrength = homeTeam.points / homeTeam.played
-      const awayStrength = awayTeam.points / awayTeam.played
-      const totalStrength = homeStrength + awayStrength
+      const matchPrediction = predictionMap.get(match.id)
+      if (!matchPrediction) return
+      const sampledScore = sampleScoreFromPrediction(matchPrediction)
 
-      // Añadir ventaja local
-      const homeWinProb = homeStrength / totalStrength + 0.1
-      const drawProb = 0.25
-      const awayWinProb = 1 - homeWinProb - drawProb
+      match.result = {
+        homeGoals: sampledScore.homeGoals,
+        awayGoals: sampledScore.awayGoals,
+      }
 
-      // Generar resultado aleatorio basado en probabilidades
-      const random = Math.random()
+      homeTeam.played++
+      awayTeam.played++
+
+      homeTeam.goalsFor += sampledScore.homeGoals
+      homeTeam.goalsAgainst += sampledScore.awayGoals
+      awayTeam.goalsFor += sampledScore.awayGoals
+      awayTeam.goalsAgainst += sampledScore.homeGoals
 
       // Actualizar estadísticas según el resultado
-      if (random < homeWinProb) {
+      if (sampledScore.homeGoals > sampledScore.awayGoals) {
         // Victoria local
-        homeTeam.played++
-        awayTeam.played++
         homeTeam.won++
         awayTeam.lost++
-        awayTeam.points += 3
-
-        // Goles (simplificado)
-        homeTeam.goalsFor += 2
-        homeTeam.goalsAgainst += 1
-        awayTeam.goalsFor += 1
-        awayTeam.goalsAgainst += 2
-      } else if (random < homeWinProb + drawProb) {
+        homeTeam.points += 3
+      } else if (sampledScore.homeGoals === sampledScore.awayGoals) {
         // Empate
-        homeTeam.played++
-        awayTeam.played++
         homeTeam.drawn++
         awayTeam.drawn++
         homeTeam.points += 1
         awayTeam.points += 1
-
-        // Goles (simplificado)
-        homeTeam.goalsFor += 1
-        homeTeam.goalsAgainst += 1
-        awayTeam.goalsFor += 1
-        awayTeam.goalsAgainst += 1
       } else {
         // Victoria visitante
-        homeTeam.played++
-        awayTeam.played++
         homeTeam.lost++
         awayTeam.won++
-        homeTeam.points += 3
-
-        // Goles (simplificado)
-        homeTeam.goalsFor += 1
-        homeTeam.goalsAgainst += 2
-        awayTeam.goalsFor += 2
-        awayTeam.goalsAgainst += 1
+        awayTeam.points += 3
       }
     })
 

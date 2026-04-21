@@ -91,10 +91,20 @@ export default function MatchPredictions({
     sendGAEvent("exec_predictions_ia", "predictions", "Generate AI predictions button clicked")
 
     // Simular un pequeño retraso para dar sensación de procesamiento
-    setTimeout(() => {
-      const newPredictions = predictMatches(matches, teams)
-      setPredictions(newPredictions)
-      setIsLoading(false)
+    setTimeout(async () => {
+      try {
+        const newPredictions = await predictMatches(matches, teams)
+        setPredictions(newPredictions)
+      } catch (error) {
+        console.error("Error al generar predicciones:", error)
+        toast({
+          title: "Error",
+          description: "No se pudieron generar las predicciones.",
+          variant: "destructive",
+        })
+      } finally {
+        setIsLoading(false)
+      }
     }, 1000)
   }
 

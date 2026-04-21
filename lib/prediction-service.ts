@@ -41,6 +41,8 @@ export interface HistoricalMatch {
 
 // Modificar la variable historicalData para que sea mutable
 let historicalData: HistoricalMatch[] = []
+let historicalDataLoaded = false
+let historicalDataPromise: Promise<boolean> | null = null
 
 function getCurrentSeasonLabel() {
   const today = new Date()
@@ -56,6 +58,7 @@ export function updateHistoricalData(newData: HistoricalMatch[]) {
     // Podemos reemplazar todos los datos o fusionarlos con los existentes
     // Aquí elegimos reemplazarlos para evitar duplicados
     historicalData = newData
+    historicalDataLoaded = true
 
     // Guardar en localStorage para persistencia
     if (typeof window !== "undefined") {
@@ -71,11 +74,20 @@ export function updateHistoricalData(newData: HistoricalMatch[]) {
 
 // Modificar la función loadHistoricalData para usar la nueva API
 export function loadHistoricalData() {
-  return new Promise<boolean>((resolve) => {
+  if (historicalDataLoaded) {
+    return Promise.resolve(true)
+  }
+
+  if (historicalDataPromise) {
+    return historicalDataPromise
+  }
+
+  historicalDataPromise = new Promise<boolean>((resolve) => {
     fetchHistoricalMatches()
       .then((response) => {
         if (response.success && response.data && response.data.matches) {
           historicalData = response.data.matches
+          historicalDataLoaded = true
           resolve(true)
         } else {
           // Si no hay datos en la API, intentar cargar desde localStorage
@@ -84,6 +96,7 @@ export function loadHistoricalData() {
               const savedData = localStorage.getItem("historical_match_data")
               if (savedData) {
                 historicalData = JSON.parse(savedData)
+                historicalDataLoaded = true
                 resolve(true)
                 return
               }
@@ -91,14 +104,21 @@ export function loadHistoricalData() {
               console.error("Error al cargar datos históricos desde localStorage:", error)
             }
           }
+          historicalDataLoaded = true
           resolve(false)
         }
       })
       .catch((error) => {
         console.error("Error al cargar datos históricos:", error)
+        historicalDataLoaded = true
         resolve(false)
       })
+      .finally(() => {
+        historicalDataPromise = null
+      })
   })
+
+  return historicalDataPromise
 }
 
 // Añadir función para convertir resultados oficiales en datos históricos
@@ -130,9 +150,6 @@ const STANDINGS_FACTOR_WEIGHT = 0.02 // Peso por cada punto de diferencia en la 
 // Modificar la función calculateTeamStats para utilizar también los datos históricos
 function calculateTeamStats(teams: Team[], fixtures: Match[]): Map<number, TeamStats> {
   const teamStats = new Map<number, TeamStats>()
-
-  // Cargar datos históricos guardados si existen
-  loadHistoricalData()
 
   for (const team of teams) {
     // Obtener los últimos partidos oficiales del equipo de los fixtures actuales
@@ -257,9 +274,10 @@ function getHeadToHeadSummary(teamAId: number, teamBId: number, historicalData: 
       (match.homeTeamId === teamBId && match.awayGoals > match.homeGoals),
   ).length
 
-  const teamBWins = matches.length - teamAWins
+  const draws = matches.filter((match) => match.homeGoals === match.awayGoals).length
+  const teamBWins = matches.length - teamAWins - draws
 
-  return `Team A Wins: ${teamAWins}, Team B Wins: ${teamBWins}, Matches Played: ${matches.length}`
+  return `Team A Wins: ${teamAWins}, Team B Wins: ${teamBWins}, Draws: ${draws}, Matches Played: ${matches.length}`
 }
 
 // Modificar la función predictMatch para dar más peso al factor de clasificación
@@ -382,6 +400,13 @@ export function predictMatch(match: Match, teamStats: Map<number, TeamStats>, cu
     }
   }
 
+  const adjustedProbabilityTotal = homeWinProbability + drawProbability + awayWinProbability
+  if (adjustedProbabilityTotal > 0) {
+    homeWinProbability /= adjustedProbabilityTotal
+    drawProbability /= adjustedProbabilityTotal
+    awayWinProbability /= adjustedProbabilityTotal
+  }
+
   // Calcular confianza basada en la cantidad de datos disponibles
   const dataPoints = historicalData.filter(
     (match) =>
@@ -420,7 +445,8 @@ export function predictMatch(match: Match, teamStats: Map<number, TeamStats>, cu
 }
 
 // Actualizar la función predictMatches para pasar los fixtures
-export function predictMatches(matches: Match[], teams: Team[]): MatchPrediction[] {
+export async function predictMatches(matches: Match[], teams: Team[]): Promise<MatchPrediction[]> {
+  await loadHistoricalData()
   const teamStats = calculateTeamStats(teams, matches)
   return matches
     .filter((match) => !match.result) // Solo predecir partidos sin resultado
@@ -460,4 +486,24 @@ function poissonDraw(goalsTeamA: number, goalsTeamB: number): number {
   }
 
   return probability
+}
+
+export function sampleScoreFromPrediction(prediction: MatchPrediction): { homeGoals: number; awayGoals: number } {
+  return {
+    homeGoals: samplePoissonGoals(Math.max(0.1, prediction.predictedHomeGoals)),
+    awayGoals: samplePoissonGoals(Math.max(0.1, prediction.predictedAwayGoals)),
+  }
+}
+
+function samplePoissonGoals(lambda: number): number {
+  const threshold = Math.exp(-lambda)
+  let product = 1
+  let goals = 0
+
+  while (product > threshold) {
+    goals += 1
+    product *= Math.random()
+  }
+
+  return Math.max(0, goals - 1)
 }
