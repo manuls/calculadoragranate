@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -52,7 +52,10 @@ export default function MatchFixtures({
     return team.name
   }
 
-  const featuredTeamIds = new Set([PONTEVEDRA_TEAM_ID, ...teams.slice(0, 5).map((team) => team.id)])
+  const featuredTeamIds = useMemo(
+    () => new Set([PONTEVEDRA_TEAM_ID, ...teams.slice(0, 5).map((team) => team.id)]),
+    [teams],
+  )
 
   // Filtrar partidos para mostrar solo los del Pontevedra y sus rivales directos
   const filterTopTeams = (match: Match) => {
@@ -61,18 +64,22 @@ export default function MatchFixtures({
   }
 
   // Agrupar partidos por jornada
-  const matchdayGroups = fixtures.reduce(
-    (groups, match) => {
-      if (filterTopTeams(match)) {
-        const matchday = match.matchday.toString()
-        if (!groups[matchday]) {
-          groups[matchday] = []
-        }
-        groups[matchday].push(match)
-      }
-      return groups
-    },
-    {} as Record<string, Match[]>,
+  const matchdayGroups = useMemo(
+    () =>
+      fixtures.reduce(
+        (groups, match) => {
+          if (filterTopTeams(match)) {
+            const matchday = match.matchday.toString()
+            if (!groups[matchday]) {
+              groups[matchday] = []
+            }
+            groups[matchday].push(match)
+          }
+          return groups
+        },
+        {} as Record<string, Match[]>,
+      ),
+    [fixtures, showTopTeamsOnly, featuredTeamIds],
   )
 
   const getLatestStoredMatchday = (matchdays: string[]) => {
@@ -87,7 +94,7 @@ export default function MatchFixtures({
     return matchdays.find((matchday) => matchdayGroups[matchday].some((match) => !match.locked)) ?? null
   }
 
-  // Priorizar la ultima jornada con resultados almacenados; si no existe, usar la primera simutable.
+  // Priorizar la ultima jornada con resultados almacenados solo como seleccion inicial.
   useEffect(() => {
     const keys = Object.keys(matchdayGroups)
     if (keys.length === 0) return
@@ -99,13 +106,6 @@ export default function MatchFixtures({
 
     if (!activeTab) {
       setActiveTab(preferredMatchday)
-      return
-    }
-
-    const activeMatchdayHasStoredResults = matchdayGroups[activeTab]?.some((match) => match.locked && match.result) ?? false
-
-    if (latestStoredMatchday && !activeMatchdayHasStoredResults && activeTab !== latestStoredMatchday) {
-      setActiveTab(latestStoredMatchday)
       return
     }
 
