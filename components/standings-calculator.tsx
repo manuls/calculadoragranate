@@ -413,9 +413,6 @@ export default function StandingsCalculator() {
     console.log("calculateNewStandings llamado")
     setIsCalculating(true)
 
-    // Enviar evento a Google Analytics
-    sendGAEvent("calculate", "standings", "Calcular clasificación")
-
     try {
       console.log("Calculando nueva clasificación con resultados temporales:", tempResults)
 
@@ -466,6 +463,11 @@ export default function StandingsCalculator() {
       // Asegurarnos de que siempre se restablezca el estado de cálculo
       setIsCalculating(false)
     }
+  }
+
+  const handleCalculateStandingsClick = () => {
+    sendGAEvent("calculate", "standings", "Calcular clasificación")
+    calculateNewStandings()
   }
 
   // Funcion resetSimulation
@@ -563,7 +565,7 @@ export default function StandingsCalculator() {
                         />
                         <div className="mt-4 sm:mt-6 flex flex-wrap justify-center gap-3 sm:gap-4 mobile-action-buttons">
                           <Button
-                            onClick={calculateNewStandings}
+                            onClick={handleCalculateStandingsClick}
                             className="btn-primary w-full sm:w-auto h-10 sm:h-10"
                             disabled={isCalculating}
                             size="sm"
