@@ -15,7 +15,7 @@ export interface ScrapedMatchday {
   scrapedAt: string
 }
 
-const BDFUTBOL_URL = "https://www.bdfutbol.com/es/t/t2025-261rf1.html?tab=results"
+const BDFUTBOL_URL = "https://www.bdfutbol.com/es/t/t2026-271rf1.html?tab=results"
 
 /**
  * Scrapes match results from BDFutbol for a specific matchday
@@ -160,7 +160,7 @@ function normalizeTeamName(name: string): string {
  * Calculates the current matchday based on the season start date
  */
 export function calculateCurrentMatchday(): number {
-  const seasonStart = new Date("2025-08-24") // Approximate season start
+  const seasonStart = new Date("2026-08-30T12:00:00+02:00")
   const now = new Date()
   const weeksSinceStart = Math.floor(
     (now.getTime() - seasonStart.getTime()) / (7 * 24 * 60 * 60 * 1000)

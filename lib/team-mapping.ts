@@ -1,114 +1,74 @@
 /**
- * Mapeo de nombres de equipos de BDFutbol a IDs de nuestra app
- * Los nombres están normalizados (minúsculas, sin acentos)
+ * Mapeo de nombres de equipos de BDFutbol a IDs de la app para
+ * Primera Federación Grupo 1, temporada 2026/27.
  */
 export const teamNameMapping: Record<string, number> = {
-  // ID 1 - CD Tenerife
-  "tenerife": 1,
-  "cd tenerife": 1,
-
-  // ID 2 - RC Celta Fortuna
-  "celta fortuna": 2,
-  "rc celta fortuna": 2,
-
-  // ID 3 - Pontevedra CF
+  "mirandes": 1,
+  "cd mirandes": 1,
+  "cultural leonesa": 2,
+  "cultural y deportiva leonesa": 2,
+  "cyd leonesa": 2,
   "pontevedra": 3,
   "pontevedra cf": 3,
-
-  // ID 4 - Bilbao Athletic
   "bilbao athletic": 4,
-
-  // ID 5 - Racing Ferrol
+  "athletic club b": 4,
   "racing de ferrol": 5,
   "racing ferrol": 5,
-
-  // ID 6 - Real Madrid Castilla
-  "real madrid castilla": 6,
-
-  // ID 7 - CD Lugo
+  "racing club ferrol": 5,
+  "deportivo fabril": 6,
+  "rc deportivo fabril": 6,
   "lugo": 7,
   "cd lugo": 7,
-
-  // ID 8 - Zamora CF
   "zamora": 8,
   "zamora cf": 8,
-
-  // ID 9 - Real Avilés Industrial
   "aviles industrial": 9,
   "real aviles industrial": 9,
   "aviles": 9,
-
-  // ID 10 - Barakaldo CF
   "barakaldo": 10,
   "barakaldo cf": 10,
-
-  // ID 11 - Mérida AD
   "merida ad": 11,
+  "ad merida": 11,
   "merida": 11,
-
-  // ID 12 - Unionistas CF
   "unionistas de salamanca": 12,
+  "unionistas de salamanca cf": 12,
   "unionistas cf": 12,
   "unionistas": 12,
-
-  // ID 13 - Arenas Club
   "arenas de getxo": 13,
   "arenas club": 13,
   "arenas": 13,
-
-  // ID 14 - SD Ponferradina
   "ponferradina": 14,
   "sd ponferradina": 14,
-
-  // ID 15 - Ourense CF
-  "ourense cf": 15,
-  "ourense": 15,
-
-  // ID 16 - CF Talavera de la Reina
-  "talavera de la reina": 16,
-  "cf talavera de la reina": 16,
-  "talavera": 16,
-
-  // ID 17 - CP Cacereño
+  "ud ourense": 15,
+  "real union": 16,
+  "real union club": 16,
   "cacereno": 17,
   "cp cacereno": 17,
-
-  // ID 18 - CD Arenteiro
-  "arenteiro": 18,
-  "cd arenteiro": 18,
-
-  // ID 19 - CA Osasuna Promesas
-  "osasuna b": 19,
-  "ca osasuna promesas": 19,
-  "osasuna promesas": 19,
-
-  // ID 20 - CD Guadalajara
-  "guadalajara": 20,
-  "cd guadalajara": 20,
+  "coria": 18,
+  "cd coria": 18,
+  "extremadura": 19,
+  "cd extremadura": 19,
+  "ud logrones": 20,
 }
 
-/**
- * Mapeo inverso: de ID a nombre oficial en nuestra app
- */
 export const teamIdToName: Record<number, string> = {
-  1: "CD Tenerife",
-  2: "RC Celta Fortuna",
+  1: "CD Mirandés",
+  2: "CyD Leonesa",
   3: "Pontevedra CF",
   4: "Bilbao Athletic",
-  5: "Racing Ferrol",
-  6: "Real Madrid Castilla",
+  5: "Racing Club Ferrol",
+  6: "RC Deportivo Fabril",
   7: "CD Lugo",
   8: "Zamora CF",
   9: "Real Avilés Industrial",
   10: "Barakaldo CF",
-  11: "Mérida AD",
-  12: "Unionistas CF",
+  11: "AD Mérida",
+  12: "Unionistas de Salamanca CF",
   13: "Arenas Club",
   14: "SD Ponferradina",
-  15: "Ourense CF",
-  16: "CF Talavera de la Reina",
+  15: "UD Ourense",
+  16: "Real Unión Club",
   17: "CP Cacereño",
-  18: "CD Arenteiro",
-  19: "CA Osasuna Promesas",
-  20: "CD Guadalajara",
+  18: "CD Coria",
+  19: "CD Extremadura",
+  20: "UD Logroñés",
 }

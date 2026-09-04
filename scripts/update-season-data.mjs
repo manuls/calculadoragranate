@@ -10,57 +10,34 @@ const __dirname = path.dirname(__filename)
 const projectRoot = path.resolve(__dirname, "..")
 
 const SEASON = {
-  label: "2025-26",
-  slug: "t2025-261rf1",
-  tableUrl: "https://www.bdfutbol.com/es/t/t2025-261rf1.html",
-  resultsUrl: "https://www.bdfutbol.com/es/t/t2025-261rf1.html?tab=results",
+  label: "2026-27",
+  slug: "t2026-271rf1",
+  tableUrl: "https://www.bdfutbol.com/es/t/t2026-271rf1.html",
+  resultsUrl: "https://www.bdfutbol.com/es/t/t2026-271rf1.html?tab=results",
 }
 
 const TEAMS = [
-  { id: 1, canonicalName: "CD Tenerife", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/648.png?lm=1578091884", aliases: ["tenerife", "cd tenerife"] },
-  { id: 2, canonicalName: "RC Celta Fortuna", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/8733.png?lm=1406966406", aliases: ["celta fortuna", "rc celta fortuna"] },
-  { id: 3, canonicalName: "Pontevedra CF", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/5650.png?lm=1732278110", aliases: ["pontevedra", "pontevedra cf"] },
-  { id: 4, canonicalName: "Bilbao Athletic", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/6688.png?lm=1695069038", aliases: ["bilbao athletic"] },
-  { id: 5, canonicalName: "Racing Ferrol", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/1176.png?lm=1702049971", aliases: ["racing ferrol", "racing de ferrol"] },
-  { id: 6, canonicalName: "Real Madrid Castilla", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/6767.png?lm=1729684474", aliases: ["real madrid castilla"] },
-  { id: 7, canonicalName: "CD Lugo", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/11000.png?lm=1405933427", aliases: ["lugo", "cd lugo"] },
-  { id: 8, canonicalName: "Zamora CF", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/10907.png?lm=1422972812", aliases: ["zamora", "zamora cf"] },
-  { id: 9, canonicalName: "Real Avilés Industrial", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/20844.png?lm=1705039777", aliases: ["aviles industrial", "real aviles industrial", "aviles"] },
-  { id: 10, canonicalName: "Barakaldo CF", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/3708.png?lm=1422971751", aliases: ["barakaldo", "barakaldo cf"] },
-  { id: 11, canonicalName: "Mérida AD", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/46854.png?lm=1718102950", aliases: ["merida", "merida ad", "mérida ad"] },
-  { id: 12, canonicalName: "Unionistas CF", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/52397.png?lm=1468618498", aliases: ["unionistas", "unionistas cf", "unionistas de salamanca"] },
-  { id: 13, canonicalName: "Arenas Club", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/16122.png?lm=1706197149", aliases: ["arenas", "arenas club", "arenas de getxo"] },
-  { id: 14, canonicalName: "SD Ponferradina", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/4032.png?lm=1625561266", aliases: ["ponferradina", "sd ponferradina"] },
-  { id: 15, canonicalName: "Ourense CF", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/55398.png?lm=1472936726", aliases: ["ourense", "ourense cf"] },
-  { id: 16, canonicalName: "CF Talavera de la Reina", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/47421.png?lm=1468166961", aliases: ["talavera", "talavera de la reina", "cf talavera de la reina"] },
-  { id: 17, canonicalName: "CP Cacereño", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/11602.png?lm=1637151598", aliases: ["cacereno", "cp cacereno", "cacereño", "cp cacereño"] },
-  { id: 18, canonicalName: "CD Arenteiro", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/58946.png?lm=1688843561", aliases: ["arenteiro", "cd arenteiro"] },
-  { id: 19, canonicalName: "CA Osasuna Promesas", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/8516.png?lm=1686070938", aliases: ["osasuna b", "osasuna promesas", "ca osasuna promesas"] },
-  { id: 20, canonicalName: "CD Guadalajara", logoUrl: "https://tmssl.akamaized.net/images/wappen/medium/16576.png?lm=1754924420", aliases: ["guadalajara", "cd guadalajara"] },
+  { id: 1, canonicalName: "CD Mirandés", logoUrl: "https://www.bdfutbol.com/i/eg/145.png", aliases: ["mirandes", "cd mirandes", "mirandés", "cd mirandés"] },
+  { id: 2, canonicalName: "CyD Leonesa", logoUrl: "https://www.bdfutbol.com/i/eg/84.png", aliases: ["cultural leonesa", "cultural y deportiva leonesa", "cyd leonesa"] },
+  { id: 3, canonicalName: "Pontevedra CF", logoUrl: "https://www.bdfutbol.com/i/eg/58.png", aliases: ["pontevedra", "pontevedra cf"] },
+  { id: 4, canonicalName: "Bilbao Athletic", logoUrl: "https://www.bdfutbol.com/i/eg/6b.png", aliases: ["bilbao athletic", "athletic club b"] },
+  { id: 5, canonicalName: "Racing Club Ferrol", logoUrl: "https://www.bdfutbol.com/i/eg/48.png", aliases: ["racing ferrol", "racing de ferrol", "racing club ferrol"] },
+  { id: 6, canonicalName: "RC Deportivo Fabril", logoUrl: "https://www.bdfutbol.com/i/eg/13l.png", aliases: ["deportivo fabril", "rc deportivo fabril"] },
+  { id: 7, canonicalName: "CD Lugo", logoUrl: "https://www.bdfutbol.com/i/eg/76.png", aliases: ["lugo", "cd lugo"] },
+  { id: 8, canonicalName: "Zamora CF", logoUrl: "https://www.bdfutbol.com/i/eg/95.png", aliases: ["zamora", "zamora cf"] },
+  { id: 9, canonicalName: "Real Avilés Industrial", logoUrl: "https://www.bdfutbol.com/i/eg/81.png", aliases: ["aviles industrial", "real aviles industrial", "aviles", "real avilés industrial"] },
+  { id: 10, canonicalName: "Barakaldo CF", logoUrl: "https://www.bdfutbol.com/i/eg/99.png", aliases: ["barakaldo", "barakaldo cf"] },
+  { id: 11, canonicalName: "AD Mérida", logoUrl: "https://www.bdfutbol.com/i/eg/359b.png", aliases: ["merida", "merida ad", "mérida ad", "ad merida", "ad mérida"] },
+  { id: 12, canonicalName: "Unionistas de Salamanca CF", logoUrl: "https://www.bdfutbol.com/i/eg/411.png", aliases: ["unionistas", "unionistas cf", "unionistas de salamanca", "unionistas de salamanca cf"] },
+  { id: 13, canonicalName: "Arenas Club", logoUrl: "https://www.bdfutbol.com/i/eg/87.png", aliases: ["arenas", "arenas club", "arenas de getxo"] },
+  { id: 14, canonicalName: "SD Ponferradina", logoUrl: "https://www.bdfutbol.com/i/eg/62.png", aliases: ["ponferradina", "sd ponferradina"] },
+  { id: 15, canonicalName: "UD Ourense", logoUrl: "https://www.bdfutbol.com/i/eg/510.png", aliases: ["ud ourense"] },
+  { id: 16, canonicalName: "Real Unión Club", logoUrl: "https://www.bdfutbol.com/i/eg/88.png", aliases: ["real union", "real unión", "real union club", "real unión club"] },
+  { id: 17, canonicalName: "CP Cacereño", logoUrl: "https://www.bdfutbol.com/i/eg/149.png", aliases: ["cacereno", "cp cacereno", "cacereño", "cp cacereño"] },
+  { id: 18, canonicalName: "CD Coria", logoUrl: "https://www.bdfutbol.com/i/eg/473.png", aliases: ["coria", "cd coria"] },
+  { id: 19, canonicalName: "CD Extremadura", logoUrl: "https://www.bdfutbol.com/i/eg/515.png", aliases: ["extremadura", "cd extremadura"] },
+  { id: 20, canonicalName: "UD Logroñés", logoUrl: "https://www.bdfutbol.com/i/eg/178.png", aliases: ["ud logrones", "ud logroñes", "ud logroñés"] },
 ]
-
-const EXPECTED_TRANSFERMARKT_LOGO_IDS = {
-  1: "648",
-  2: "8733",
-  3: "5650",
-  4: "6688",
-  5: "1176",
-  6: "6767",
-  7: "11000",
-  8: "10907",
-  9: "20844",
-  10: "3708",
-  11: "46854",
-  12: "52397",
-  13: "16122",
-  14: "4032",
-  15: "55398",
-  16: "47421",
-  17: "11602",
-  18: "58946",
-  19: "8516",
-  20: "16576",
-}
 
 const teamById = new Map(TEAMS.map((team) => [team.id, team]))
 const teamByAlias = new Map()
@@ -132,24 +109,10 @@ function printHelp() {
 
 function validateTeamLogos(teams) {
   for (const team of teams) {
-    const expectedLogoId = EXPECTED_TRANSFERMARKT_LOGO_IDS[team.id]
-    const actualLogoId = extractTransfermarktLogoId(team.logoUrl)
-
-    if (!expectedLogoId) {
-      throw new Error(`Falta el ID esperado de Transfermarkt para ${team.canonicalName} (${team.id})`)
-    }
-
-    if (actualLogoId !== expectedLogoId) {
-      throw new Error(
-        `Logo incorrecto para ${team.canonicalName} (${team.id}). Esperado ${expectedLogoId} y encontrado ${actualLogoId ?? "ninguno"}`,
-      )
+    if (!team.logoUrl.startsWith("https://www.bdfutbol.com/i/eg/")) {
+      throw new Error(`Logo incorrecto para ${team.canonicalName} (${team.id})`)
     }
   }
-}
-
-function extractTransfermarktLogoId(url) {
-  const match = url.match(/\/medium\/(\d+)\.png/)
-  return match ? match[1] : null
 }
 
 async function loadHtmlSources(options) {

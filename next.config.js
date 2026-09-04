@@ -15,6 +15,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'tmssl.akamaized.net',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.bdfutbol.com',
+      },
     ],
   },
   eslint: {

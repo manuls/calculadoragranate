@@ -137,18 +137,18 @@ export default function HistoricalDataImport({ fixtures }: HistoricalDataImportP
         awayTeamId: 14, // SD Ponferradina
         homeGoals: 2,
         awayGoals: 1,
-        season: "2025-2026",
-        matchday: 32,
+        season: "2026-2027",
+        matchday: 2,
       },
       {
         id: 2,
-        date: "2026-04-19",
-        homeTeamId: 8, // Zamora CF
+        date: "2026-08-28",
+        homeTeamId: 9, // Real Avilés Industrial
         awayTeamId: 3, // Pontevedra CF
         homeGoals: 0,
         awayGoals: 1,
-        season: "2025-2026",
-        matchday: 33,
+        season: "2026-2027",
+        matchday: 1,
       },
     ]
 

@@ -69,8 +69,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const matchdayParam = searchParams.get("matchday")
 
-    // Si no se especifica, calcular la jornada actual
-    // Por ahora usamos un valor fijo, pero se puede mejorar
+    // Si no se especifica, usar la última jornada cuya fecha oficial ya llegó.
     const matchday = matchdayParam ? parseInt(matchdayParam, 10) : getCurrentMatchday()
 
     console.log(`[CRON] Scraping matchday ${matchday}...`)
@@ -182,35 +181,54 @@ export async function GET(request: Request) {
 
 /**
  * Calcula la jornada actual basándose en la fecha
- * Ajustar según el calendario real de la temporada
+ * Fechas oficiales del calendario RFEF 2026/27 (Grupo 1).
  */
 function getCurrentMatchday(): number {
-  // Fechas aproximadas de cada jornada (actualizar según calendario oficial)
   const matchdayDates: Record<number, string> = {
-    21: "2026-01-25",
-    22: "2026-02-01",
-    23: "2026-02-08",
-    24: "2026-02-15",
-    25: "2026-02-22",
-    26: "2026-03-01",
-    27: "2026-03-08",
-    28: "2026-03-15",
-    29: "2026-03-22",
-    30: "2026-03-29",
-    31: "2026-04-05",
-    32: "2026-04-12",
-    33: "2026-04-19",
-    34: "2026-04-26",
-    35: "2026-05-03",
-    36: "2026-05-10",
-    37: "2026-05-17",
-    38: "2026-05-24",
+    1: "2026-08-30",
+    2: "2026-09-06",
+    3: "2026-09-13",
+    4: "2026-09-20",
+    5: "2026-09-27",
+    6: "2026-10-04",
+    7: "2026-10-11",
+    8: "2026-10-18",
+    9: "2026-10-25",
+    10: "2026-11-01",
+    11: "2026-11-08",
+    12: "2026-11-15",
+    13: "2026-11-22",
+    14: "2026-11-29",
+    15: "2026-12-06",
+    16: "2026-12-13",
+    17: "2026-12-20",
+    18: "2027-01-03",
+    19: "2027-01-10",
+    20: "2027-01-17",
+    21: "2027-01-24",
+    22: "2027-01-31",
+    23: "2027-02-06",
+    24: "2027-02-14",
+    25: "2027-02-21",
+    26: "2027-02-28",
+    27: "2027-03-07",
+    28: "2027-03-14",
+    29: "2027-03-21",
+    30: "2027-03-28",
+    31: "2027-04-04",
+    32: "2027-04-11",
+    33: "2027-04-18",
+    34: "2027-04-25",
+    35: "2027-05-02",
+    36: "2027-05-09",
+    37: "2027-05-16",
+    38: "2027-05-23",
   }
 
   const today = new Date()
 
   // Encontrar la jornada más reciente que ya se jugó
-  let currentMatchday = 21 // Default
+  let currentMatchday = 1
   for (const [matchday, dateStr] of Object.entries(matchdayDates)) {
     const matchdayDate = new Date(dateStr)
     if (today >= matchdayDate) {

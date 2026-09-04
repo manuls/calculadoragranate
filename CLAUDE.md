@@ -1,7 +1,7 @@
 # Calculadora Granate - Notas para Claude
 
 ## Descripción del Proyecto
-Calculadora de clasificación para Primera RFEF Grupo 1 (temporada 2025-26). Permite simular resultados de partidos y ver cómo afectan a la clasificación.
+Calculadora de clasificación para Primera Federación Grupo 1 (temporada 2026/27). Permite simular resultados de partidos y ver cómo afectan a la clasificación.
 
 ## Stack Técnico
 - **Framework**: Next.js 15.5.9 (App Router)
@@ -14,7 +14,7 @@ Calculadora de clasificación para Primera RFEF Grupo 1 (temporada 2025-26). Per
 ## Archivos Importantes
 
 ### Datos
-- `lib/data.ts` - Equipos iniciales y fixtures (J22-J38)
+- `lib/data.ts` - Equipos, resultados jugados y fixtures pendientes (J2-J38)
 - `lib/types.ts` - Tipos TypeScript
 - `lib/team-mapping.ts` - Mapeo nombres BDFutbol → IDs app
 - `lib/bdfutbol-scraper.ts` - Scraper de resultados
@@ -37,9 +37,9 @@ Calculadora de clasificación para Primera RFEF Grupo 1 (temporada 2025-26). Per
 
 ### 2. Temporada Incorrecta en BDFutbol
 **Error**: Scraping de datos incorrectos.
-**Causa**: URL de temporada equivocada (2024-25 vs 2025-26).
+**Causa**: URL de temporada equivocada.
 **Solución**:
-- URL correcta: `https://www.bdfutbol.com/es/t/t2025-261rf1.html`
+- URL correcta: `https://www.bdfutbol.com/es/t/t2026-271rf1.html`
 - Formato: `t{AÑO_INICIO}-{AÑO_FIN}1rf1.html`
 
 ### 3. Partidos Jugados Incorrectos
@@ -68,61 +68,60 @@ CRON_SECRET=...                # Token para autorizar cron jobs
 
 ### Actualización Automática de Resultados
 - **Ruta**: `/api/cron/update-results`
-- **Schedule**: Lunes 8:00 UTC (`0 8 * * 1`)
+- **Schedule**: Martes 09:00 UTC (`0 9 * * 2`)
 - **Configuración**: `vercel.json`
 
 ## Mapeo de Equipos (BDFutbol → App)
 
 | ID | Nombre App | Nombres BDFutbol |
 |----|------------|------------------|
-| 1 | CD Tenerife | tenerife |
-| 2 | RC Celta Fortuna | celta fortuna |
+| 1 | CD Mirandés | mirandes, cd mirandes |
+| 2 | CyD Leonesa | cultural leonesa, cultural y deportiva leonesa |
 | 3 | Pontevedra CF | pontevedra |
 | 4 | Bilbao Athletic | bilbao athletic |
-| 5 | Racing Ferrol | racing de ferrol, racing ferrol |
-| 6 | Real Madrid Castilla | real madrid castilla |
+| 5 | Racing Club Ferrol | racing de ferrol, racing ferrol |
+| 6 | RC Deportivo Fabril | deportivo fabril |
 | 7 | CD Lugo | lugo |
 | 8 | Zamora CF | zamora |
 | 9 | Real Avilés Industrial | aviles industrial, aviles |
 | 10 | Barakaldo CF | barakaldo |
-| 11 | Mérida AD | merida ad, merida |
-| 12 | Unionistas CF | unionistas de salamanca, unionistas |
+| 11 | AD Mérida | merida ad, ad merida |
+| 12 | Unionistas de Salamanca CF | unionistas de salamanca, unionistas |
 | 13 | Arenas Club | arenas de getxo, arenas |
 | 14 | SD Ponferradina | ponferradina |
-| 15 | Ourense CF | ourense cf, ourense |
-| 16 | CF Talavera | talavera de la reina, talavera |
+| 15 | UD Ourense | ud ourense |
+| 16 | Real Unión Club | real union |
 | 17 | CP Cacereño | cacereno |
-| 18 | CD Arenteiro | arenteiro |
-| 19 | CA Osasuna Promesas | osasuna b |
-| 20 | CD Guadalajara | guadalajara |
+| 18 | CD Coria | cd coria |
+| 19 | CD Extremadura | cd extremadura |
+| 20 | UD Logroñés | ud logrones |
 
 ## Comandos Útiles
 
 ```bash
 # Desarrollo
-npm run dev
+pnpm dev
 
 # Build
-npm run build
+pnpm build
 
 # Regenerar calendario, resultados y clasificación base
-npm run update:data
+pnpm run update:data
 
 # Regenerar desde HTML descargado previamente
 node scripts/update-season-data.mjs --main-file /tmp/bdfutbol-main.html --results-file /tmp/bdfutbol-rfef1.html
 
 # Probar cron manualmente
-curl "https://calculadoragranate.vercel.app/api/cron/update-results?matchday=22" \
+curl "https://calculadora.pontevedracf.net/api/cron/update-results?matchday=2" \
   -H "Authorization: Bearer $CRON_SECRET"
 
 # Scraping manual de BDFutbol
-curl -s "https://www.bdfutbol.com/es/t/t2025-261rf1.html?tab=results" | \
-  grep "data-jornada='22'" -A 150
+curl -s "https://www.bdfutbol.com/es/t/t2026-271rf1.html?tab=results" | \
+  grep "data-jornada='2'" -A 150
 ```
 
 ## Notas Adicionales
 
-- La jornada actual es la **22** (a partir de febrero 2026)
-- Los datos iniciales en `lib/data.ts` reflejan la clasificación tras la J21
+- Los datos iniciales en `lib/data.ts` reflejan la clasificación tras la J1 de 2026/27
 - BDFutbol actualiza resultados poco después de que terminen los partidos
-- El cron se ejecuta los lunes para capturar todos los resultados del fin de semana
+- El cron se ejecuta los martes a las 09:00 UTC para capturar toda la jornada, incluidos los partidos del lunes

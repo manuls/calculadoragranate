@@ -162,12 +162,12 @@ export default function MatchFixtures({
 
       <Alert className="py-2 sm:py-3">
         <AlertDescription className="text-sm">
-          La calculadora parte de la clasificación oficial tras la jornada 33. Puedes simular todo el
-          calendario desde la jornada 34 hasta el final.
+          La calculadora parte de la clasificación oficial tras la jornada 1. Puedes simular todo el
+          calendario desde la jornada 2 hasta el final.
           <p className="mt-2 text-xs italic">
             * Para contrastar calendario y resultados publicados, puedes consultar{" "}
             <a
-              href="https://www.bdfutbol.com/es/t/t2025-261rf1.html"
+              href="https://www.bdfutbol.com/es/t/t2026-271rf1.html"
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:underline"
