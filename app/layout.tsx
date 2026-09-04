@@ -45,6 +45,10 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning className={`${pixelFont.variable}`}>
       <head>
+        <Script
+          src="https://rede-granate.vercel.app/rede-granate.js"
+          strategy="beforeInteractive"
+        />
         {/* Google Analytics */}
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-2M6058P5VT" strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
@@ -57,6 +61,12 @@ export default function RootLayout({
         </Script>
       </head>
       <body className={inter.className}>
+        <div
+          data-rede-granate-bar
+          data-current="calculadora"
+          data-theme="dark"
+          className="h-8 max-[680px]:h-9"
+        />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="container mx-auto py-8 px-4 min-h-screen flex flex-col">
             <div className="flex justify-between items-center mb-8">
