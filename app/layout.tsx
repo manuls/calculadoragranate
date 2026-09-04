@@ -20,21 +20,30 @@ const pixelFont = Press_Start_2P({
 })
 
 export const metadata: Metadata = {
-  title: "Calculadora Granate",
-  description: "Predice los partidos del Pontevedra CF y sus rivales en esta calculadora",
+  metadataBase: new URL("https://calculadora.pontevedracf.net"),
+  title: {
+    default: "Calculadora Granate",
+    template: "%s | Calculadora Granate",
+  },
+  description: "Simula los resultados del Pontevedra CF y calcula la clasificación de Primera Federación 2026/27.",
+  applicationName: "Calculadora Granate",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "Calculadora Granate",
-    description: "Predice los partidos del Pontevedra CF y sus rivales en esta calculadora",
+    description: "Simula los resultados del Pontevedra CF y calcula la clasificación de Primera Federación 2026/27.",
+    url: "/",
+    siteName: "Calculadora Granate",
+    locale: "es_ES",
+    type: "website",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Calculadora Granate",
-    description: "Predice los partidos del Pontevedra CF y sus rivales en esta calculadora",
+    description: "Simula los resultados del Pontevedra CF y calcula la clasificación de Primera Federación 2026/27.",
   },
-  icons: {
-    icon: "/favicon.ico",
-  },
-    generator: 'v0.dev'
+  generator: "v0.dev",
 }
 
 export default function RootLayout({
