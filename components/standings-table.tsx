@@ -1,288 +1,113 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import type { Team } from "@/lib/types"
-import { motion } from "framer-motion"
 import Image from "next/image"
-import { ArrowUp, ArrowDown, LayoutList, LayoutGrid } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { ArrowDown, ArrowUp, Minus } from "lucide-react"
 import EnhancedShareButtons from "./enhanced-share-buttons"
+import type { Team } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 interface StandingsTableProps {
   teams: Team[]
-  initialStandings: Team[] // Clasificación inicial basada en resultados oficiales
-  resetSimulation: () => void
-  lastCalculated: Date | null
+  initialStandings: Team[]
   className?: string
 }
 
-export default function StandingsTable({
-  teams,
-  initialStandings,
-  resetSimulation,
-  lastCalculated,
-  className,
-}: StandingsTableProps) {
-  const [compactView, setCompactView] = useState(true) // Por defecto vista compacta
-  // Estado para almacenar los cambios de posición calculados
-  const [positionChanges, setPositionChanges] = useState<Record<number, number>>({})
+const zoneStyles = (position: number) => {
+  if (position === 1) return "border-l-emerald-500"
+  if (position <= 5) return "border-l-sky-500"
+  if (position >= 16) return "border-l-rose-500"
+  return "border-l-transparent"
+}
 
-  // Calcular los cambios de posición cuando cambian los equipos o la clasificación inicial
-  useEffect(() => {
-    if (teams.length > 0 && initialStandings.length > 0) {
-      const changes: Record<number, number> = {}
-
-      teams.forEach((team, currentIndex) => {
-        // Encontrar la posición del equipo en la clasificación inicial
-        const initialIndex = initialStandings.findIndex((t) => t.id === team.id)
-
-        // Si se encuentra el equipo, calcular el cambio
-        if (initialIndex !== -1) {
-          // Si initialIndex > currentIndex, el equipo ha subido
-          // Si initialIndex < currentIndex, el equipo ha bajado
-          changes[team.id] = initialIndex - currentIndex
-        } else {
-          changes[team.id] = 0
-        }
-      })
-
-      console.log("Cambios de posición calculados:", changes)
-      setPositionChanges(changes)
-    }
-  }, [teams, initialStandings])
-
-  const getPositionColor = (position: number, index: number) => {
-    if (position === 1) return "bg-green-100 dark:bg-green-900 dark:bg-opacity-50"
-    if (position >= 2 && position <= 5) return "bg-blue-100 dark:bg-blue-900 dark:bg-opacity-50"
-    if (position >= 16 && position <= 20) return "bg-red-100 dark:bg-red-900 dark:bg-opacity-50"
-    return index % 2 === 0 ? "bg-primary/5" : ""
-  }
-
-  // Función para mostrar el nombre del equipo según el tamaño de pantalla
-  const renderTeamName = (name: string) => {
-    if (name.length <= 15) return name
-
-    return (
-      <>
-        <span className="hidden sm:inline">{name}</span>
-        <span className="sm:hidden">{name.substring(0, 10) + "..."}</span>
-      </>
-    )
-  }
-
-  const getPositionChangeAnimation = (teamId: number) => {
-    const change = positionChanges[teamId] || 0
-
-    if (change > 3) {
-      return "animate-bounce-up-big"
-    } else if (change > 0) {
-      return "animate-bounce-up"
-    } else if (change < -3) {
-      return "animate-bounce-down-big"
-    } else if (change < 0) {
-      return "animate-bounce-down"
-    }
-
-    return ""
-  }
+export default function StandingsTable({ teams, initialStandings, className }: StandingsTableProps) {
+  const initialPositions = new Map(initialStandings.map((team, index) => [team.id, index]))
 
   return (
-    <div className={cn("space-y-4", className)}>
-      <div className="flex flex-wrap justify-between items-center gap-2">
-        <h2 className="text-lg sm:text-xl font-semibold text-primary">Tabla de Clasificación</h2>
-        <div className="flex flex-wrap items-center gap-2 mobile-action-buttons">
-          <Button variant="outline" size="sm" onClick={() => setCompactView(!compactView)} className="h-8 px-2 text-xs">
-            {compactView ? <LayoutList className="h-3.5 w-3.5 mr-1" /> : <LayoutGrid className="h-3.5 w-3.5 mr-1" />}
-            {compactView ? "Detallada" : "Compacta"}
-          </Button>
-          <EnhancedShareButtons teams={teams} currentUrl={typeof window !== "undefined" ? window.location.href : ""} />
+    <section className={cn("rounded-xl border bg-card p-4 shadow-sm sm:p-5", className)}>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-semibold tracking-tight">Clasificación</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Se actualiza automáticamente con tus marcadores.</p>
         </div>
+        <EnhancedShareButtons teams={teams} currentUrl={typeof window !== "undefined" ? window.location.href : ""} />
       </div>
 
-      <div className="rounded-md border border-primary overflow-hidden">
+      <div className="mt-5 overflow-hidden rounded-lg border">
         <div className="overflow-x-auto">
-          {compactView ? (
-            // Vista compacta
-            <table className="w-full border-collapse mobile-compact-table">
-              <thead>
-                <tr className="bg-primary">
-                  <th className="w-10 sm:w-12 text-primary-foreground p-1 sm:p-2 text-center">Pos</th>
-                  <th className="w-8 text-primary-foreground p-1 sm:p-2 text-center"></th>
-                  <th className="text-primary-foreground p-1 sm:p-2 text-left">Equipo</th>
-                  <th className="text-primary-foreground p-1 sm:p-2 text-center">PJ</th>
-                  <th className="text-primary-foreground p-1 sm:p-2 text-center">GF</th>
-                  <th className="text-primary-foreground p-1 sm:p-2 text-center">GC</th>
-                  <th className="text-primary-foreground p-1 sm:p-2 text-center">DG</th>
-                  <th className="text-primary-foreground p-1 sm:p-2 text-center">Pts</th>
-                </tr>
-              </thead>
-              <tbody>
-                {teams.map((team, index) => {
-                  const rowColorClass = getPositionColor(index + 1, index)
-                  const positionChange = positionChanges[team.id] || 0
+          <table className="w-full border-collapse text-sm">
+            <thead className="bg-muted/70 text-xs uppercase tracking-wide text-muted-foreground">
+              <tr>
+                <th className="w-14 px-2 py-3 text-center font-medium">Pos.</th>
+                <th className="min-w-[150px] px-2 py-3 text-left font-medium">Equipo</th>
+                <th className="w-12 px-2 py-3 text-center font-medium">PJ</th>
+                <th className="hidden w-12 px-2 py-3 text-center font-medium sm:table-cell">GF</th>
+                <th className="hidden w-12 px-2 py-3 text-center font-medium sm:table-cell">GC</th>
+                <th className="w-12 px-2 py-3 text-center font-medium">DG</th>
+                <th className="w-14 px-2 py-3 text-center font-medium">Pts.</th>
+              </tr>
+            </thead>
+            <tbody>
+              {teams.map((team, index) => {
+                const position = index + 1
+                const change = (initialPositions.get(team.id) ?? index) - index
+                const isPontevedra = team.name === "Pontevedra CF"
 
-                  return (
-                    <motion.tr
-                      key={team.id}
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      transition={{
-                        duration: 0.4,
-                        type: "spring",
-                        stiffness: 100,
-                        damping: 15,
-                      }}
-                      layout
-                      className={`border-b border-primary/20 ${rowColorClass}`}
-                    >
-                      <td className="font-medium text-center p-1 sm:p-2 tabular-nums">{index + 1}</td>
-                      <td className="text-center p-1 sm:p-2">
-                        {positionChange > 0 ? (
-                          <ArrowUp
-                            className={`h-4 w-4 text-green-600 mx-auto ${getPositionChangeAnimation(team.id)}`}
-                          />
-                        ) : positionChange < 0 ? (
-                          <ArrowDown
-                            className={`h-4 w-4 text-red-600 mx-auto ${getPositionChangeAnimation(team.id)}`}
-                          />
+                return (
+                  <tr
+                    key={team.id}
+                    className={cn(
+                      "border-b border-l-4 last:border-b-0 hover:bg-muted/45",
+                      zoneStyles(position),
+                      isPontevedra && "bg-primary/[0.06]",
+                    )}
+                  >
+                    <td className="px-2 py-2.5 text-center font-medium tabular-nums">
+                      <div className="flex items-center justify-center gap-1">
+                        <span>{position}</span>
+                        {change > 0 ? (
+                          <ArrowUp className="h-3.5 w-3.5 text-emerald-600" aria-label={`Sube ${change} posiciones`} />
+                        ) : change < 0 ? (
+                          <ArrowDown className="h-3.5 w-3.5 text-rose-600" aria-label={`Baja ${Math.abs(change)} posiciones`} />
                         ) : (
-                          <span className="text-yellow-500 font-bold text-sm">=</span>
+                          <Minus className="h-3 w-3 text-muted-foreground/60" aria-label="Sin cambios" />
                         )}
-                      </td>
-                      <td className="font-medium p-1 sm:p-2">
-                        <div className="flex items-center space-x-2">
-                          {team.logoUrl && (
-                            <Image
-                              src={team.logoUrl || "/placeholder.svg"}
-                              alt={"Escudo de " + team.name}
-                              width={20}
-                              height={20}
-                              className="rounded-full hidden sm:block"
-                            />
-                          )}
-                          <span className={team.name === "Pontevedra CF" ? "font-bold" : ""}>
-                            {renderTeamName(team.name)}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="text-center p-1 sm:p-2 tabular-nums">{team.played}</td>
-                      <td className="text-center p-1 sm:p-2 tabular-nums">{team.goalsFor}</td>
-                      <td className="text-center p-1 sm:p-2 tabular-nums">{team.goalsAgainst}</td>
-                      <td className="text-center p-1 sm:p-2 tabular-nums">{team.goalsFor - team.goalsAgainst}</td>
-                      <td className="text-center font-bold p-1 sm:p-2 tabular-nums">{team.points}</td>
-                    </motion.tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          ) : (
-            // Vista detallada
-            <table className="w-full" style={{ minWidth: "800px" }}>
-              <thead>
-                <tr className="bg-primary">
-                  <th className="w-12 text-primary-foreground p-2 text-center">Pos</th>
-                  <th className="w-10 text-primary-foreground p-2 text-center"></th>
-                  <th className="text-primary-foreground p-2 text-left">Equipo</th>
-                  <th className="text-primary-foreground p-2 text-center w-12">PJ</th>
-                  <th className="text-primary-foreground p-2 text-center w-12">G</th>
-                  <th className="text-primary-foreground p-2 text-center w-12">E</th>
-                  <th className="text-primary-foreground p-2 text-center w-12">P</th>
-                  <th className="text-primary-foreground p-2 text-center w-12">GF</th>
-                  <th className="text-primary-foreground p-2 text-center w-12">GC</th>
-                  <th className="text-primary-foreground p-2 text-center w-12">DG</th>
-                  <th className="text-primary-foreground p-2 text-center w-16">Pts</th>
-                </tr>
-              </thead>
-              <tbody>
-                {teams.map((team, index) => {
-                  const positionChange = positionChanges[team.id] || 0
-                  const rowColorClass = getPositionColor(index + 1, index)
-
-                  return (
-                    <motion.tr
-                      key={team.id}
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      transition={{
-                        duration: 0.4,
-                        type: "spring",
-                        stiffness: 100,
-                        damping: 15,
-                      }}
-                      layout
-                      className={`${rowColorClass} hover:bg-primary/10`}
-                    >
-                      <td className="font-medium text-center p-2 border-b">{index + 1}</td>
-                      <td className="p-2 border-b text-center">
-                        {positionChange > 0 ? (
-                          <ArrowUp
-                            className={`h-4 w-4 text-green-600 mx-auto ${getPositionChangeAnimation(team.id)}`}
-                          />
-                        ) : positionChange < 0 ? (
-                          <ArrowDown
-                            className={`h-4 w-4 text-red-600 mx-auto ${getPositionChangeAnimation(team.id)}`}
-                          />
-                        ) : (
-                          <span className="text-yellow-500 font-bold text-sm">=</span>
+                      </div>
+                    </td>
+                    <td className="px-2 py-2.5">
+                      <div className="flex min-w-0 items-center gap-2">
+                        {team.logoUrl && (
+                          <Image src={team.logoUrl} alt="" width={24} height={24} className="h-6 w-6 shrink-0 object-contain" />
                         )}
-                      </td>
-                      <td className="font-medium p-2 border-b">
-                        <div className="flex items-center space-x-2">
-                          {team.logoUrl ? (
-                            <Image
-                              src={team.logoUrl || "/placeholder.svg"}
-                              alt={"Escudo de " + team.name}
-                              width={24}
-                              height={24}
-                              className="rounded-full"
-                            />
-                          ) : (
-                            <div className="w-6 h-6 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
-                          )}
-                          <span className={`text-sm ${team.name === "Pontevedra CF" ? "font-bold" : ""}`}>
-                            {team.name}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="text-center p-2 border-b text-sm">{team.played}</td>
-                      <td className="text-center p-2 border-b text-sm">{team.won}</td>
-                      <td className="text-center p-2 border-b text-sm">{team.drawn}</td>
-                      <td className="text-center p-2 border-b text-sm">{team.lost}</td>
-                      <td className="text-center p-2 border-b text-sm">{team.goalsFor}</td>
-                      <td className="text-center p-2 border-b text-sm">{team.goalsAgainst}</td>
-                      <td className="text-center p-2 border-b text-sm">{team.goalsFor - team.goalsAgainst}</td>
-                      <td className="text-center font-bold p-2 border-b text-sm">{team.points}</td>
-                    </motion.tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          )}
+                        <span className={cn("max-w-[150px] truncate sm:max-w-none", isPontevedra && "font-semibold text-primary")} title={team.name}>
+                          {team.name}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-2 py-2.5 text-center tabular-nums">{team.played}</td>
+                    <td className="hidden px-2 py-2.5 text-center tabular-nums sm:table-cell">{team.goalsFor}</td>
+                    <td className="hidden px-2 py-2.5 text-center tabular-nums sm:table-cell">{team.goalsAgainst}</td>
+                    <td className="px-2 py-2.5 text-center tabular-nums">{team.goalsFor - team.goalsAgainst}</td>
+                    <td className="px-2 py-2.5 text-center font-bold tabular-nums text-foreground">{team.points}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
 
-      <div className="text-sm text-muted-foreground">
-        <p>PJ: Partidos jugados, G: Ganados, E: Empatados, P: Perdidos</p>
-        <p>GF: Goles a favor, GC: Goles en contra, DG: Diferencia de goles, Pts: Puntos</p>
-        <p className="mt-2">
-          Los desempates siguen el criterio de la RFEF para Primera Federación, incluyendo mini-clasificación entre
-          equipos empatados. No se aplica el criterio de juego limpio por no disponer de esos datos en la app.
-        </p>
+      <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground" aria-label="Leyenda de la clasificación">
+        <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />Ascenso</span>
+        <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-sky-500" />Playoff</span>
+        <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-rose-500" />Descenso</span>
       </div>
-      <div className="text-sm mt-4 flex flex-wrap gap-2">
-        <p className="inline-block px-2 py-1 bg-green-100 dark:bg-green-900 dark:bg-opacity-50 rounded text-xs sm:text-sm">
-          Ascenso directo
+
+      <details className="mt-4 border-t pt-3 text-xs text-muted-foreground">
+        <summary className="cursor-pointer font-medium text-foreground">Cómo se calcula</summary>
+        <p className="mt-2 leading-relaxed">
+          PJ: partidos jugados · GF: goles a favor · GC: goles en contra · DG: diferencia de goles. Los desempates siguen el criterio de la RFEF, salvo el juego limpio porque la aplicación no dispone de esos datos.
         </p>
-        <p className="inline-block px-2 py-1 bg-blue-100 dark:bg-blue-900 dark:bg-opacity-50 rounded text-xs sm:text-sm">
-          Playoff de ascenso
-        </p>
-        <p className="inline-block px-2 py-1 bg-red-100 dark:bg-red-900 dark:bg-opacity-50 rounded text-xs sm:text-sm">
-          Descenso
-        </p>
-      </div>
-    </div>
+      </details>
+    </section>
   )
 }

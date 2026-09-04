@@ -2,7 +2,6 @@ import type React from "react"
 import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import { Press_Start_2P } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { AppTitle } from "@/components/app-title"
@@ -12,12 +11,6 @@ import { Twitter, Instagram, Globe } from "lucide-react"
 import Link from "next/link"
 
 const inter = Inter({ subsets: ["latin"] })
-
-const pixelFont = Press_Start_2P({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-pixel",
-})
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://calculadora.pontevedracf.net"),
@@ -52,7 +45,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es" suppressHydrationWarning className={`${pixelFont.variable}`}>
+    <html lang="es" suppressHydrationWarning>
       <head>
         <Script
           src="https://rede-granate.vercel.app/rede-granate.js"
@@ -77,18 +70,20 @@ export default function RootLayout({
           className="h-8 max-[680px]:h-9"
         />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="container mx-auto py-8 px-4 min-h-screen flex flex-col">
-            <div className="flex justify-between items-center mb-8">
-              <AppTitle />
-              <ThemeToggle />
-            </div>
-            <main className="flex-grow">{children}</main>
-            <footer className="mt-8 py-4 text-center text-sm text-muted-foreground border-t">
-              <div className="flex flex-col items-center gap-3">
-                <div>
+          <div className="flex min-h-[calc(100vh-2rem)] flex-col">
+            <header className="border-b bg-background/95 backdrop-blur">
+              <div className="mx-auto flex h-16 w-full max-w-[1480px] items-center justify-between px-4 md:px-6">
+                <AppTitle />
+                <ThemeToggle />
+              </div>
+            </header>
+            <div className="flex-1">{children}</div>
+            <footer className="mt-8 border-t bg-card/50 py-6 text-sm text-muted-foreground">
+              <div className="mx-auto flex w-full max-w-[1480px] flex-col items-center justify-between gap-4 px-4 sm:flex-row md:px-6">
+                <div className="text-center sm:text-left">
                   Desarrollado por{" "}
                   <Link
-                    href="http://twitter.com/manuls"
+                    href="https://twitter.com/manuls"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-bold hover:text-primary transition-colors"
@@ -97,7 +92,7 @@ export default function RootLayout({
                   </Link>{" "}
                   para{" "}
                   <Link
-                    href="http://pontevedracf.net"
+                    href="https://pontevedracf.net"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-primary transition-colors"
@@ -105,9 +100,9 @@ export default function RootLayout({
                     PontevedraCF.Net
                   </Link>
                 </div>
-                <div className="flex justify-center gap-4 mt-2">
+                <div className="flex justify-center gap-4">
                   <Link
-                    href="http://twitter.com/pontevedracf"
+                    href="https://twitter.com/pontevedracf"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-muted-foreground hover:text-primary transition-colors"
@@ -116,7 +111,7 @@ export default function RootLayout({
                     <Twitter className="h-5 w-5" />
                   </Link>
                   <Link
-                    href="http://instagram.com/pontevedracfnet"
+                    href="https://instagram.com/pontevedracfnet"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-muted-foreground hover:text-primary transition-colors"
@@ -148,7 +143,7 @@ export default function RootLayout({
                     </svg>
                   </Link>
                   <Link
-                    href="http://www.pontevedracf.net"
+                    href="https://www.pontevedracf.net"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-muted-foreground hover:text-primary transition-colors"

@@ -1,13 +1,10 @@
 "use client"
 import { useState, useRef, useEffect, useCallback } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import StandingsTable from "./standings-table"
 import MatchFixtures from "./match-fixtures"
 import type { Team, Match } from "@/lib/types"
 import { useToast } from "@/hooks/use-toast"
 import { Toaster } from "@/components/ui/toaster"
-import { RotateCcw, Calculator } from "lucide-react"
 import { fetchOfficialResults } from "@/lib/api"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
@@ -44,8 +41,6 @@ export default function StandingsCalculator() {
   const [fixtures, setFixtures] = useState<Match[]>(initialFixtures)
 
   const [activeTab, setActiveTab] = useState("standings")
-  const [isCalculating, setIsCalculating] = useState(false)
-  const [lastCalculated, setLastCalculated] = useState<Date | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const hasInitializedRef = useRef(false)
 
@@ -146,7 +141,6 @@ export default function StandingsCalculator() {
     // para que las flechas comparen contra la jornada oficial, no la base
     setInitialStandings(calculatedTeams)
     setTeams(calculatedTeams)
-    setLastCalculated(new Date())
   }, [fixtures])
 
   // Cargar resultados oficiales al iniciar
@@ -281,8 +275,6 @@ export default function StandingsCalculator() {
   const applyPredictionsAndCalculate = (results: Record<number, { home: string; away: string }>) => {
     console.log("applyPredictionsAndCalculate llamado con:", results)
 
-    setIsCalculating(true)
-
     try {
       // Crear una copia de los fixtures
       const updatedFixtures = [...fixtures]
@@ -320,7 +312,6 @@ export default function StandingsCalculator() {
       // Actualizar el estado
       setFixtures(updatedFixtures)
       setTeams(calculatedTeams)
-      setLastCalculated(new Date())
 
       // Cambiar a la pestaña de clasificación
       setActiveTab("standings")
@@ -336,8 +327,6 @@ export default function StandingsCalculator() {
         description: "Ocurrió un error al calcular la clasificación",
         variant: "destructive",
       })
-    } finally {
-      setIsCalculating(false)
     }
   }
 
@@ -411,8 +400,6 @@ export default function StandingsCalculator() {
   // Funcion calculateNewStandings
   const calculateNewStandings = () => {
     console.log("calculateNewStandings llamado")
-    setIsCalculating(true)
-
     try {
       console.log("Calculando nueva clasificación con resultados temporales:", tempResults)
 
@@ -446,7 +433,6 @@ export default function StandingsCalculator() {
       // Actualizar el estado
       setTeams(calculatedTeams)
       setFixtures(updatedFixtures)
-      setLastCalculated(new Date())
 
       toast({
         title: "Éxito",
@@ -459,15 +445,7 @@ export default function StandingsCalculator() {
         description: "Ocurrió un error al calcular la clasificación",
         variant: "destructive",
       })
-    } finally {
-      // Asegurarnos de que siempre se restablezca el estado de cálculo
-      setIsCalculating(false)
     }
-  }
-
-  const handleCalculateStandingsClick = () => {
-    sendGAEvent("calculate", "standings", "Calcular clasificación")
-    calculateNewStandings()
   }
 
   // Funcion resetSimulation
@@ -499,7 +477,6 @@ export default function StandingsCalculator() {
     // Calcular la clasificación con los fixtures reseteados
     const calculatedTeams = calculateStandings(initialTeams, resetFixtures, playedMatches)
     setTeams(calculatedTeams)
-    setLastCalculated(new Date())
 
     toast({
       title: "Reinicio",
@@ -510,93 +487,41 @@ export default function StandingsCalculator() {
   // Return con las pestanas
   return (
     <>
-      <div className="space-y-4 sm:space-y-6 max-w-7xl mx-auto">
-        {isLoading ? (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
-            <span className="ml-3">Cargando resultados oficiales...</span>
-          </div>
-        ) : (
-          <Card className="w-full overflow-hidden">
-            <CardContent className="p-3 sm:p-6">
-              <div className="mb-4 sm:mb-6">
-                <Tabs defaultValue="standings" value={activeTab} onValueChange={handleTabChange}>
-                  <div className="sticky top-0 z-10 -mx-3 mb-4 border-b bg-background/95 px-3 py-2 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:p-0">
-                    <TabsList className="tabs-list mobile-tabs-grid w-full grid grid-cols-3 gap-1 rounded-xl">
-                      <TabsTrigger
-                        value="standings"
-                        className="px-2 sm:px-3 py-2.5 text-[11px] leading-tight sm:text-sm whitespace-normal h-auto"
-                      >
-                        Clasificación
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="predictions_ai"
-                        className="px-2 sm:px-3 py-2.5 text-[11px] leading-tight sm:text-sm whitespace-normal h-auto"
-                      >
-                        Predicciones IA
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="team_objectives"
-                        className="px-2 sm:px-3 py-2.5 text-[11px] leading-tight sm:text-sm whitespace-normal h-auto"
-                      >
-                        Objetivos
-                      </TabsTrigger>
-                    </TabsList>
-                  </div>
+      <div className="mx-auto max-w-[1480px]">
+        <Tabs defaultValue="standings" value={activeTab} onValueChange={handleTabChange}>
+            <div className="mb-4 rounded-xl border bg-card p-1 shadow-sm sm:mb-6 sm:w-fit">
+              <TabsList className="tabs-list grid h-auto w-full grid-cols-3 gap-1 bg-transparent p-0 sm:w-[520px]">
+                <TabsTrigger value="standings" className="min-h-10 rounded-lg px-3 text-xs shadow-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:text-sm">
+                  Clasificación
+                </TabsTrigger>
+                <TabsTrigger value="predictions_ai" className="min-h-10 rounded-lg px-3 text-xs shadow-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:text-sm">
+                  Predicciones IA
+                </TabsTrigger>
+                <TabsTrigger value="team_objectives" className="min-h-10 rounded-lg px-3 text-xs shadow-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:text-sm">
+                  Objetivos
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
-                  <TabsContent value="standings">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-                      <div className="order-2 lg:order-1">
-                        <StandingsTable
-                          teams={teams}
-                          initialStandings={initialStandings}
-                          resetSimulation={resetSimulation}
-                          lastCalculated={lastCalculated}
-                          className="standings-table"
-                        />
-                      </div>
-                      <div className="order-1 lg:order-2">
-                        <MatchFixtures
-                          fixtures={fixtures}
-                          teams={teams}
-                          tempResults={tempResults}
-                          updateTempResult={updateTempResult}
-                          className="match-fixtures"
-                        />
-                        <div className="mt-4 sm:mt-6 flex flex-wrap justify-center gap-3 sm:gap-4 mobile-action-buttons">
-                          <Button
-                            onClick={handleCalculateStandingsClick}
-                            className="btn-primary w-full sm:w-auto h-10 sm:h-10"
-                            disabled={isCalculating}
-                            size="sm"
-                          >
-                            {isCalculating ? (
-                              <>
-                                <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full"></div>
-                                Calculando...
-                              </>
-                            ) : (
-                              <>
-                                <Calculator className="h-4 w-4 mr-2" />
-                                Calcular Clasificación
-                              </>
-                            )}
-                          </Button>
-                          <Button
-                            onClick={resetSimulation}
-                            variant="outline"
-                            className="hover:bg-primary/10 w-full sm:w-auto h-10 sm:h-10"
-                            size="sm"
-                          >
-                            <RotateCcw className="h-4 w-4 mr-2" />
-                            Reiniciar
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </TabsContent>
+            <TabsContent value="standings" className="mt-0">
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
+                <div className="order-2 lg:order-1">
+                  <StandingsTable teams={teams} initialStandings={initialStandings} className="standings-table" />
+                </div>
+                <div className="order-1 lg:order-2">
+                  <MatchFixtures
+                    fixtures={fixtures}
+                    teams={teams}
+                    tempResults={tempResults}
+                    updateTempResult={updateTempResult}
+                    onReset={resetSimulation}
+                    className="match-fixtures"
+                  />
+                </div>
+              </div>
+            </TabsContent>
 
-                  <TabsContent value="predictions_ai">
+            <TabsContent value="predictions_ai" className="mt-0 rounded-xl border bg-card p-4 shadow-sm sm:p-6">
                     <MatchPredictions
                       matches={fixtures}
                       teams={teams}
@@ -608,16 +533,12 @@ export default function StandingsCalculator() {
                       }}
                       setActiveTab={setActiveTab}
                     />
-                  </TabsContent>
+            </TabsContent>
 
-                  <TabsContent value="team_objectives">
-                    <TeamPredictions teams={teams} fixtures={fixtures} />
-                  </TabsContent>
-                </Tabs>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+            <TabsContent value="team_objectives" className="mt-0 rounded-xl border bg-card p-4 shadow-sm sm:p-6">
+              <TeamPredictions teams={teams} fixtures={fixtures} />
+            </TabsContent>
+        </Tabs>
       </div>
       <TutorialGuide />
       <Toaster />

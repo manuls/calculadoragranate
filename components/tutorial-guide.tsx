@@ -23,23 +23,16 @@ const tutorialSteps = [
     position: "bottom",
   },
   {
-    title: "Tabla de Clasificación",
-    description:
-      "Aquí puedes ver la clasificación actual de los equipos. Los colores indican ascenso directo, playoff y descenso.",
-    target: ".standings-table",
-    position: "left",
-  },
-  {
-    title: "Partidos Pendientes",
-    description: "Introduce los resultados de los partidos pendientes para ver cómo afectarían a la clasificación.",
+    title: "Simula una jornada",
+    description: "Elige la jornada e introduce los marcadores. La clasificación se actualiza automáticamente mientras escribes.",
     target: ".match-fixtures",
     position: "right",
   },
   {
-    title: "Calcular Clasificación",
-    description: "Después de introducir los resultados, pulsa este botón para actualizar la tabla de clasificación.",
-    target: ".btn-primary",
-    position: "top",
+    title: "Consulta la clasificación",
+    description: "Aquí puedes ver al instante cómo afectan tus resultados. Las marcas laterales indican ascenso, playoff y descenso.",
+    target: ".standings-table",
+    position: "left",
   },
   {
     title: "Predicciones IA",
@@ -80,19 +73,6 @@ export default function TutorialGuide({ onComplete }: TutorialGuideProps) {
       console.log(`GA Event: ${eventName}`, eventParams)
     }
   }
-
-  // Comprobar si es la primera visita del usuario
-  useEffect(() => {
-    const hasSeenTutorial = localStorage.getItem("hasSeenTutorial")
-    if (!hasSeenTutorial) {
-      // Pequeño retraso para asegurar que la interfaz está cargada
-      const timer = setTimeout(() => {
-        setIsOpen(true)
-        sendGAEvent("tutorial_auto_start")
-      }, 1000)
-      return () => clearTimeout(timer)
-    }
-  }, [])
 
   // Posicionar el tooltip y el resaltado
   useEffect(() => {
