@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import { motion } from "framer-motion"
 import { ArrowDown, ArrowUp, Minus } from "lucide-react"
 import EnhancedShareButtons from "./enhanced-share-buttons"
 import type { Team } from "@/lib/types"
@@ -53,8 +54,18 @@ export default function StandingsTable({ teams, initialStandings, className }: S
                 const isPontevedra = team.name === "Pontevedra CF"
 
                 return (
-                  <tr
+                  <motion.tr
                     key={team.id}
+                    layout
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{
+                      duration: 0.4,
+                      type: "spring",
+                      stiffness: 100,
+                      damping: 15,
+                    }}
                     className={cn(
                       "border-b border-l-4 last:border-b-0 hover:bg-muted/45",
                       zoneStyles(position),
@@ -88,7 +99,7 @@ export default function StandingsTable({ teams, initialStandings, className }: S
                     <td className="hidden px-2 py-2.5 text-center tabular-nums sm:table-cell">{team.goalsAgainst}</td>
                     <td className="px-2 py-2.5 text-center tabular-nums">{team.goalsFor - team.goalsAgainst}</td>
                     <td className="px-2 py-2.5 text-center font-bold tabular-nums text-foreground">{team.points}</td>
-                  </tr>
+                  </motion.tr>
                 )
               })}
             </tbody>
