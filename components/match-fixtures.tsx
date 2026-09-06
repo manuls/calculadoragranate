@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react"
 import Image from "next/image"
 import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { Match, Team } from "@/lib/types"
@@ -37,29 +36,21 @@ export default function MatchFixtures({
   className,
 }: MatchFixturesProps) {
   const [activeMatchday, setActiveMatchday] = useState("")
-  const [showFeaturedOnly, setShowFeaturedOnly] = useState(false)
 
   const teamsById = useMemo(() => new Map(teams.map((team) => [team.id, team])), [teams])
-  const featuredTeamIds = useMemo(
-    () => new Set([PONTEVEDRA_TEAM_ID, ...teams.slice(0, 5).map((team) => team.id)]),
-    [teams],
-  )
 
   const matchdayGroups = useMemo(
     () =>
       fixtures.reduce(
         (groups, match) => {
-          const isFeatured = featuredTeamIds.has(match.homeTeamId) || featuredTeamIds.has(match.awayTeamId)
-          if (!showFeaturedOnly || isFeatured) {
-            const matchday = String(match.matchday)
-            groups[matchday] ??= []
-            groups[matchday].push(match)
-          }
+          const matchday = String(match.matchday)
+          groups[matchday] ??= []
+          groups[matchday].push(match)
           return groups
         },
         {} as Record<string, Match[]>,
       ),
-    [fixtures, showFeaturedOnly, featuredTeamIds],
+    [fixtures],
   )
 
   const sortedMatchdays = useMemo(
@@ -121,7 +112,7 @@ export default function MatchFixtures({
         </div>
       </div>
 
-      <div className="mt-5 flex flex-col gap-3 border-y py-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-5 flex items-center border-y py-4">
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
@@ -155,14 +146,6 @@ export default function MatchFixtures({
           </Button>
         </div>
 
-        <label htmlFor="show-featured" className="flex cursor-pointer items-center gap-2 text-sm text-muted-foreground">
-          <Checkbox
-            id="show-featured"
-            checked={showFeaturedOnly}
-            onCheckedChange={(checked) => setShowFeaturedOnly(Boolean(checked))}
-          />
-          Solo Pontevedra y rivales directos
-        </label>
       </div>
 
       <div className="mt-4 divide-y rounded-lg border bg-background">
