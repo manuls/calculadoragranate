@@ -14,7 +14,7 @@ const ids = new Map(aliases.flatMap(([id, names]) => names.map((name) => [normal
 for (const team of baseline.initialTeams) ids.set(normalize(team.name), team.id);
 const content = (html: string, tag: string, css: string) => html.match(new RegExp(`<${tag}\\b[^>]*class=["'][^"']*\\b${css}\\b[^"']*["'][^>]*>([\\s\\S]*?)<\\/${tag}>`, "i"))?.[1] ?? "";
 
-export async function fetchAsGranateFallback(base: Competition): Promise<Competition> {
+export async function fetchAsGranateCompetition(base: Competition): Promise<Competition> {
   const deadline = AbortSignal.timeout(45000);
   async function read(url: string) {
     const response = await fetch(url, { cache: "no-store", signal: deadline, headers: { "User-Agent": "Mozilla/5.0 (compatible; CalculadoraGranate/1.0)", Accept: "text/html" } });

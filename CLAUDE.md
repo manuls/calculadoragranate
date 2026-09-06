@@ -68,7 +68,7 @@ CRON_SECRET=...                # Token para autorizar cron jobs
 
 ### Actualización Automática de Resultados
 - **Ruta**: `/api/cron/update-results`
-- **Schedule**: Diario 06:00 UTC (`0 6 * * *`)
+- **Schedule**: Domingos a las 20:30 de Madrid (`30 18 * * 0` y `30 19 * * 0`, con comprobación del huso horario en la ruta)
 - **Configuración**: `vercel.json`
 
 ## Mapeo de Equipos (BDFutbol → App)
@@ -112,7 +112,7 @@ pnpm run update:data
 node scripts/update-season-data.mjs --main-file /tmp/bdfutbol-main.html --results-file /tmp/bdfutbol-rfef1.html
 
 # Probar cron manualmente
-curl "https://calculadora.pontevedracf.net/api/cron/update-results?matchday=2" \
+curl "https://calculadora.pontevedracf.net/api/cron/update-results?force=1" \
   -H "Authorization: Bearer $CRON_SECRET"
 
 # Scraping manual de BDFutbol

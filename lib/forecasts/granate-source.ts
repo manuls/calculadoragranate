@@ -3,7 +3,7 @@ import baseline from "./granate-baseline";
 import type { Competition, CompetitionMatch, CompetitionTeam } from "./model-types";
 import { latestSavedCompetition } from "./prediction-archive";
 import { withStoredResults } from "./official-results";
-import { fetchAsGranateFallback } from "./as-granate-fallback";
+import { fetchAsGranateCompetition } from "./as-granate-fallback";
 
 const sourceUrl = baseline.sourceUrl;
 const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -67,15 +67,19 @@ async function fetchSource(url: string) {
 }
 
 const getSourceCompetition = unstable_cache(async (): Promise<Competition> => {
+  const saved = await latestSavedCompetition(baseline.season) ?? granateBaseline();
+  try {
+    return await fetchAsGranateCompetition(saved);
+  } catch (error) {
+    console.warn("No se ha actualizado AS:", error instanceof Error ? error.message : "fallo de consulta");
+  }
   try {
     const [table, results] = await Promise.all([fetchSource(sourceUrl), fetchSource(`${sourceUrl}?tab=results`)]);
     return parseGranateCompetition(table, results);
   } catch (error) {
     console.warn("No se ha actualizado BDFutbol:", error instanceof Error ? error.message : "fallo de consulta");
-    const saved = await latestSavedCompetition(baseline.season) ?? granateBaseline();
-    try { return await fetchAsGranateFallback(saved); }
-    catch (fallbackError) { console.warn("No se ha actualizado AS:", fallbackError instanceof Error ? fallbackError.message : "fallo de consulta"); return saved; }
+    return saved;
   }
-}, ["forecast-granate-complete-season-v4"], { revalidate: 3600, tags: ["forecast-source"] });
+}, ["forecast-granate-complete-season-v5"], { revalidate: 3600, tags: ["forecast-source"] });
 
-export const getGranateCompetition = unstable_cache(async () => withStoredResults(await getSourceCompetition()), ["calculadora-shared-competition-v1"], { revalidate: 3600, tags: ["forecast-source"] });
+export const getGranateCompetition = unstable_cache(async () => withStoredResults(await getSourceCompetition()), ["calculadora-shared-competition-v2"], { revalidate: 3600, tags: ["forecast-source"] });
