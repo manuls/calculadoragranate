@@ -40,14 +40,6 @@
 .cutDetails p { color: #72717a; line-height: 1.8; margin-top: 12px; }
 .scenarioNotice { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 14px; margin-bottom: 16px; background: #eee5f5; color: #594378; border-radius: 8px; font-size: .875rem; }
 .scenarioNotice button { background: white; border: 0; border-radius: 5px; padding: 7px 10px; color: #594378; }
-.scenarioFields { border: 0; margin: 15px 0; padding: 0; min-width: 0; }
-.scenarioMatch { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: .8125rem; }
-.scenarioMatch > div { display: flex; gap: 5px; align-items: center; }
-.scenarioMatch input { width: 44px; height: 40px; border: 1px solid #ccc1c5; border-radius: 5px; text-align: center; background: white; color: var(--ink); }
-.scenarioActions { display: flex; gap: 10px; flex-wrap: wrap; }
-.scenarioActions button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 12px 16px; border: 1px solid var(--wine); border-radius: 7px; background: var(--wine); color: white; font-size: .875rem; }
-.scenarioActions button + button { background: white; color: var(--wine); }
-.scenarioActions button:disabled { opacity: .55; cursor: wait; }
 .historyPanel { margin-top: 22px; }
 .historyFilter { display: flex; gap: 8px; align-items: center; font-size: .875rem; color: #72717a; }
 .historyFilter select { background: white; color: var(--ink); border: 1px solid var(--line); padding: 8px 12px; border-radius: 5px; font: inherit; }
@@ -246,9 +238,7 @@
 :global(.dark) .app { --ink: #e9e5e8; --wine: #e3a1b8; --line: #42303b; background: hsl(var(--background)); }
 :global(.dark) .panel, :global(.dark) .target, :global(.dark) .article { background: hsl(var(--card)); color: var(--ink); }
 :global(.dark) .smallNote, :global(.dark) .targetExplanation, :global(.dark) .article p { color: #bdb1b9; }
-:global(.dark) .scenarioMatch input, :global(.dark) .historyFilter select { background: #281d25; color: var(--ink); }
-:global(.dark) .scenarioActions button { color: #281d25; }
-:global(.dark) .scenarioActions button + button { color: #8c1238; }
+:global(.dark) .historyFilter select { background: #281d25; color: var(--ink); }
 :global(.dark) .hero { background: #09243a; }
 :global(.dark) .standings tr[data-team="true"] { background: #402432; color: #ffddea; }
 :global(.dark) .snapshot, :global(.dark) .tabs { background: #281d25; }

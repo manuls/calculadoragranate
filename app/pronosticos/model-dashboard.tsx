@@ -4,7 +4,7 @@ import { loadScenario, saveScenario } from "@/lib/forecasts/scenario-storage";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, ChartNoAxesCombined, Flag, RotateCcw, ShieldCheck, Trophy } from "lucide-react";
+import { ArrowRight, ChartNoAxesCombined, Flag, ShieldCheck, Trophy } from "lucide-react";
 import type { ForecastReport, HistoricalSummary } from "@/lib/forecasts/forecast-service";
 import type { FixedScore, Objective, Simulation } from "@/lib/forecasts/model-types";
 import styles from "./forecast.module.css";
@@ -18,15 +18,8 @@ export function ModelDashboard({ report, historical }: { report: ForecastReport;
   const [objective, setObjective] = useState<Objective>("survival");
   const [roundIndex, setRoundIndex] = useState(report.trend.length - 1);
   const [simulation, setSimulation] = useState(report.simulation);
-  const [scores, setScores] = useState<Record<number, { home: string; away: string }>>({});
-  const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [historyGroup, setHistoryGroup] = useState("1");
-  const [scenarioRound, setScenarioRound] = useState(() => {
-    const pending = report.input.competition.matches.filter((match) => match.homeGoals === null);
-    const club = pending.filter((match) => match.homeId === 3 || match.awayId === 3);
-    return Math.min(...(club.length ? club : pending).map((match) => match.round), 38);
-  });
   const workerRef = useRef<Worker | null>(null);
   useEffect(() => () => workerRef.current?.terminate(), []);
   const { competition } = report.input;
@@ -39,8 +32,6 @@ export function ModelDashboard({ report, historical }: { report: ForecastReport;
   const completed = competition.matches.filter((match) => match.homeGoals !== null && (match.homeId === 3 || match.awayId === 3)).sort((a, b) => (b.date ?? "").localeCompare(a.date ?? "") || b.round - a.round).slice(0, 5);
   const pending = competition.matches.filter((match) => match.homeGoals === null).sort((a, b) => a.round - b.round);
   const next = pending.filter((match) => match.homeId === 3 || match.awayId === 3).slice(0, 5);
-  const scenarioRounds = [...new Set(pending.map((match) => match.round))];
-  const scenarioMatches = pending.filter((match) => match.round === scenarioRound);
   const snapshot = report.trend[roundIndex];
   const needed = target.points === null ? null : Math.max(0, target.points - team.points);
   const scenarioActive = simulation.fixedScores.length > 0;
@@ -49,18 +40,9 @@ export function ModelDashboard({ report, historical }: { report: ForecastReport;
   const y = (value: number) => 205 - value * 1.7;
   const path = report.trend.map((row, i) => `${i ? "L" : "M"}${x(i)},${y(row[objective])}`).join(" ");
 
-  function resetScenario() { workerRef.current?.terminate(); workerRef.current = null; setBusy(false); setSimulation(report.simulation); setScores({}); setError(""); }
-  function calculateScenario(scenarioScores = scores) {
-    const fixedScores: FixedScore[] = [];
-    for (const [matchId, score] of Object.entries(scenarioScores)) {
-      if (score.home === "" && score.away === "") continue;
-      if (score.home === "" || score.away === "") { setError("Completa los dos marcadores de cada partido que quieras fijar."); return; }
-      const homeGoals = Number(score.home), awayGoals = Number(score.away);
-      if (![homeGoals, awayGoals].every((value) => Number.isInteger(value) && value >= 0 && value <= 15)) { setError("Los marcadores deben ser números enteros entre 0 y 15."); return; }
-      fixedScores.push({ matchId: Number(matchId), homeGoals, awayGoals });
-    }
-    if (!fixedScores.length) { resetScenario(); return; }
-    setError(""); setBusy(true);
+  function resetScenario() { workerRef.current?.terminate(); workerRef.current = null; setSimulation(report.simulation); setError(""); }
+  function calculateScenario(fixedScores: FixedScore[]) {
+    setError("");
     workerRef.current?.terminate();
     try {
       const worker = new Worker(new URL("./simulation-worker.ts", import.meta.url));
@@ -68,20 +50,18 @@ export function ModelDashboard({ report, historical }: { report: ForecastReport;
       worker.onmessage = (event: MessageEvent<{ success: boolean; simulation?: Simulation; message?: string }>) => {
         if (event.data.success && event.data.simulation) setSimulation(event.data.simulation);
         else setError(event.data.message ?? "No se pudo calcular el escenario.");
-        setBusy(false); worker.terminate(); workerRef.current = null;
+        worker.terminate(); workerRef.current = null;
       };
-      worker.onerror = () => { setError("No se pudo iniciar el cálculo. Vuelve a intentarlo."); setBusy(false); worker.terminate(); workerRef.current = null; };
+      worker.onerror = () => { setError("No se pudo iniciar el cálculo. Vuelve a intentarlo."); worker.terminate(); workerRef.current = null; };
       worker.postMessage({ input: report.input, fixedScores, seed: report.simulation.seed });
-    } catch { setError("Este navegador no permite iniciar el cálculo de escenarios."); setBusy(false); }
+    } catch { setError("Este navegador no permite iniciar el cálculo de escenarios."); }
   }
 
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get("escenario") !== "calculadora") return;
     const imported = loadScenario(report.input.competition);
     if (!imported.length) { setError("No quedan marcadores pendientes en el escenario guardado. Se muestra la situación real."); return; }
-    const importedScores = Object.fromEntries(imported.map((score) => [score.matchId, { home: String(score.homeGoals), away: String(score.awayGoals) }]));
-    setScores(importedScores);
-    calculateScenario(importedScores);
+    calculateScenario(imported);
   }, [report]);
 
   return <div className={styles.app}>
@@ -90,6 +70,7 @@ export function ModelDashboard({ report, historical }: { report: ForecastReport;
       {competition.availability === "saved" && <p className={styles.dataWarning}>La fuente no se ha podido actualizar. Los cálculos usan la última copia disponible, fechada arriba.</p>}
       <div className={styles.heading}><div><p className={styles.eyebrow}>EL CAMINO DEL PONTEVEDRA</p><h1>Cada jornada cuenta.</h1></div><span className={styles.round}>Temporada {competition.season}<strong>{team.played} de 38 partidos jugados</strong></span></div>
       <div className={styles.scenarioActions}><Link href="/?escenario=pronosticos" onClick={(event) => { if (!saveScenario(competition, simulation.fixedScores)) { event.preventDefault(); setError("Activa el almacenamiento de sesión para trasladar el escenario."); } }}>{scenarioActive ? "Usar este escenario en la calculadora →" : "Ir a la calculadora →"}</Link></div>
+      {error && <p role="alert" className={styles.dataWarning}>{error}</p>}
       {scenarioActive && <div className={styles.scenarioNotice} role="status"><strong>Escenario hipotético · {simulation.fixedScores.length} resultados fijados</strong><button type="button" onClick={resetScenario}>Volver a la situación real</button></div>}
       <section className={styles.hero} aria-labelledby="model-team-title"><div className={styles.teamHeader}><div className={styles.teamIdentity}><div className={styles.crest}><Image src="/assets/escudos/pontevedra-cf.png" alt="" width={58} height={66} /></div><div><h2 id="model-team-title">Pontevedra CF</h2><p>{team.position}.º en la fuente <span>·</span> {team.points} puntos <span>·</span> {remaining} partidos pendientes</p></div></div><span className={styles.modelBadge}>Modelo experimental</span></div>
         <div className={styles.probabilities}>{objectives.map(({ id, label, zone, Icon }) => {
@@ -111,7 +92,6 @@ export function ModelDashboard({ report, historical }: { report: ForecastReport;
         </section>
         <section className={styles.panel}><div className={styles.panelHeading}><div><p className={styles.eyebrow}>LA RACHA</p><h2>Últimos resultados</h2></div><span className={styles.pill}>{completed.length} disponibles</span></div>{completed.map((match) => <div className={styles.realMatch} key={match.id}><div className={styles.match}><span className={styles.matchRound}>J{match.round}</span><span className={styles.homeTeam}>{names.get(match.homeId)}</span><strong className={styles.score}>{match.homeGoals}–{match.awayGoals}</strong><span>{names.get(match.awayId)}</span></div>{match.date && <span className={styles.matchSource}>{displayDate(`${match.date}T12:00:00Z`)}</span>}</div>)}{completed.length === 0 && <p>Todavía no hay resultados en esta temporada.</p>}</section>
         <section className={styles.panel}><div className={styles.panelHeading}><div><p className={styles.eyebrow}>LO QUE VIENE</p><h2>Próximos partidos</h2></div><span className={styles.pill}>{remaining} pendientes</span></div><div className={styles.realFixtures}>{next.map((match) => <div className={styles.realFixture} key={match.id}><span className={styles.eyebrow}>JORNADA {match.round} · {match.homeId === 3 ? "LOCAL" : "VISITANTE"}</span><strong>{names.get(match.homeId === 3 ? match.awayId : match.homeId)}</strong><span>{match.date ? displayDate(`${match.date}T12:00:00Z`) : "Fecha pendiente de confirmar"}</span></div>)}</div><p className={styles.smallNote}>Ordenados por jornada. Las fechas y los horarios pueden cambiar.</p></section>
-        <section className={styles.panel} aria-labelledby="scenario-title"><div className={styles.panelHeading}><div><p className={styles.eyebrow}>¿Y SI…?</p><h2 id="scenario-title">Dibuja una jornada</h2></div></div><p className={styles.smallNote}>Fija marcadores del Pontevedra o sus rivales. Deja los demás vacíos para que el modelo los simule. Cambiar de jornada restablece el escenario.</p><label className={styles.historyFilter}>Jornada del escenario <select value={scenarioRound} disabled={busy || !scenarioRounds.length} onChange={(event) => { resetScenario(); setScenarioRound(Number(event.target.value)); }}>{scenarioRounds.map((round) => <option value={round} key={round}>Jornada {round}</option>)}</select></label><form onSubmit={(event) => { event.preventDefault(); calculateScenario(); }}><fieldset className={styles.scenarioFields} disabled={busy}><legend className={styles.srOnly}>Marcadores hipotéticos</legend>{scenarioMatches.map((match) => <div className={styles.scenarioMatch} key={match.id}><span>J{match.round} · {names.get(match.homeId)} — {names.get(match.awayId)}</span><div><input type="number" inputMode="numeric" min="0" max="15" step="1" aria-label={`Goles de ${names.get(match.homeId)} en J${match.round}`} placeholder="—" value={scores[match.id]?.home ?? ""} onChange={(event) => setScores({ ...scores, [match.id]: { home: event.target.value, away: scores[match.id]?.away ?? "" } })} /><span aria-hidden="true">–</span><input type="number" inputMode="numeric" min="0" max="15" step="1" aria-label={`Goles de ${names.get(match.awayId)} en J${match.round}`} placeholder="—" value={scores[match.id]?.away ?? ""} onChange={(event) => setScores({ ...scores, [match.id]: { home: scores[match.id]?.home ?? "", away: event.target.value } })} /></div></div>)}</fieldset><div className={styles.scenarioActions}><button type="submit" disabled={busy || !scenarioMatches.length}>{busy ? "Simulando…" : "Calcular escenario"}</button><button type="button" onClick={resetScenario}><RotateCcw size={15} aria-hidden="true" /> Restablecer</button></div>{error && <p role="alert" className={styles.dataWarning}>{error}</p>}<p role="status" className={styles.smallNote}>{busy ? "El cálculo se ejecuta en tu dispositivo sin bloquear el panel." : scenarioActive ? "Escenario aplicado. Las probabilidades de arriba ya incluyen tus resultados." : "Los escenarios no modifican resultados reales."}</p></form></section>
       </div><section className={`${styles.panel} ${styles.standings}`}><div className={styles.panelHeading}><div><p className={styles.eyebrow}>GRUPO 1</p><h2>Clasificación y opciones</h2></div></div><p className={styles.smallNote}>La tabla muestra la situación real. La última columna estima el descenso{scenarioActive ? " con tu escenario" : ""}.</p><div className={styles.tableScroll}><table><caption className={styles.srOnly}>Clasificación de {competition.source} y probabilidad modelada de descenso</caption><thead><tr><th scope="col">#</th><th scope="col">Equipo</th><th scope="col">PJ</th><th scope="col">Pts</th><th scope="col">↓ %</th></tr></thead><tbody>{competition.teams.map((row) => <tr key={row.id} data-team={row.id === 3} data-zone={row.position === 1 ? "champion" : row.position <= 5 ? "playoff" : row.position >= 16 ? "relegation" : "middle"}><td><span className={styles.position}>{row.position}</span></td><th scope="row">{row.name}</th><td>{row.played}</td><td>{row.points}</td><td>{probability(100 - rowsById.get(row.id)!.survival)}</td></tr>)}</tbody></table></div><div className={styles.legend}><span><i data-zone="champion" />Campeón</span><span><i data-zone="playoff" />Playoff</span><span><i data-zone="relegation" />Descenso</span></div><div className={styles.gaps}><div><span>Proyección del Pontevedra</span><strong>{number(selected.expectedPoints)} pts</strong></div><div><span>Intervalo central del 80 %</span><strong>{selected.lowPoints}–{selected.highPoints} pts</strong></div></div><p className={styles.smallNote}>La posición publicada puede depender de los desempates. Partidos restantes: 38 menos los jugados por cada equipo.</p></section></div>
       <section className={`${styles.panel} ${styles.historyPanel}`} aria-labelledby="history-title"><div className={styles.panelHeading}><div><p className={styles.eyebrow}>LO QUE NOS ENSEÑA LA HISTORIA</p><h2 id="history-title">Dónde estuvo el corte</h2></div><label className={styles.historyFilter}>Grupo <select value={historyGroup} onChange={(event) => setHistoryGroup(event.target.value)}><option value="1">Grupo 1</option><option value="2">Grupo 2</option><option value="all">Ambos</option></select></label></div><div className={styles.tableScroll}><table className={styles.historyTable}><caption className={styles.srOnly}>Puntos de las posiciones finales en temporadas anteriores</caption><thead><tr><th>Temporada</th><th>Grupo</th><th>1.º</th><th>5.º</th><th>6.º</th><th>15.º</th><th>16.º</th></tr></thead><tbody>{historical.filter((row) => historyGroup === "all" || String(row.group) === historyGroup).map((row) => <tr key={`${row.season}-${row.group}`}><th scope="row"><a href={row.sourceUrl} target="_blank" rel="noreferrer">{row.season} ↗</a></th><td>{row.group}</td><td>{row.champion}</td><td>{row.fifth}</td><td>{row.sixth}</td><td><strong>{row.fifteenth}</strong></td><td>{row.sixteenth}</td></tr>)}</tbody></table></div><p className={styles.smallNote}>15.º: último salvado. 16.º: primer descendido por posición. Los mismos puntos pueden dar desenlaces distintos por los desempates; las tablas conservan los ajustes oficiales de puntos. No incluyen posteriores repescas administrativas.</p></section>
       <aside className={styles.explanation}><div className={styles.explanationIcon}><ChartNoAxesCombined size={25} aria-hidden="true" /></div><div><h2>Fútbol, con un poco de perspectiva.</h2><p>Simulamos {number(simulation.iterations, 0)} finales de temporada con históricos, resultados, rivales y localía. El modelo aún no está calibrado: sus probabilidades orientan, no certifican resultados.</p></div><Link href="/pronosticos/metodologia">Cómo se calcula <ArrowRight size={17} aria-hidden="true" /></Link></aside><footer className={styles.footer}><span>Calculadora Granate · Pronósticos · {simulation.version}</span><span>Cálculo: {displayDate(report.generatedAt)}</span><Link href="/pronosticos/metodologia">Metodología</Link></footer>
