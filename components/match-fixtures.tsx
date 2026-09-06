@@ -210,10 +210,7 @@ export default function MatchFixtures({
       </div>
 
       <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-        Clasificación oficial tras la jornada 1. Calendario contrastado con{" "}
-        <a href="https://www.bdfutbol.com/es/t/t2026-271rf1.html" target="_blank" rel="noopener noreferrer" className="font-medium text-primary hover:underline">
-          BDFutbol
-        </a>.
+        Los resultados oficiales se comparten con Pronósticos y permanecen bloqueados al simular.
       </p>
     </section>
   )
