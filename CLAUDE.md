@@ -68,7 +68,7 @@ CRON_SECRET=...                # Token para autorizar cron jobs
 
 ### Actualización Automática de Resultados
 - **Ruta**: `/api/cron/update-results`
-- **Schedule**: Martes 09:00 UTC (`0 9 * * 2`)
+- **Schedule**: Diario 06:00 UTC (`0 6 * * *`)
 - **Configuración**: `vercel.json`
 
 ## Mapeo de Equipos (BDFutbol → App)
@@ -124,4 +124,4 @@ curl -s "https://www.bdfutbol.com/es/t/t2026-271rf1.html?tab=results" | \
 
 - Los datos iniciales en `lib/data.ts` reflejan la clasificación tras la J1 de 2026/27
 - BDFutbol actualiza resultados poco después de que terminen los partidos
-- El cron se ejecuta los martes a las 09:00 UTC para capturar toda la jornada, incluidos los partidos del lunes
+- El cron actualiza a diario a las 06:00 UTC la competición compartida y su pronóstico. Ver PRONOSTICOS.md.

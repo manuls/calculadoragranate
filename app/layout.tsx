@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { AppNavigation } from "@/components/app-navigation"
 import { AppTitle } from "@/components/app-title"
 import Script from "next/script"
 import { Analytics } from "@vercel/analytics/react"
@@ -76,6 +77,7 @@ export default function RootLayout({
                 <AppTitle />
                 <ThemeToggle />
               </div>
+              <AppNavigation />
             </header>
             <div className="flex-1">{children}</div>
             <footer className="mt-8 border-t bg-card/50 py-6 text-sm text-muted-foreground">

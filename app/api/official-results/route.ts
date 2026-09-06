@@ -1,3 +1,6 @@
+import { revalidateTag } from "next/cache"
+import { getGranateCompetition } from "@/lib/forecasts/granate-source"
+import { officialMatchdays } from "@/lib/forecasts/official-results"
 import { NextResponse } from "next/server"
 import type { MatchdayUpdate } from "@/lib/types"
 import { createClient } from "redis"
@@ -47,8 +50,8 @@ async function writeData(data: { matchdays: MatchdayUpdate[] }) {
 // GET: Obtener resultados oficiales
 export async function GET() {
   try {
-    const data = await readData()
-    console.log("API GET: Datos leídos de Redis:", data)
+    const competition = await getGranateCompetition()
+    const data = { matchdays: officialMatchdays(competition), capturedAt: competition.capturedAt, source: competition.source }
 
     return NextResponse.json({
       success: true,
@@ -91,7 +94,8 @@ export async function POST(request: Request) {
       throw new Error("No se pudo escribir en Redis")
     }
 
-    console.log("API POST: Datos guardados en Redis:", data)
+    revalidateTag("forecast-source")
+    revalidateTag("forecast-report")
 
     return NextResponse.json({
       success: true,

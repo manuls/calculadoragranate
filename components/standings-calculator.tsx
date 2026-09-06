@@ -1,5 +1,5 @@
 "use client"
-import { useState, useRef, useEffect, useCallback } from "react"
+import { useState, useRef, useEffect, useCallback, useMemo } from "react"
 import StandingsTable from "./standings-table"
 import MatchFixtures from "./match-fixtures"
 import type { Team, Match } from "@/lib/types"
@@ -25,11 +25,18 @@ const TeamPredictions = dynamic(() => import("./team-predictions"), {
 })
 
 // Asegurarnos de que el componente principal use los mismos datos
-import { initialTeams, initialFixtures, playedMatches } from "@/lib/data"
+import { initialTeams as savedTeams, initialFixtures as savedFixtures, playedMatches as savedMatches } from "@/lib/data"
 import { calculateStandings, sortTeamsByRules } from "@/lib/standings"
 
-export default function StandingsCalculator() {
-  const baseStandings = sortTeamsByRules(initialTeams, [...playedMatches, ...initialFixtures])
+import type { ForecastReport } from "@/lib/forecasts/forecast-service"
+import { ForecastSummary } from "./forecast-summary"
+import { loadScenario, saveScenario } from "@/lib/forecasts/scenario-storage"
+
+export default function StandingsCalculator({ report }: { report?: ForecastReport } = {}) {
+  const initialTeams = useMemo(() => report ? report.input.competition.teams.map((team) => ({ ...team, logoUrl: savedTeams.find((t) => t.id === team.id)?.logoUrl, initialPosition: team.position, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: team.pointsAdjustment })) : savedTeams, [report])
+  const initialFixtures: Match[] = useMemo(() => report ? report.input.competition.matches.map((match) => ({ id: match.id, matchday: match.round, homeTeamId: match.homeId, awayTeamId: match.awayId, locked: match.homeGoals !== null, result: match.homeGoals === null ? null : { homeGoals: match.homeGoals, awayGoals: match.awayGoals!, isOfficial: true } })) : savedFixtures, [report])
+  const playedMatches = report ? [] : savedMatches
+  const baseStandings = report ? report.input.competition.teams.map((team) => ({ ...team, logoUrl: savedTeams.find((t) => t.id === team.id)?.logoUrl, initialPosition: team.position })) : sortTeamsByRules(initialTeams, [...playedMatches, ...initialFixtures])
 
   // Estado inicial con los equipos de la Primera RFEF Grupo 1
   const [teams, setTeams] = useState<Team[]>(baseStandings)
@@ -41,11 +48,11 @@ export default function StandingsCalculator() {
   const [fixtures, setFixtures] = useState<Match[]>(initialFixtures)
 
   const [activeTab, setActiveTab] = useState("standings")
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(!report)
   const hasInitializedRef = useRef(false)
 
   // Estado para los resultados temporales
-  const [tempResults, setTempResults] = useState<Record<number, { home: string; away: string }>>({})
+  const [tempResults, setTempResults] = useState<Record<number, { home: string; away: string }>>(() => Object.fromEntries(initialFixtures.filter((m) => m.locked && m.result).map((m) => [m.id, { home: String(m.result!.homeGoals), away: String(m.result!.awayGoals) }])))
 
   const { toast } = useToast()
 
@@ -146,6 +153,7 @@ export default function StandingsCalculator() {
   // Cargar resultados oficiales al iniciar
   useEffect(() => {
     const loadOfficialResults = async () => {
+      if (report) return;
       setIsLoading(true)
       try {
         console.log("Cargando resultados oficiales...")
@@ -195,7 +203,7 @@ export default function StandingsCalculator() {
       // Verificar si hay partidos bloqueados
       const hasLockedMatches = fixtures.some((match) => match.locked && match.result)
 
-      if (hasLockedMatches) {
+      if (hasLockedMatches && !report) {
         console.log("Carga inicial completada, calculando clasificación con resultados oficiales...")
         calculateInitialStandings()
       }
@@ -371,30 +379,22 @@ export default function StandingsCalculator() {
   // Función para cargar el estado desde la URL
   const loadStateFromUrl = () => {
     if (typeof window === "undefined") return
-
-    const urlParams = new URLSearchParams(window.location.search)
-    const stateParam = urlParams.get("state")
-
-    if (stateParam) {
-      try {
-        const shareState = JSON.parse(decodeURIComponent(stateParam))
-
-        // Validar que el estado tiene el formato esperado
-        if (shareState && shareState.results) {
-          setTempResults(shareState.results)
-
-          // Calcular la clasificación con los resultados cargados
-          setTimeout(() => calculateNewStandings(), 500)
-
-          toast({
-            title: "Predicción cargada",
-            description: "Se ha cargado una predicción compartida",
-          })
-        }
-      } catch (error) {
-        console.error("Error al cargar el estado desde la URL:", error)
-      }
+    const results = { ...tempResults }
+    let restored = false
+    if (report) for (const score of loadScenario(report.input.competition)) {
+      results[score.matchId] = { home: String(score.homeGoals), away: String(score.awayGoals) }
+      restored = true
     }
+    try {
+      const value = new URLSearchParams(window.location.search).get("state")
+      const shared = value ? JSON.parse(value) : null
+      if (shared?.results) for (const match of fixtures) {
+        const score = shared.results[match.id]
+        if (match.locked || !score || ![Number(score.home), Number(score.away)].every((v) => Number.isInteger(v) && v >= 0 && v <= 15)) continue
+        results[match.id] = { home: String(score.home), away: String(score.away) }; restored = true
+      }
+    } catch { /* Ignorar enlaces de escenario incompatibles. */ }
+    if (restored) { setTempResults(results); applyPredictionsAndCalculate(results) }
   }
 
   // Funcion calculateNewStandings
@@ -450,6 +450,7 @@ export default function StandingsCalculator() {
 
   // Funcion resetSimulation
   const resetSimulation = () => {
+    if (report) saveScenario(report.input.competition, [])
     // Enviar evento a Google Analytics
     sendGAEvent("reset", "standings", "Reiniciar clasificación")
 
@@ -488,6 +489,7 @@ export default function StandingsCalculator() {
   return (
     <>
       <div className="mx-auto max-w-[1480px]">
+        {report && <ForecastSummary report={report} results={tempResults} />}
         <Tabs defaultValue="standings" value={activeTab} onValueChange={handleTabChange}>
             <div className="mb-4 rounded-xl border bg-card p-1 shadow-sm sm:mb-6 sm:w-fit">
               <TabsList className="tabs-list grid h-auto w-full grid-cols-3 gap-1 bg-transparent p-0 sm:w-[520px]">
