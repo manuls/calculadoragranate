@@ -9,3 +9,5 @@ El archivo de Vercel Blob conserva las predicciones ya generadas por Pronóstico
 El cron existente `/api/cron/update-results` actualiza ahora la competición compartida y archiva el pronóstico a diario a las 06:00 UTC. Requiere `CRON_SECRET`; `BLOB_READ_WRITE_TOKEN` permite conservar el historial. El formulario administrativo de resultados continúa guardando en Redis e invalida las cachés comunes.
 
 La metodología vive en `/pronosticos/metodologia`. El modelo sigue siendo experimental y no está calibrado retrospectivamente.
+
+Para regenerar los históricos: `node scripts/forecasts/import-history.mjs --refresh`.

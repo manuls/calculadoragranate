@@ -32,7 +32,7 @@ import type { ForecastReport } from "@/lib/forecasts/forecast-service"
 import { ForecastSummary } from "./forecast-summary"
 import { loadScenario, saveScenario } from "@/lib/forecasts/scenario-storage"
 
-export default function StandingsCalculator({ report }: { report?: ForecastReport } = {}) {
+export default function StandingsCalculator({ report }: { report?: ForecastReport }) {
   const initialTeams = useMemo(() => report ? report.input.competition.teams.map((team) => ({ ...team, logoUrl: savedTeams.find((t) => t.id === team.id)?.logoUrl, initialPosition: team.position, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: team.pointsAdjustment })) : savedTeams, [report])
   const initialFixtures: Match[] = useMemo(() => report ? report.input.competition.matches.map((match) => ({ id: match.id, matchday: match.round, homeTeamId: match.homeId, awayTeamId: match.awayId, locked: match.homeGoals !== null, result: match.homeGoals === null ? null : { homeGoals: match.homeGoals, awayGoals: match.awayGoals!, isOfficial: true } })) : savedFixtures, [report])
   const playedMatches = report ? [] : savedMatches
