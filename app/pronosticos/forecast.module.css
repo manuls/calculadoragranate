@@ -249,3 +249,8 @@
 :global(.dark) .scenarioMatch input, :global(.dark) .historyFilter select { background: #281d25; color: var(--ink); }
 :global(.dark) .scenarioActions button { color: #281d25; }
 :global(.dark) .scenarioActions button + button { color: #8c1238; }
+:global(.dark) .hero { background: #09243a; }
+:global(.dark) .standings tr[data-team="true"] { background: #402432; color: #ffddea; }
+:global(.dark) .snapshot, :global(.dark) .tabs { background: #281d25; }
+:global(.dark) .tabs button[aria-pressed="true"] { background: #402432; color: #ffddea; }
+:global(.dark) .article li, :global(.dark) .eyebrow, :global(.dark) .round, :global(.dark) .target p, :global(.dark) .targetStats span, :global(.dark) .chartSummary > span, :global(.dark) .sliderLabel, :global(.dark) .snapshot > span:last-child, :global(.dark) .gaps span, :global(.dark) .explanation p, :global(.dark) .footer { color: #bdb1b9; }
