@@ -1,7 +1,11 @@
 import type { Competition, FixedScore, HistoricalSeason, ModelInput, Objective, Simulation, TeamStrength } from "./model-types";
 
-export const MODEL_VERSION = "granate-poisson-1.2";
+export const MODEL_VERSION = "granate-poisson-1.3";
 export const PONTEVEDRA_ID = 3;
+// Parámetros prudentes de arranque; pendientes de calibración retrospectiva.
+const PRIOR_MATCHES = 16;
+const ROUND_RETENTION = 0.98;
+const PREVIOUS_SEASON_RETENTION = 0.35;
 const clamp = (value: number, low: number, high: number) => Math.min(high, Math.max(low, value));
 
 export function prepareModel(competition: Competition, history: HistoricalSeason[]): ModelInput {
@@ -22,23 +26,29 @@ export function prepareModel(competition: Competition, history: HistoricalSeason
   const homeMean = weightedHome / totalWeight;
   const awayMean = weightedAway / totalWeight;
   const mean = (homeMean + awayMean) / 2;
-  const previousYear = usable.filter((season) => Number(season.season.slice(0, 4)) === startYear - 1);
-  const priors = competition.teams.map((team): TeamStrength => {
-    const previous = previousYear.flatMap((season) => season.teams).find((candidate) => candidate.id === team.sourceId && !candidate.administrativeNote);
-    return { teamId: team.id, attack: previous ? clamp(1 + 0.35 * (previous.goalsFor / previous.played / mean - 1), 0.6, 1.6) : 1, defense: previous ? clamp(1 + 0.35 * (previous.goalsAgainst / previous.played / mean - 1), 0.6, 1.6) : 1, uncertainty: 0.24 / Math.sqrt(1 + team.played / 8) };
-  });
-  let strengths = priors.map((prior) => ({ ...prior }));
   const played = competition.matches.filter((match) => match.homeGoals !== null && match.awayGoals !== null);
   const lastRound = Math.max(0, ...played.map((match) => match.round));
+  const previousYear = usable.filter((season) => Number(season.season.slice(0, 4)) === startYear - 1);
+  const priors = competition.teams.map((team): TeamStrength => {
+    const previous = previousYear.flatMap((season) => season.teams).find((candidate) => candidate.id === team.sourceId && !candidate.administrativeNote && candidate.played > 0);
+    const evidence = played.reduce((sum, match) => sum + (match.homeId === team.id || match.awayId === team.id ? ROUND_RETENTION ** (lastRound - match.round) : 0), 0);
+    return {
+      teamId: team.id,
+      attack: previous ? clamp(1 + PREVIOUS_SEASON_RETENTION * (previous.goalsFor / previous.played / mean - 1), 0.6, 1.6) : 1,
+      defense: previous ? clamp(1 + PREVIOUS_SEASON_RETENTION * (previous.goalsAgainst / previous.played / mean - 1), 0.6, 1.6) : 1,
+      uncertainty: (previous ? 0.30 : 0.40) / Math.sqrt(1 + evidence / 12),
+    };
+  });
+  let strengths = priors.map((prior) => ({ ...prior }));
   for (let iteration = 0; iteration < 6; iteration++) {
     const byId = new Map(strengths.map((strength) => [strength.teamId, strength]));
     strengths = priors.map((prior) => {
-      let attack = prior.attack * 8, defense = prior.defense * 8, weight = 8;
+      let attack = prior.attack * PRIOR_MATCHES, defense = prior.defense * PRIOR_MATCHES, weight = PRIOR_MATCHES;
       for (const match of played) {
         if (match.homeId !== prior.teamId && match.awayId !== prior.teamId) continue;
         const home = match.homeId === prior.teamId;
         const opponent = byId.get(home ? match.awayId : match.homeId)!;
-        const w = 0.96 ** (lastRound - match.round);
+        const w = ROUND_RETENTION ** (lastRound - match.round);
         attack += w * (home ? match.homeGoals! : match.awayGoals!) / ((home ? homeMean : awayMean) * opponent.defense);
         defense += w * (home ? match.awayGoals! : match.homeGoals!) / ((home ? awayMean : homeMean) * opponent.attack);
         weight += w;
