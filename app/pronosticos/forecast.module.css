@@ -40,7 +40,7 @@
 .cutDetails p { color: #72717a; line-height: 1.8; margin-top: 12px; }
 .scenarioNotice { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 14px; margin-bottom: 16px; background: #eee5f5; color: #594378; border-radius: 8px; font-size: .875rem; }
 .scenarioNotice button { background: white; border: 0; border-radius: 5px; padding: 7px 10px; color: #594378; }
-.historyPanel { margin-top: 22px; }
+.historyPanel { min-width: 0; }
 .historyFilter { display: flex; gap: 8px; align-items: center; font-size: .875rem; color: #72717a; }
 .historyFilter select { background: white; color: var(--ink); border: 1px solid var(--line); padding: 8px 12px; border-radius: 5px; font: inherit; }
 .tableScroll { overflow-x: auto; }
@@ -91,7 +91,7 @@
 .targetStats small { font-size: .875rem; font-weight: 400; letter-spacing: 0; }
 .targetStats span { font-size: .75rem; color: #72717a; }
 .columns { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 22px; align-items: flex-start; }
-.leftColumn { display: grid; gap: 22px; }
+.leftColumn { display: grid; gap: 22px; min-width: 0; }
 .panel { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 24px; min-width: 0; }
 .panelHeading { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 22px; }
 .panelHeading h2 { margin: 0; font-size: 1.2rem; letter-spacing: -.025em; font-weight: 700; }
