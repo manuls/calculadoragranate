@@ -95,6 +95,6 @@ export default function TeamPredictions({ report, results }: TeamPredictionsProp
         <div className="rounded-lg bg-muted/40 p-4"><span className="text-sm text-muted-foreground">Intervalo central del 80 %</span><strong className="block text-2xl tabular-nums">{row.lowPoints}–{row.highPoints}</strong></div>
       </div>
     </div> : <p role="status" className="text-sm text-muted-foreground">{invalid ? "Usa marcadores enteros entre 0 y 15 para calcular el escenario." : calculation.error || "Calculando las opciones…"}</p>}
-    <p className="border-t pt-4 text-sm text-muted-foreground">Basado en {calculation.simulation.iterations.toLocaleString("es-ES")} simulaciones. Son estimaciones orientativas; el modelo aún no está calibrado con temporadas anteriores.</p>
+    <p className="border-t pt-4 text-sm text-muted-foreground">Basado en {calculation.simulation.iterations.toLocaleString("es-ES")} simulaciones. Evaluado con temporadas anteriores, pero la muestra es limitada: las probabilidades siguen siendo orientativas.</p>
   </section>
 }

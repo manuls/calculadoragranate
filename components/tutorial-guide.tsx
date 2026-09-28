@@ -18,7 +18,7 @@ const tutorialSteps = [
   {
     title: "Navegación por pestañas",
     description:
-      "La aplicación tiene tres pestañas principales: Clasificación, Predicciones IA y Opciones.",
+      "La aplicación tiene tres pestañas principales: Clasificación, Partidos y Opciones.",
     target: ".tabs-list",
     position: "bottom",
   },
@@ -35,8 +35,8 @@ const tutorialSteps = [
     position: "left",
   },
   {
-    title: "Predicciones IA",
-    description: "En esta pestaña puedes ver predicciones generadas por IA para los próximos partidos.",
+    title: "Predicciones de partidos",
+    description: "En esta pestaña puedes ver las probabilidades de los partidos pendientes calculadas con el modelo de Pronósticos.",
     target: "[data-value='predictions_ai']",
     position: "bottom",
   },

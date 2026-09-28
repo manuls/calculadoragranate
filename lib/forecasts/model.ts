@@ -1,14 +1,19 @@
-import type { Competition, FixedScore, HistoricalSeason, ModelInput, Objective, Simulation, TeamStrength } from "./model-types";
+import type { Competition, CompetitionMatch, FixedScore, HistoricalSeason, ModelInput, Objective, Simulation, TeamStrength } from "./model-types";
 
 export const MODEL_VERSION = "granate-poisson-1.3";
 export const PONTEVEDRA_ID = 3;
-// Parámetros prudentes de arranque; pendientes de calibración retrospectiva.
-const PRIOR_MATCHES = 16;
-const ROUND_RETENTION = 0.98;
-const PREVIOUS_SEASON_RETENTION = 0.35;
+export const MODEL_PARAMETERS = {
+  priorMatches: 16,
+  roundRetention: 0.98,
+  previousSeasonRetention: 0.35,
+  knownTeamUncertainty: 0.30,
+  unknownTeamUncertainty: 0.40,
+  uncertaintyEvidenceScale: 12,
+} as const;
+export type ModelParameters = { [Key in keyof typeof MODEL_PARAMETERS]: number };
 const clamp = (value: number, low: number, high: number) => Math.min(high, Math.max(low, value));
 
-export function prepareModel(competition: Competition, history: HistoricalSeason[]): ModelInput {
+export function prepareModel(competition: Competition, history: HistoricalSeason[], parameters: ModelParameters = MODEL_PARAMETERS): ModelInput {
   const startYear = Number(competition.season.slice(0, 4));
   const usable = history.filter((season) => Number(season.season.slice(0, 4)) < startYear);
   let weightedHome = 0, weightedAway = 0, totalWeight = 0;
@@ -31,24 +36,24 @@ export function prepareModel(competition: Competition, history: HistoricalSeason
   const previousYear = usable.filter((season) => Number(season.season.slice(0, 4)) === startYear - 1);
   const priors = competition.teams.map((team): TeamStrength => {
     const previous = previousYear.flatMap((season) => season.teams).find((candidate) => candidate.id === team.sourceId && !candidate.administrativeNote && candidate.played > 0);
-    const evidence = played.reduce((sum, match) => sum + (match.homeId === team.id || match.awayId === team.id ? ROUND_RETENTION ** (lastRound - match.round) : 0), 0);
+    const evidence = played.reduce((sum, match) => sum + (match.homeId === team.id || match.awayId === team.id ? parameters.roundRetention ** (lastRound - match.round) : 0), 0);
     return {
       teamId: team.id,
-      attack: previous ? clamp(1 + PREVIOUS_SEASON_RETENTION * (previous.goalsFor / previous.played / mean - 1), 0.6, 1.6) : 1,
-      defense: previous ? clamp(1 + PREVIOUS_SEASON_RETENTION * (previous.goalsAgainst / previous.played / mean - 1), 0.6, 1.6) : 1,
-      uncertainty: (previous ? 0.30 : 0.40) / Math.sqrt(1 + evidence / 12),
+      attack: previous ? clamp(1 + parameters.previousSeasonRetention * (previous.goalsFor / previous.played / mean - 1), 0.6, 1.6) : 1,
+      defense: previous ? clamp(1 + parameters.previousSeasonRetention * (previous.goalsAgainst / previous.played / mean - 1), 0.6, 1.6) : 1,
+      uncertainty: (previous ? parameters.knownTeamUncertainty : parameters.unknownTeamUncertainty) / Math.sqrt(1 + evidence / parameters.uncertaintyEvidenceScale),
     };
   });
   let strengths = priors.map((prior) => ({ ...prior }));
   for (let iteration = 0; iteration < 6; iteration++) {
     const byId = new Map(strengths.map((strength) => [strength.teamId, strength]));
     strengths = priors.map((prior) => {
-      let attack = prior.attack * PRIOR_MATCHES, defense = prior.defense * PRIOR_MATCHES, weight = PRIOR_MATCHES;
+      let attack = prior.attack * parameters.priorMatches, defense = prior.defense * parameters.priorMatches, weight = parameters.priorMatches;
       for (const match of played) {
         if (match.homeId !== prior.teamId && match.awayId !== prior.teamId) continue;
         const home = match.homeId === prior.teamId;
         const opponent = byId.get(home ? match.awayId : match.homeId)!;
-        const w = ROUND_RETENTION ** (lastRound - match.round);
+        const w = parameters.roundRetention ** (lastRound - match.round);
         attack += w * (home ? match.homeGoals! : match.awayGoals!) / ((home ? homeMean : awayMean) * opponent.defense);
         defense += w * (home ? match.awayGoals! : match.homeGoals!) / ((home ? awayMean : homeMean) * opponent.attack);
         weight += w;
@@ -86,6 +91,47 @@ function poisson(mean: number, random: () => number) {
 
 function quantile(sorted: number[], q: number) {
   return sorted[Math.min(sorted.length - 1, Math.floor((sorted.length - 1) * q))];
+}
+
+// Integra la incertidumbre de los dos equipos con la misma mezcla lognormal-Poisson
+// que usa la simulación de temporada. Cinco puntos de cuadratura evitan ruido aleatorio en la UI.
+const normalNodes = [-2.8569700139, -1.3556261800, 0, 1.3556261800, 2.8569700139];
+const normalWeights = [0.0112574113, 0.2220759220, 0.5333333334, 0.2220759220, 0.0112574113];
+
+function goalDistribution(mean: number, sigma: number) {
+  const probabilities = new Array<number>(16).fill(0);
+  for (let point = 0; point < normalNodes.length; point++) {
+    const rate = clamp(mean * Math.exp(sigma * normalNodes[point] - sigma * sigma / 2), 0.08, 6);
+    let probability = Math.exp(-rate);
+    for (let goals = 0; goals < probabilities.length; goals++) {
+      probabilities[goals] += normalWeights[point] * probability;
+      probability *= rate / (goals + 1);
+    }
+  }
+  const total = probabilities.reduce((sum, value) => sum + value, 0);
+  return probabilities.map((value) => value / total);
+}
+
+export function predictFixture(input: ModelInput, match: CompetitionMatch) {
+  const home = input.strengths.find((team) => team.teamId === match.homeId);
+  const away = input.strengths.find((team) => team.teamId === match.awayId);
+  if (!home || !away) throw new Error("Falta un equipo en el modelo.");
+  const homeGoals = goalDistribution(input.homeMean * home.attack * away.defense, Math.hypot(home.uncertainty, away.uncertainty));
+  const awayGoals = goalDistribution(input.awayMean * away.attack * home.defense, Math.hypot(away.uncertainty, home.uncertainty));
+  let homeWin = 0, draw = 0, awayWin = 0, bestScore = { homeGoals: 0, awayGoals: 0, probability: 0 };
+  for (let h = 0; h < homeGoals.length; h++) for (let a = 0; a < awayGoals.length; a++) {
+    const probability = homeGoals[h] * awayGoals[a];
+    if (h > a) homeWin += probability;
+    else if (h === a) draw += probability;
+    else awayWin += probability;
+    if (probability > bestScore.probability) bestScore = { homeGoals: h, awayGoals: a, probability };
+  }
+  return {
+    matchId: match.id, homeId: match.homeId, awayId: match.awayId,
+    homeWin, draw, awayWin, bestScore,
+    expectedHomeGoals: homeGoals.reduce((sum, value, goals) => sum + goals * value, 0),
+    expectedAwayGoals: awayGoals.reduce((sum, value, goals) => sum + goals * value, 0),
+  };
 }
 
 export function simulate(input: ModelInput, iterations = 10000, fixedScores: FixedScore[] = [], seed = modelSeed(input.competition)): Simulation {

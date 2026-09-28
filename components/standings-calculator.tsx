@@ -353,7 +353,7 @@ export default function StandingsCalculator({ report }: { report?: ForecastRepor
 
     // Enviar eventos de GA según la pestaña seleccionada
     if (value === "predictions_ai") {
-      sendGAEvent("predictions_ia", "navigation", "Predicciones IA tab clicked")
+      sendGAEvent("predictions_ia", "navigation", "Predicciones de partidos tab clicked")
     } else if (value === "team_objectives") {
       sendGAEvent("team_objectives", "navigation", "Opciones de los equipos tab clicked")
     }
@@ -496,7 +496,7 @@ export default function StandingsCalculator({ report }: { report?: ForecastRepor
                   Clasificación
                 </TabsTrigger>
                 <TabsTrigger value="predictions_ai" className="min-h-10 rounded-lg px-3 text-xs shadow-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:text-sm">
-                  Predicciones IA
+                  Partidos
                 </TabsTrigger>
                 <TabsTrigger value="team_objectives" className="min-h-10 rounded-lg px-3 text-xs shadow-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:text-sm">
                   Opciones
@@ -523,17 +523,13 @@ export default function StandingsCalculator({ report }: { report?: ForecastRepor
             </TabsContent>
 
             <TabsContent value="predictions_ai" className="mt-0 rounded-xl border bg-card p-4 shadow-sm sm:p-6">
-                    <MatchPredictions
+                    {report && <MatchPredictions
                       matches={fixtures}
                       teams={teams}
+                      report={report}
                       updateTempResults={updateTempResultsFromPredictions}
-                      onApplyPredictions={() => {
-                        console.log("onApplyPredictions llamado desde MatchPredictions")
-                        // No necesitamos hacer nada aquí, ya que updateTempResultsFromPredictions
-                        // se encarga de todo el proceso
-                      }}
                       setActiveTab={setActiveTab}
-                    />
+                    />}
             </TabsContent>
 
             <TabsContent value="team_objectives" className="mt-0 rounded-xl border bg-card p-4 shadow-sm sm:p-6">
