@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { SeasonDashboard } from "./season-dashboard";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Pronósticos del Pontevedra",
   description: "Clasificación, resultados y calendario del Pontevedra CF en Primera Federación. Probabilidades de permanencia, playoff y campeonato.",

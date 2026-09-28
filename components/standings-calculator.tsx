@@ -34,18 +34,20 @@ import { loadScenario, saveScenario } from "@/lib/forecasts/scenario-storage"
 
 export default function StandingsCalculator({ report }: { report?: ForecastReport }) {
   const initialTeams = useMemo(() => report ? report.input.competition.teams.map((team) => ({ ...team, logoUrl: savedTeams.find((t) => t.id === team.id)?.logoUrl, initialPosition: team.position, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: team.pointsAdjustment })) : savedTeams, [report])
-  const initialFixtures: Match[] = useMemo(() => report ? report.input.competition.matches.map((match) => ({ id: match.id, matchday: match.round, homeTeamId: match.homeId, awayTeamId: match.awayId, locked: match.homeGoals !== null, result: match.homeGoals === null ? null : { homeGoals: match.homeGoals, awayGoals: match.awayGoals!, isOfficial: true } })) : savedFixtures, [report])
+  const initialFixtures: Match[] = useMemo(() => report ? report.input.competition.matches.map((match) => ({ id: match.id, matchday: match.round, homeTeamId: match.homeId, awayTeamId: match.awayId, date: match.date, locked: match.homeGoals !== null, result: match.homeGoals === null ? null : { homeGoals: match.homeGoals, awayGoals: match.awayGoals!, isOfficial: true } })) : savedFixtures, [report])
   const playedMatches = report ? [] : savedMatches
   const baseStandings = report ? report.input.competition.teams.map((team) => ({ ...team, logoUrl: savedTeams.find((t) => t.id === team.id)?.logoUrl, initialPosition: team.position })) : sortTeamsByRules(initialTeams, [...playedMatches, ...initialFixtures])
 
   // Estado inicial con los equipos de la Primera RFEF Grupo 1
   const [teams, setTeams] = useState<Team[]>(baseStandings)
 
-  // Clasificación base (ordenada por puntos) para comparar cambios de posición
-  const [initialStandings, setInitialStandings] = useState<Team[]>(baseStandings)
-
   // Actualizar la definición de fixtures para usar initialFixtures
   const [fixtures, setFixtures] = useState<Match[]>(initialFixtures)
+  const previousStandings = useMemo(() => {
+    const lastOfficialRound = Math.max(0, ...fixtures.filter((match) => match.locked && match.result).map((match) => match.matchday))
+    if (lastOfficialRound < 2) return null
+    return calculateStandings(initialTeams, fixtures.filter((match) => match.locked && match.result && match.matchday < lastOfficialRound), playedMatches)
+  }, [fixtures, initialTeams])
 
   const [activeTab, setActiveTab] = useState("standings")
   const [isLoading, setIsLoading] = useState(!report)
@@ -144,9 +146,6 @@ export default function StandingsCalculator({ report }: { report?: ForecastRepor
       calculatedTeams.map((t) => `${t.name}: ${t.points} pts`).join(", "),
     )
 
-    // Actualizar initialStandings con la clasificación oficial (tras resultados oficiales)
-    // para que las flechas comparen contra la jornada oficial, no la base
-    setInitialStandings(calculatedTeams)
     setTeams(calculatedTeams)
   }, [fixtures])
 
@@ -356,7 +355,7 @@ export default function StandingsCalculator({ report }: { report?: ForecastRepor
     if (value === "predictions_ai") {
       sendGAEvent("predictions_ia", "navigation", "Predicciones IA tab clicked")
     } else if (value === "team_objectives") {
-      sendGAEvent("team_objectives", "navigation", "Objetivos del Equipo tab clicked")
+      sendGAEvent("team_objectives", "navigation", "Opciones de los equipos tab clicked")
     }
   }
 
@@ -500,7 +499,7 @@ export default function StandingsCalculator({ report }: { report?: ForecastRepor
                   Predicciones IA
                 </TabsTrigger>
                 <TabsTrigger value="team_objectives" className="min-h-10 rounded-lg px-3 text-xs shadow-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:text-sm">
-                  Objetivos
+                  Opciones
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -508,7 +507,7 @@ export default function StandingsCalculator({ report }: { report?: ForecastRepor
             <TabsContent value="standings" className="mt-0">
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
                 <div className="order-2 lg:order-1">
-                  <StandingsTable teams={teams} initialStandings={initialStandings} className="standings-table" />
+                  <StandingsTable teams={teams} previousStandings={previousStandings} className="standings-table" />
                 </div>
                 <div className="order-1 lg:order-2">
                   <MatchFixtures
@@ -538,7 +537,7 @@ export default function StandingsCalculator({ report }: { report?: ForecastRepor
             </TabsContent>
 
             <TabsContent value="team_objectives" className="mt-0 rounded-xl border bg-card p-4 shadow-sm sm:p-6">
-              <TeamPredictions teams={teams} fixtures={fixtures} />
+              {report && <TeamPredictions report={report} results={tempResults} />}
             </TabsContent>
         </Tabs>
       </div>

@@ -18,7 +18,7 @@ const tutorialSteps = [
   {
     title: "Navegación por pestañas",
     description:
-      "La aplicación tiene tres pestañas principales: Clasificación, Predicciones IA y Objetivos del Equipo.",
+      "La aplicación tiene tres pestañas principales: Clasificación, Predicciones IA y Opciones.",
     target: ".tabs-list",
     position: "bottom",
   },
@@ -41,8 +41,8 @@ const tutorialSteps = [
     position: "bottom",
   },
   {
-    title: "Objetivos del Equipo",
-    description: "Aquí puedes ver las probabilidades de que cada equipo alcance diferentes objetivos.",
+    title: "Opciones de los equipos",
+    description: "Aquí puedes consultar sus opciones de ascenso, playoff y permanencia con el mismo modelo que en Pronósticos.",
     target: "[data-value='team_objectives']",
     position: "bottom",
   },

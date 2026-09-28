@@ -1,5 +1,7 @@
 "use client"
 
+import Image from "next/image"
+
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -399,9 +401,11 @@ export default function MatchPredictions({
                                 <div className="flex items-center justify-between w-full">
                                   <div className="flex items-center max-w-[40%]">
                                     {getTeamLogo(prediction.homeTeamId) && (
-                                      <img
+                                      <Image
                                         src={getTeamLogo(prediction.homeTeamId) || "/placeholder.svg"}
-                                        alt={getTeamName(prediction.homeTeamId)}
+                                        alt=""
+                                        width={20}
+                                        height={20}
                                         className="h-5 w-5 mr-1 flex-shrink-0"
                                       />
                                     )}
@@ -423,9 +427,11 @@ export default function MatchPredictions({
                                       {getTeamName(prediction.awayTeamId)}
                                     </span>
                                     {getTeamLogo(prediction.awayTeamId) && (
-                                      <img
+                                      <Image
                                         src={getTeamLogo(prediction.awayTeamId) || "/placeholder.svg"}
-                                        alt={getTeamName(prediction.awayTeamId)}
+                                        alt=""
+                                        width={20}
+                                        height={20}
                                         className="h-5 w-5 ml-1 flex-shrink-0"
                                       />
                                     )}

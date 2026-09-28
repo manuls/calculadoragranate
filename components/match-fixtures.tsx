@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import Image from "next/image"
 import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -36,6 +36,7 @@ export default function MatchFixtures({
   className,
 }: MatchFixturesProps) {
   const [activeMatchday, setActiveMatchday] = useState("")
+  const selectedByUser = useRef(false)
 
   const teamsById = useMemo(() => new Map(teams.map((team) => [team.id, team])), [teams])
 
@@ -60,16 +61,32 @@ export default function MatchFixtures({
 
   useEffect(() => {
     if (sortedMatchdays.length === 0) return
-
-    const latestOfficial = sortedMatchdays.filter((matchday) =>
-      matchdayGroups[matchday].some((match) => match.locked && match.result),
-    ).at(-1)
-    const firstPlayable = sortedMatchdays.find((matchday) =>
-      matchdayGroups[matchday].some((match) => !match.locked),
-    )
-    const preferred = latestOfficial || firstPlayable || sortedMatchdays[0]
-
-    if (!activeMatchday || !matchdayGroups[activeMatchday]) setActiveMatchday(preferred)
+    const chooseMatchday = () => {
+      const latestOfficial = sortedMatchdays.filter((matchday) =>
+        matchdayGroups[matchday].some((match) => match.locked && match.result),
+      ).at(-1)
+      const firstPlayable = sortedMatchdays.find((matchday) =>
+        matchdayGroups[matchday].some((match) => !match.locked),
+      )
+      const lastResultDate = latestOfficial && matchdayGroups[latestOfficial]
+        .filter((match) => match.locked && match.result && /^\d{4}-\d{2}-\d{2}$/.test(match.date ?? ""))
+        .map((match) => match.date!).sort().at(-1)
+      const madridDateParts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Europe/Madrid", year: "numeric", month: "2-digit", day: "2-digit",
+      }).formatToParts(new Date()).map((part) => [part.type, part.value]))
+      const todayInMadrid = `${madridDateParts.year}-${madridDateParts.month}-${madridDateParts.day}`
+      const twoDaysLater = lastResultDate ? new Date(`${lastResultDate}T00:00:00Z`) : null
+      twoDaysLater?.setUTCDate(twoDaysLater.getUTCDate() + 2)
+      const nextPlayable = sortedMatchdays.find((matchday) => Number(matchday) > Number(latestOfficial) &&
+        matchdayGroups[matchday].some((match) => !match.locked))
+      const preferred = twoDaysLater && todayInMadrid >= twoDaysLater.toISOString().slice(0, 10)
+        ? nextPlayable || firstPlayable || latestOfficial || sortedMatchdays[0]
+        : latestOfficial || firstPlayable || sortedMatchdays[0]
+      if (!selectedByUser.current || !matchdayGroups[activeMatchday]) setActiveMatchday(preferred)
+    }
+    chooseMatchday()
+    const interval = window.setInterval(chooseMatchday, 60 * 60 * 1000)
+    return () => window.clearInterval(interval)
   }, [activeMatchday, matchdayGroups, sortedMatchdays])
 
   const activeIndex = sortedMatchdays.indexOf(activeMatchday)
@@ -77,7 +94,7 @@ export default function MatchFixtures({
 
   const moveMatchday = (offset: number) => {
     const nextMatchday = sortedMatchdays[activeIndex + offset]
-    if (nextMatchday) setActiveMatchday(nextMatchday)
+    if (nextMatchday) { selectedByUser.current = true; setActiveMatchday(nextMatchday) }
   }
 
   const renderTeam = (teamId: number, align: "left" | "right") => {
@@ -124,7 +141,7 @@ export default function MatchFixtures({
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Select value={activeMatchday} onValueChange={setActiveMatchday}>
+          <Select value={activeMatchday} onValueChange={(value) => { selectedByUser.current = true; setActiveMatchday(value) }}>
             <SelectTrigger className="w-[160px] bg-background" aria-label="Seleccionar jornada">
               <SelectValue placeholder="Jornada" />
             </SelectTrigger>

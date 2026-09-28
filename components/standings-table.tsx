@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 
 interface StandingsTableProps {
   teams: Team[]
-  initialStandings: Team[]
+  previousStandings: Team[] | null
   className?: string
 }
 
@@ -20,15 +20,15 @@ const zoneStyles = (position: number) => {
   return "border-l-transparent"
 }
 
-export default function StandingsTable({ teams, initialStandings, className }: StandingsTableProps) {
-  const initialPositions = new Map(initialStandings.map((team, index) => [team.id, index]))
+export default function StandingsTable({ teams, previousStandings, className }: StandingsTableProps) {
+  const previousPositions = new Map(previousStandings?.map((team, index) => [team.id, index]) ?? [])
 
   return (
     <section className={cn("rounded-xl border bg-card p-4 shadow-sm sm:p-5", className)}>
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold tracking-tight">Clasificación</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Se actualiza automáticamente con tus marcadores.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Posiciones frente a la jornada anterior. Tus marcadores actualizan la tabla al instante.</p>
         </div>
         <EnhancedShareButtons teams={teams} currentUrl={typeof window !== "undefined" ? window.location.href : ""} />
       </div>
@@ -50,7 +50,7 @@ export default function StandingsTable({ teams, initialStandings, className }: S
             <tbody>
               {teams.map((team, index) => {
                 const position = index + 1
-                const change = (initialPositions.get(team.id) ?? index) - index
+                const change = (previousPositions.get(team.id) ?? index) - index
                 const isPontevedra = team.name === "Pontevedra CF"
 
                 return (
@@ -76,11 +76,11 @@ export default function StandingsTable({ teams, initialStandings, className }: S
                       <div className="flex items-center justify-center gap-1">
                         <span>{position}</span>
                         {change > 0 ? (
-                          <ArrowUp className="h-3.5 w-3.5 text-emerald-600" aria-label={`Sube ${change} posiciones`} />
+                          <ArrowUp className="h-4 w-4 text-emerald-600" aria-label={`Sube ${change} posiciones`} />
                         ) : change < 0 ? (
-                          <ArrowDown className="h-3.5 w-3.5 text-rose-600" aria-label={`Baja ${Math.abs(change)} posiciones`} />
+                          <ArrowDown className="h-4 w-4 text-rose-600" aria-label={`Baja ${Math.abs(change)} posiciones`} />
                         ) : (
-                          <Minus className="h-3 w-3 text-muted-foreground/60" aria-label="Sin cambios" />
+                          <Minus className="h-4 w-4 text-amber-500" aria-label={previousStandings ? "Sin cambios" : "Sin jornada anterior para comparar"} />
                         )}
                       </div>
                     </td>

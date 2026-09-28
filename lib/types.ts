@@ -34,6 +34,7 @@ export interface Team {
 export interface Match {
   id: number
   matchday: number
+  date?: string | null
   homeTeamId: number
   awayTeamId: number
   result: {
