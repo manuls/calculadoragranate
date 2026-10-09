@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import Image from "next/image"
+import { teamCrestUrl } from "@/lib/team-crest"
 import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -104,7 +105,7 @@ export default function MatchFixtures({
     return (
       <div className={cn("flex min-w-0 items-center gap-2", align === "right" && "flex-row-reverse text-right")}>
         {team.logoUrl && (
-          <Image src={team.logoUrl} alt="" width={24} height={24} className="h-6 w-6 shrink-0 object-contain" />
+          <Image src={teamCrestUrl(team.logoUrl)} unoptimized alt="" width={24} height={24} className="h-6 w-6 shrink-0 object-contain" />
         )}
         <span className={cn("min-w-0 text-sm leading-tight", team.id === PONTEVEDRA_TEAM_ID && "font-semibold text-primary")} title={team.name}>
           <span className="sm:hidden">{compactTeamNames[team.name] ?? team.name}</span>

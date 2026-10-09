@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react"
 import Image from "next/image"
+import { teamCrestUrl } from "@/lib/team-crest"
 import { BarChart2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { ForecastReport } from "@/lib/forecasts/forecast-service"
@@ -83,13 +84,13 @@ export default function MatchPredictions({ matches, teams, report, updateTempRes
           return <article key={match.id} className="rounded-lg border bg-card p-4">
             <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
               <div className="flex min-w-0 items-center gap-2">
-                {home.logoUrl && <Image src={home.logoUrl} alt="" width={28} height={28} className="h-7 w-7 shrink-0 object-contain" />}
+                {home.logoUrl && <Image src={teamCrestUrl(home.logoUrl)} unoptimized alt="" width={28} height={28} className="h-7 w-7 shrink-0 object-contain" />}
                 <strong className="truncate text-sm" title={home.name}>{home.name}</strong>
               </div>
               <span className="text-xs text-muted-foreground">–</span>
               <div className="flex min-w-0 items-center justify-end gap-2 text-right">
                 <strong className="truncate text-sm" title={away.name}>{away.name}</strong>
-                {away.logoUrl && <Image src={away.logoUrl} alt="" width={28} height={28} className="h-7 w-7 shrink-0 object-contain" />}
+                {away.logoUrl && <Image src={teamCrestUrl(away.logoUrl)} unoptimized alt="" width={28} height={28} className="h-7 w-7 shrink-0 object-contain" />}
               </div>
             </div>
             <div className="mt-4 grid grid-cols-3 gap-2">

@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import { teamCrestUrl } from "@/lib/team-crest"
 import { motion } from "framer-motion"
 import { ArrowDown, ArrowUp, Minus } from "lucide-react"
 import EnhancedShareButtons from "./enhanced-share-buttons"
@@ -87,7 +88,7 @@ export default function StandingsTable({ teams, previousStandings, className }: 
                     <td className="px-2 py-2.5">
                       <div className="flex min-w-0 items-center gap-2">
                         {team.logoUrl && (
-                          <Image src={team.logoUrl} alt="" width={24} height={24} className="h-6 w-6 shrink-0 object-contain" />
+                          <Image src={teamCrestUrl(team.logoUrl)} unoptimized alt="" width={24} height={24} className="h-6 w-6 shrink-0 object-contain" />
                         )}
                         <span className={cn("max-w-[150px] truncate sm:max-w-none", isPontevedra && "font-semibold text-primary")} title={team.name}>
                           {team.name}
