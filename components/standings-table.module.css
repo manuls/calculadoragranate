@@ -25,10 +25,13 @@
   line-height: 1;
 }
 .badge:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
-.win { background: #15803d; color: white; }
-.draw { background: #facc15; color: #422006; }
-.loss { background: #dc2626; color: white; }
+.win { background: #41735b; color: white; }
+.draw { background: #d4b66a; color: #382b12; }
+.loss { background: #a45661; color: white; }
 .empty { background: hsl(var(--muted)); color: hsl(var(--muted-foreground)); }
+.badgeButton { cursor: pointer; border: 0; padding: 0; transition: filter 150ms; }
+.badgeButton:hover { filter: brightness(1.12); }
+.extra { display: none; }
 
 @container standings (max-width: 570px) {
   .goals { display: none; }
@@ -40,6 +43,25 @@
   .badges { gap: 3px; }
   .badge { flex-basis: 20px; height: 20px; }
 }
+
+.complete { min-width: 760px; }
+.complete .goals, .complete .difference, .complete .extra { display: table-cell; }
+.complete th, .complete td { padding-left: 8px; padding-right: 8px; }
+.complete th { font-size: 11px; letter-spacing: .025em; }
+.complete td { font-size: 14px; }
+.complete .position { width: 48px; }
+.complete .stat { width: 42px; }
+.complete .points { width: 46px; }
+.complete .formColumn { width: 140px; }
+.complete .teamColumn { width: 200px; position: sticky; left: 0; background: hsl(var(--muted)); }
+.complete .teamCell { position: sticky; left: 0; z-index: 1; background: hsl(var(--card)); }
+.complete .teamName { white-space: normal; }
+.complete .positionContent { flex-direction: row; gap: 4px; }
+.complete .positionContent svg { width: 16px; height: 16px; }
+.complete .teamContent { gap: 8px; }
+.complete .teamContent img { width: 24px; height: 24px; }
+.complete .badges { gap: 4px; }
+.complete .badge { flex-basis: 22px; height: 22px; font-size: 11px; }
 
 @container standings (max-width: 380px) {
   .difference { display: none; }
