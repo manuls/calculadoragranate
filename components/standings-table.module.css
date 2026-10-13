@@ -1,0 +1,59 @@
+.viewport {
+  container: standings / inline-size;
+}
+
+.table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.position { width: 48px; }
+.stat { width: 36px; }
+.points { width: 42px; }
+.formColumn { width: 132px; }
+.teamName { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.badges { display: flex; justify-content: center; gap: 4px; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 22px;
+  height: 22px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+.badge:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.win { background: #15803d; color: white; }
+.draw { background: #facc15; color: #422006; }
+.loss { background: #dc2626; color: white; }
+.empty { background: hsl(var(--muted)); color: hsl(var(--muted-foreground)); }
+
+@container standings (max-width: 570px) {
+  .goals { display: none; }
+  .position { width: 42px; }
+  .stat { width: 32px; }
+  .points { width: 36px; }
+  .formColumn { width: 118px; }
+  .table th, .table td { padding-left: 4px; padding-right: 4px; }
+  .badges { gap: 3px; }
+  .badge { flex-basis: 20px; height: 20px; }
+}
+
+@container standings (max-width: 380px) {
+  .difference { display: none; }
+  .position { width: 34px; }
+  .stat { width: 24px; }
+  .points { width: 28px; }
+  .formColumn { width: 98px; }
+  .table { font-size: 12px; }
+  .table th { font-size: 10px; letter-spacing: 0; }
+  .table th, .table td { padding-left: 2px; padding-right: 2px; }
+  .positionContent { flex-direction: column; gap: 0; }
+  .positionContent svg { width: 12px; height: 12px; }
+  .teamContent { gap: 4px; }
+  .teamContent img { width: 18px; height: 18px; }
+  .badges { gap: 2px; }
+  .badge { flex-basis: 17px; height: 19px; font-size: 10px; }
+}

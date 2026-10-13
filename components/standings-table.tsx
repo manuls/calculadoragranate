@@ -5,12 +5,15 @@ import { teamCrestUrl } from "@/lib/team-crest"
 import { motion } from "framer-motion"
 import { ArrowDown, ArrowUp, Minus } from "lucide-react"
 import EnhancedShareButtons from "./enhanced-share-buttons"
-import type { Team } from "@/lib/types"
+import type { Team, Match } from "@/lib/types"
 import { cn } from "@/lib/utils"
+import { getTeamForm } from "@/lib/team-form"
+import styles from "./standings-table.module.css"
 
 interface StandingsTableProps {
   teams: Team[]
   previousStandings: Team[] | null
+  matches: Match[]
   className?: string
 }
 
@@ -21,11 +24,16 @@ const zoneStyles = (position: number) => {
   return "border-l-transparent"
 }
 
-export default function StandingsTable({ teams, previousStandings, className }: StandingsTableProps) {
+const outcomeLabels = { V: "Victoria", E: "Empate", D: "Derrota" }
+const outcomeStyles = { V: styles.win, E: styles.draw, D: styles.loss }
+
+export default function StandingsTable({ teams, previousStandings, matches, className }: StandingsTableProps) {
   const previousPositions = new Map(previousStandings?.map((team, index) => [team.id, index]) ?? [])
+  const teamForm = getTeamForm(matches)
+  const teamNames = new Map(teams.map((team) => [team.id, team.name]))
 
   return (
-    <section className={cn("rounded-xl border bg-card p-4 shadow-sm sm:p-5", className)}>
+    <section className={cn("min-w-0 rounded-xl border bg-card p-3 shadow-sm sm:p-5", className)}>
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold tracking-tight">Clasificación</h2>
@@ -35,17 +43,18 @@ export default function StandingsTable({ teams, previousStandings, className }: 
       </div>
 
       <div className="mt-5 overflow-hidden rounded-lg border">
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-sm">
+        <div className={cn(styles.viewport, "overflow-x-auto")}>
+          <table className={cn(styles.table, "border-collapse text-sm")}>
             <thead className="bg-muted/70 text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
-                <th className="w-14 px-2 py-3 text-center font-medium">Pos.</th>
-                <th className="min-w-[150px] px-2 py-3 text-left font-medium">Equipo</th>
-                <th className="w-12 px-2 py-3 text-center font-medium">PJ</th>
-                <th className="hidden w-12 px-2 py-3 text-center font-medium sm:table-cell">GF</th>
-                <th className="hidden w-12 px-2 py-3 text-center font-medium sm:table-cell">GC</th>
-                <th className="w-12 px-2 py-3 text-center font-medium">DG</th>
-                <th className="w-14 px-2 py-3 text-center font-medium">Pts.</th>
+                <th scope="col" className={cn(styles.position, "px-2 py-3 text-center font-medium")}>Pos.</th>
+                <th scope="col" className="px-2 py-3 text-left font-medium">Equipo</th>
+                <th scope="col" className={cn(styles.stat, "px-2 py-3 text-center font-medium")}>PJ</th>
+                <th scope="col" className={cn(styles.stat, styles.goals, "px-2 py-3 text-center font-medium")}>GF</th>
+                <th scope="col" className={cn(styles.stat, styles.goals, "px-2 py-3 text-center font-medium")}>GC</th>
+                <th scope="col" className={cn(styles.stat, styles.difference, "px-2 py-3 text-center font-medium")}>DG</th>
+                <th scope="col" className={cn(styles.points, "px-2 py-3 text-center font-medium")}>Pts.</th>
+                <th scope="col" className={cn(styles.formColumn, "px-2 py-3 text-center font-medium")} title="Últimos cinco partidos oficiales, del más reciente al más antiguo">Forma</th>
               </tr>
             </thead>
             <tbody>
@@ -53,6 +62,7 @@ export default function StandingsTable({ teams, previousStandings, className }: 
                 const position = index + 1
                 const change = (previousPositions.get(team.id) ?? index) - index
                 const isPontevedra = team.name === "Pontevedra CF"
+                const recentForm = teamForm.get(team.id) ?? []
 
                 return (
                   <motion.tr
@@ -74,7 +84,7 @@ export default function StandingsTable({ teams, previousStandings, className }: 
                     )}
                   >
                     <td className="px-2 py-2.5 text-center font-medium tabular-nums">
-                      <div className="flex items-center justify-center gap-1">
+                      <div className={cn(styles.positionContent, "flex items-center justify-center gap-1")}>
                         <span>{position}</span>
                         {change > 0 ? (
                           <ArrowUp className="h-4 w-4 text-emerald-600" aria-label={`Sube ${change} posiciones`} />
@@ -86,26 +96,42 @@ export default function StandingsTable({ teams, previousStandings, className }: 
                       </div>
                     </td>
                     <td className="px-2 py-2.5">
-                      <div className="flex min-w-0 items-center gap-2">
+                      <div className={cn(styles.teamContent, "flex min-w-0 items-center gap-2")}>
                         {team.logoUrl && (
                           <Image src={teamCrestUrl(team.logoUrl)} unoptimized alt="" width={24} height={24} className="h-6 w-6 shrink-0 object-contain" />
                         )}
-                        <span className={cn("max-w-[150px] truncate sm:max-w-none", isPontevedra && "font-semibold text-primary")} title={team.name}>
+                        <span className={cn(styles.teamName, isPontevedra && "font-semibold text-primary")} title={team.name}>
                           {team.name}
                         </span>
                       </div>
                     </td>
                     <td className="px-2 py-2.5 text-center tabular-nums">{team.played}</td>
-                    <td className="hidden px-2 py-2.5 text-center tabular-nums sm:table-cell">{team.goalsFor}</td>
-                    <td className="hidden px-2 py-2.5 text-center tabular-nums sm:table-cell">{team.goalsAgainst}</td>
-                    <td className="px-2 py-2.5 text-center tabular-nums">{team.goalsFor - team.goalsAgainst}</td>
+                    <td className={cn(styles.goals, "px-2 py-2.5 text-center tabular-nums")}>{team.goalsFor}</td>
+                    <td className={cn(styles.goals, "px-2 py-2.5 text-center tabular-nums")}>{team.goalsAgainst}</td>
+                    <td className={cn(styles.difference, "px-2 py-2.5 text-center tabular-nums")}>{team.goalsFor - team.goalsAgainst}</td>
                     <td className="px-2 py-2.5 text-center font-bold tabular-nums text-foreground">{team.points}</td>
+                    <td className="px-2 py-2.5">
+                      <div className={styles.badges} aria-label={`Forma de ${team.name}, más reciente primero`}>
+                        {recentForm.map(({ match, outcome }) => {
+                          const detail = `${outcomeLabels[outcome]} · J${match.matchday} · ${teamNames.get(match.homeTeamId)} ${match.result.homeGoals}–${match.result.awayGoals} ${teamNames.get(match.awayTeamId)}`
+                          return <span key={match.id} className={cn(styles.badge, outcomeStyles[outcome])} title={detail} aria-label={detail} tabIndex={0}>{outcome}</span>
+                        })}
+                        {Array.from({ length: 5 - recentForm.length }, (_, index) => <span key={`empty-${index}`} className={cn(styles.badge, styles.empty)} title="Sin partido oficial" aria-label="Sin partido oficial">–</span>)}
+                      </div>
+                    </td>
                   </motion.tr>
                 )
               })}
             </tbody>
           </table>
         </div>
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted-foreground" aria-label="Leyenda de la forma">
+        <span className="inline-flex items-center gap-1.5"><span className={cn(styles.badge, styles.win)} aria-hidden="true">V</span>Victoria</span>
+        <span className="inline-flex items-center gap-1.5"><span className={cn(styles.badge, styles.draw)} aria-hidden="true">E</span>Empate</span>
+        <span className="inline-flex items-center gap-1.5"><span className={cn(styles.badge, styles.loss)} aria-hidden="true">D</span>Derrota</span>
+        <span className="basis-full">Últimos 5 partidos oficiales · Más reciente a la izquierda.</span>
       </div>
 
       <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground" aria-label="Leyenda de la clasificación">

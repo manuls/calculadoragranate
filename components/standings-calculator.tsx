@@ -506,8 +506,8 @@ export default function StandingsCalculator({ report }: { report?: ForecastRepor
 
             <TabsContent value="standings" className="mt-0">
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
-                <div className="order-2 lg:order-1">
-                  <StandingsTable teams={teams} previousStandings={previousStandings} className="standings-table" />
+                <div className="order-2 min-w-0 lg:order-1">
+                  <StandingsTable teams={teams} previousStandings={previousStandings} matches={[...playedMatches, ...fixtures]} className="standings-table" />
                 </div>
                 <div className="order-1 lg:order-2">
                   <MatchFixtures

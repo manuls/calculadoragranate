@@ -103,11 +103,11 @@ export default function MatchFixtures({
     if (!team) return <span>Equipo</span>
 
     return (
-      <div className={cn("flex min-w-0 items-center gap-2", align === "right" && "flex-row-reverse text-right")}>
+      <div className={cn("flex min-w-0 items-center gap-2 max-[400px]:flex-col max-[400px]:gap-1 max-[400px]:text-center", align === "right" && "flex-row-reverse text-right")}>
         {team.logoUrl && (
           <Image src={teamCrestUrl(team.logoUrl)} unoptimized alt="" width={24} height={24} className="h-6 w-6 shrink-0 object-contain" />
         )}
-        <span className={cn("min-w-0 text-sm leading-tight", team.id === PONTEVEDRA_TEAM_ID && "font-semibold text-primary")} title={team.name}>
+        <span className={cn("min-w-0 text-sm leading-tight [overflow-wrap:anywhere]", team.id === PONTEVEDRA_TEAM_ID && "font-semibold text-primary")} title={team.name}>
           <span className="sm:hidden">{compactTeamNames[team.name] ?? team.name}</span>
           <span className="hidden sm:inline">{team.name}</span>
         </span>
