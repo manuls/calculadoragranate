@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import Image from "next/image"
 import { teamCrestUrl } from "@/lib/team-crest"
+import { fixtureSchedule } from "@/lib/match-schedule"
 import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -177,6 +178,9 @@ export default function MatchFixtures({
                 hasResult && !match.locked && "bg-primary/[0.035]",
               )}
             >
+              <p className="col-span-3 m-0 text-center text-[11px] leading-snug text-muted-foreground">
+                {fixtureSchedule(match.date, match.kickoffAt)}
+              </p>
               {renderTeam(match.homeTeamId, "right")}
               <div className="flex flex-col items-center gap-1">
                 <div className="flex items-center gap-1.5">
@@ -211,7 +215,7 @@ export default function MatchFixtures({
       </div>
 
       <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-        Los resultados oficiales se comparten con Pronósticos y permanecen bloqueados al simular.
+        Horarios en hora peninsular. Los resultados oficiales se comparten con Pronósticos y permanecen bloqueados al simular.
       </p>
     </section>
   )

@@ -21,6 +21,7 @@ export type CompetitionMatch = {
   homeId: number;
   awayId: number;
   date: string | null;
+  kickoffAt?: string | null; // Instante ISO UTC; null si la fuente no confirma hora.
   homeGoals: number | null;
   awayGoals: number | null;
 };

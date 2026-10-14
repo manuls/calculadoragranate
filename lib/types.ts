@@ -35,6 +35,7 @@ export interface Match {
   id: number
   matchday: number
   date?: string | null
+  kickoffAt?: string | null
   homeTeamId: number
   awayTeamId: number
   result: {

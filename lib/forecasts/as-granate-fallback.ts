@@ -1,5 +1,6 @@
 import baseline from "./granate-baseline";
 import type { Competition, CompetitionMatch, CompetitionTeam } from "./model-types";
+import { sourceSchedule } from "../match-schedule";
 
 const sourceUrl = "https://as.com/resultados/futbol/primera_rfef/2026_2027/clasificacion/";
 const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -61,8 +62,18 @@ export async function fetchAsGranateCompetition(base: Competition): Promise<Comp
         if (finished && !score) throw new Error("Resultado final sin marcador.");
         match.homeGoals = finished ? Number(score![1]) : null;
         match.awayGoals = finished ? Number(score![2]) : null;
-        const date = attr("data-datetime");
-        if (/^202[67]-\d\d-\d\dT/.test(date)) match.date = date.slice(0, 10);
+        const timestamp = attr("data-datetime");
+        // No interpretamos los instantes de relleno como horarios confirmados.
+        const visibleTime = plain(content(block[0], "div", "a_sc_hr"));
+        const confirmedTime = /\b(?:[01]\d|2[0-3]):[0-5]\d\b/.test(visibleTime)
+          || (finished && !/T00:00:00(?:Z|[+-])/.test(timestamp));
+        if (/^202[67]-\d\d-\d\dT/.test(timestamp)) {
+          const schedule = sourceSchedule(timestamp, confirmedTime);
+          if (schedule.date) match.date = schedule.date;
+          match.kickoffAt = schedule.kickoffAt;
+        } else {
+          match.kickoffAt = null;
+        }
         parsed++;
       }
       if (parsed !== 10) throw new Error("Jornada de respaldo incompleta.");

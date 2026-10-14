@@ -80,6 +80,6 @@ const getSourceCompetition = unstable_cache(async (): Promise<Competition> => {
     console.warn("No se ha actualizado BDFutbol:", error instanceof Error ? error.message : "fallo de consulta");
     return saved;
   }
-}, ["forecast-granate-complete-season-v5"], { revalidate: 3600, tags: ["forecast-source"] });
+}, ["forecast-granate-complete-season-v6-schedules"], { revalidate: 3600, tags: ["forecast-source"] });
 
-export const getGranateCompetition = unstable_cache(async () => withStoredResults(await getSourceCompetition()), ["calculadora-shared-competition-v2"], { revalidate: 3600, tags: ["forecast-source"] });
+export const getGranateCompetition = unstable_cache(async () => withStoredResults(await getSourceCompetition()), ["calculadora-shared-competition-v3-schedules"], { revalidate: 3600, tags: ["forecast-source"] });
