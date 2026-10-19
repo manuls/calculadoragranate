@@ -40,7 +40,7 @@ export default function StandingsTable({ teams, previousStandings, matches, clas
               <tr>
                 <th scope="col" className={cn(styles.position, "px-2 py-3 text-center font-medium")}>Pos.</th>
                 <th scope="col" className={cn(styles.teamColumn, "px-2 py-3 text-left font-medium")}>Equipo</th>
-                {complete && <th scope="col" className={cn(styles.points, "px-2 py-3 text-center font-medium")}>Pts.</th>}
+                <th scope="col" className={cn(styles.points, "px-2 py-3 text-center font-medium")}>Pts.</th>
                 <th scope="col" className={cn(styles.stat, "px-2 py-3 text-center font-medium")}>PJ</th>
                 {complete && <>
                   <th scope="col" className={cn(styles.stat, styles.extra, "px-2 py-3 text-center font-medium")} title="Partidos ganados">G</th>
@@ -50,7 +50,6 @@ export default function StandingsTable({ teams, previousStandings, matches, clas
                 <th scope="col" className={cn(styles.stat, styles.goals, "px-2 py-3 text-center font-medium")}>GF</th>
                 <th scope="col" className={cn(styles.stat, styles.goals, "px-2 py-3 text-center font-medium")}>GC</th>
                 <th scope="col" className={cn(styles.stat, styles.difference, "px-2 py-3 text-center font-medium")}>DG</th>
-                {!complete && <th scope="col" className={cn(styles.points, "px-2 py-3 text-center font-medium")}>Pts.</th>}
                 <th scope="col" className={cn(styles.formColumn, "px-2 py-3 text-center font-medium")} title="Últimos cinco partidos oficiales, del más reciente al más antiguo">Forma</th>
               </tr>
             </thead>
@@ -102,7 +101,7 @@ export default function StandingsTable({ teams, previousStandings, matches, clas
                         </span>
                       </div>
                     </td>
-                    {complete && <td className="px-2 py-2.5 text-center font-bold tabular-nums text-foreground">{team.points}</td>}
+                    <td className="px-2 py-2.5 text-center font-bold tabular-nums text-foreground">{team.points}</td>
                     <td className="px-2 py-2.5 text-center tabular-nums">{team.played}</td>
                     {complete && <>
                       <td className={cn(styles.extra, "px-2 py-2.5 text-center tabular-nums")}>{team.won}</td>
@@ -112,7 +111,6 @@ export default function StandingsTable({ teams, previousStandings, matches, clas
                     <td className={cn(styles.goals, "px-2 py-2.5 text-center tabular-nums")}>{team.goalsFor}</td>
                     <td className={cn(styles.goals, "px-2 py-2.5 text-center tabular-nums")}>{team.goalsAgainst}</td>
                     <td className={cn(styles.difference, "px-2 py-2.5 text-center tabular-nums")}>{team.goalsFor - team.goalsAgainst}</td>
-                    {!complete && <td className="px-2 py-2.5 text-center font-bold tabular-nums text-foreground">{team.points}</td>}
                     <td className="px-2 py-2.5">
                       <div className={styles.badges} aria-label={`Forma de ${team.name}, más reciente primero`}>
                         {recentForm.map((result) => <FormBadge key={result.match.id} result={result} homeName={teamNames.get(result.match.homeTeamId) ?? "Local"} awayName={teamNames.get(result.match.awayTeamId) ?? "Visitante"} />)}
